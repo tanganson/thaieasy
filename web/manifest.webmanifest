@@ -1,0 +1,18 @@
+{
+  "name": "คำเก่า｜泰語複習索引",
+  "short_name": "คำเก่า",
+  "description": "快速搜尋與複習已學過的泰語詞句",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f8f5",
+  "theme_color": "#087e78",
+  "lang": "zh-Hant",
+  "icons": [
+    {
+      "src": "assets/thai-time-reference.png",
+      "sizes": "1075x1529",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

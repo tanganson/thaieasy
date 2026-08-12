@@ -1,0 +1,865 @@
+{
+  "metadata": {
+    "id": "thai_daily_lesson_bank_v1",
+    "description": "Expandable content bank for the 365-day Thai communication workflow."
+  },
+  "daily_lessons": {
+    "1": {
+      "title_zh": "Day 1: 打招呼和禮貌",
+      "scene_zh": "第一次開口說泰語",
+      "task_zh": "能說你好、謝謝、不好意思、對不起和再見。",
+      "focus_patterns": ["polite_particle", "basic_greeting", "basic_thanks", "basic_apology"],
+      "warm_up": [
+        {
+          "thai": "สวัสดีครับ / สวัสดีค่ะ",
+          "romanization": "sa-wat-dii khrap / sa-wat-dii kha",
+          "zh": "你好。男生常用 khrap，女生常用 kha。"
+        },
+        {
+          "thai": "ขอบคุณครับ / ขอบคุณค่ะ",
+          "romanization": "khop khun khrap / khop khun kha",
+          "zh": "謝謝。"
+        }
+      ],
+      "core_sentences": [
+        {
+          "id": "d001_s001",
+          "thai": "สวัสดีครับ",
+          "romanization": "sa-wat-dii khrap",
+          "zh": "你好。（男生說）",
+          "note_zh": "khrap 是禮貌語尾。"
+        },
+        {
+          "id": "d001_s002",
+          "thai": "สวัสดีค่ะ",
+          "romanization": "sa-wat-dii kha",
+          "zh": "你好。（女生說）",
+          "note_zh": "kha 是禮貌語尾。"
+        },
+        {
+          "id": "d001_s003",
+          "thai": "ขอบคุณครับ",
+          "romanization": "khop khun khrap",
+          "zh": "謝謝。（男生說）"
+        },
+        {
+          "id": "d001_s004",
+          "thai": "ขอบคุณค่ะ",
+          "romanization": "khop khun kha",
+          "zh": "謝謝。（女生說）"
+        },
+        {
+          "id": "d001_s005",
+          "thai": "ขอโทษครับ",
+          "romanization": "kho thot khrap",
+          "zh": "對不起 / 不好意思。（男生說）"
+        },
+        {
+          "id": "d001_s006",
+          "thai": "ขอโทษค่ะ",
+          "romanization": "kho thot kha",
+          "zh": "對不起 / 不好意思。（女生說）"
+        },
+        {
+          "id": "d001_s007",
+          "thai": "ไม่เป็นไรครับ",
+          "romanization": "mai bpen rai khrap",
+          "zh": "沒關係。（男生說）"
+        },
+        {
+          "id": "d001_s008",
+          "thai": "แล้วเจอกันครับ",
+          "romanization": "laew jer gan khrap",
+          "zh": "再見 / 下次見。（男生說）"
+        }
+      ],
+      "vocabulary": [
+        {"thai": "ครับ", "romanization": "khrap", "zh": "男生禮貌語尾"},
+        {"thai": "ค่ะ", "romanization": "kha", "zh": "女生禮貌語尾"},
+        {"thai": "สวัสดี", "romanization": "sa-wat-dii", "zh": "你好"},
+        {"thai": "ขอบคุณ", "romanization": "khop khun", "zh": "謝謝"},
+        {"thai": "ขอโทษ", "romanization": "kho thot", "zh": "對不起 / 不好意思"},
+        {"thai": "ไม่เป็นไร", "romanization": "mai bpen rai", "zh": "沒關係"},
+        {"thai": "แล้วเจอกัน", "romanization": "laew jer gan", "zh": "再見 / 下次見"},
+        {"thai": "คุณ", "romanization": "khun", "zh": "你 / 您"}
+      ],
+      "substitution_practice": [
+        {
+          "label_zh": "禮貌語尾替換",
+          "thai_template": "ขอบคุณ ______",
+          "romanization_template": "khop khun ______",
+          "zh_prompt": "謝謝 ______。",
+          "options": ["ครับ", "ค่ะ"]
+        },
+        {
+          "label_zh": "道歉句替換",
+          "thai_template": "ขอโทษ ______",
+          "romanization_template": "kho thot ______",
+          "zh_prompt": "不好意思 ______。",
+          "options": ["ครับ", "ค่ะ"]
+        },
+        {
+          "label_zh": "回答別人道謝",
+          "thai_template": "ไม่เป็นไร ______",
+          "romanization_template": "mai bpen rai ______",
+          "zh_prompt": "沒關係 ______。",
+          "options": ["ครับ", "ค่ะ"]
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "thai": "สวัสดีครับ",
+          "romanization": "sa-wat-dii khrap",
+          "zh": "你好。"
+        },
+        {
+          "speaker": "B",
+          "thai": "สวัสดีค่ะ",
+          "romanization": "sa-wat-dii kha",
+          "zh": "你好。"
+        },
+        {
+          "speaker": "A",
+          "thai": "ขอบคุณครับ",
+          "romanization": "khop khun khrap",
+          "zh": "謝謝。"
+        },
+        {
+          "speaker": "B",
+          "thai": "ไม่เป็นไรค่ะ",
+          "romanization": "mai bpen rai kha",
+          "zh": "沒關係。"
+        },
+        {
+          "speaker": "A",
+          "thai": "แล้วเจอกันครับ",
+          "romanization": "laew jer gan khrap",
+          "zh": "下次見。"
+        }
+      ],
+      "speaking_mission": {
+        "prompt_zh": "請用泰語說一段 20 秒：你好，謝謝，不好意思，沒關係，下次見。",
+        "target_thai": "สวัสดีครับ ขอบคุณครับ ขอโทษครับ ไม่เป็นไรครับ แล้วเจอกันครับ",
+        "target_romanization": "sa-wat-dii khrap, khop khun khrap, kho thot khrap, mai bpen rai khrap, laew jer gan khrap",
+        "target_zh": "你好，謝謝，不好意思，沒關係，下次見。"
+      },
+      "challenge_sentence": {
+        "thai": "ขอโทษครับ ผมพูดภาษาไทยได้นิดหน่อย",
+        "romanization": "kho thot khrap, phom phuut phaa-saa thai dai nit noi",
+        "zh": "不好意思，我會說一點點泰文。"
+      }
+    },
+    "2": {
+      "title_zh": "Day 2: 問候近況",
+      "scene_zh": "見面時問對方今天怎麼樣",
+      "task_zh": "會問對方好不好、回答自己狀態，並回問對方。",
+      "focus_patterns": ["how_are_you", "state_reply", "today_marker", "follow_up_question"],
+      "warm_up": [
+        {
+          "thai": "วันนี้โอเคไหมครับ",
+          "romanization": "wan-nii oo-khee mai khrap",
+          "zh": "今天還好嗎？"
+        },
+        {
+          "thai": "ตอนนี้สบายดีไหมคะ",
+          "romanization": "dtawn-nii sa-baai dii mai kha",
+          "zh": "現在還好嗎？"
+        }
+      ],
+      "core_sentences": [
+        {
+          "id": "d002_s001",
+          "thai": "วันนี้เป็นอย่างไรบ้างครับ",
+          "romanization": "wan-nii bpen yaang-rai baang khrap",
+          "zh": "你今天怎麼樣？",
+          "note_zh": "เป็นอย่างไรบ้าง 是很實用的「怎麼樣」問法。"
+        },
+        {
+          "id": "d002_s002",
+          "thai": "สบายดีไหมคะ",
+          "romanization": "sa-baai dii mai kha",
+          "zh": "你還好嗎？"
+        },
+        {
+          "id": "d002_s003",
+          "thai": "ผมสบายดีครับ",
+          "romanization": "phom sa-baai dii khrap",
+          "zh": "我很好。（男性）"
+        },
+        {
+          "id": "d002_s004",
+          "thai": "ฉันก็สบายดีค่ะ",
+          "romanization": "chan gaaw sa-baai dii kha",
+          "zh": "我也很好。（女性）",
+          "note_zh": "ก็ 有「也」的意思。"
+        },
+        {
+          "id": "d002_s005",
+          "thai": "วันนี้เหนื่อยนิดหน่อยครับ",
+          "romanization": "wan-nii neuuai nit noi khrap",
+          "zh": "我今天有一點累。"
+        },
+        {
+          "id": "d002_s006",
+          "thai": "ตอนนี้โอเคครับ",
+          "romanization": "dtawn-nii oo-khee khrap",
+          "zh": "我現在還不錯。"
+        },
+        {
+          "id": "d002_s007",
+          "thai": "คุณล่ะคะ",
+          "romanization": "khun la kha",
+          "zh": "你呢？"
+        }
+      ],
+      "vocabulary": [
+        {"thai": "วันนี้", "romanization": "wan-nii", "zh": "今天"},
+        {"thai": "ตอนนี้", "romanization": "dtawn-nii", "zh": "現在"},
+        {"thai": "เป็นอย่างไรบ้าง", "romanization": "bpen yaang-rai baang", "zh": "怎麼樣"},
+        {"thai": "สบายดี", "romanization": "sa-baai dii", "zh": "很好、還不錯"},
+        {"thai": "โอเค", "romanization": "oo-khee", "zh": "OK、還可以"},
+        {"thai": "เหนื่อย", "romanization": "neuuai", "zh": "累"},
+        {"thai": "นิดหน่อย", "romanization": "nit noi", "zh": "一點點"},
+        {"thai": "ก็", "romanization": "gaaw", "zh": "也"},
+        {"thai": "ไหม", "romanization": "mai", "zh": "嗎"},
+        {"thai": "ล่ะ", "romanization": "la", "zh": "呢"}
+      ],
+      "substitution_practice": [
+        {
+          "label_zh": "問近況替換",
+          "thai_template": "วันนี้ ______ ไหมครับ",
+          "romanization_template": "wan-nii ______ mai khrap",
+          "zh_prompt": "今天 ______ 嗎？",
+          "options": ["โอเค", "สบายดี"]
+        },
+        {
+          "label_zh": "回答自己的狀態",
+          "thai_template": "ตอนนี้ ______ ค่ะ",
+          "romanization_template": "dtawn-nii ______ kha",
+          "zh_prompt": "我現在 ______。",
+          "options": ["โอเค", "สบายดี", "เหนื่อยนิดหน่อย"]
+        },
+        {
+          "label_zh": "加上回問",
+          "thai_template": "ผม ______ ครับ คุณล่ะ",
+          "romanization_template": "phom ______ khrap khun la",
+          "zh_prompt": "我 ______，你呢？",
+          "options": ["สบายดี", "โอเค", "เหนื่อยนิดหน่อย"]
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "thai": "วันนี้เป็นอย่างไรบ้างครับ",
+          "romanization": "wan-nii bpen yaang-rai baang khrap",
+          "zh": "你今天怎麼樣？"
+        },
+        {
+          "speaker": "B",
+          "thai": "ตอนนี้โอเคค่ะ",
+          "romanization": "dtawn-nii oo-khee kha",
+          "zh": "我現在還不錯。"
+        },
+        {
+          "speaker": "B",
+          "thai": "คุณล่ะคะ",
+          "romanization": "khun la kha",
+          "zh": "你呢？"
+        },
+        {
+          "speaker": "A",
+          "thai": "ผมเหนื่อยนิดหน่อยครับ",
+          "romanization": "phom neuuai nit noi khrap",
+          "zh": "我有一點累。"
+        },
+        {
+          "speaker": "B",
+          "thai": "พักก่อนก็ได้นะคะ",
+          "romanization": "phak gaawn gaaw dai na kha",
+          "zh": "那你可以先休息一下。"
+        }
+      ],
+      "speaking_mission": {
+        "prompt_zh": "請用泰語做一段 25 秒近況問答：先問對方今天怎麼樣，再說自己現在的狀態，最後回問對方。",
+        "target_thai": "วันนี้เป็นอย่างไรบ้างครับ ตอนนี้ผมโอเคครับ คุณล่ะครับ",
+        "target_romanization": "wan-nii bpen yaang-rai baang khrap, dtawn-nii phom oo-khee khrap, khun la khrap",
+        "target_zh": "你今天怎麼樣？我現在還不錯，你呢？"
+      },
+      "challenge_sentence": {
+        "thai": "วันนี้ผมไม่ค่อยสบาย แต่ยังไปทำงานครับ",
+        "romanization": "wan-nii phom mai khoi sa-baai dtae yang bpai tham-ngaan khrap",
+        "zh": "我今天不太舒服，但還是去上班。"
+      }
+    },
+    "3": {
+      "title_zh": "Day 3: 禮貌語尾和短回應",
+      "scene_zh": "用簡短回答讓對話聽起來自然有禮貌",
+      "task_zh": "會用ครับ / ค่ะ 做短回答，並用簡單句子回應問候或請求。",
+      "focus_patterns": ["polite_particle", "short_response", "agreement", "simple_acknowledgement"],
+      "warm_up": [
+        {
+          "thai": "ได้ครับ",
+          "romanization": "dai khrap",
+          "zh": "可以、好的。（男生說）"
+        },
+        {
+          "thai": "ค่ะ ได้ค่ะ",
+          "romanization": "kha, dai kha",
+          "zh": "好、可以。（女生說）"
+        }
+      ],
+      "core_sentences": [
+        {
+          "id": "d003_s001",
+          "thai": "ครับ ได้ครับ",
+          "romanization": "khrap, dai khrap",
+          "zh": "好的，可以。（男性短回應）",
+          "note_zh": "先用ครับ回應，再補意思，聽起來更自然。"
+        },
+        {
+          "id": "d003_s002",
+          "thai": "ค่ะ ได้ค่ะ",
+          "romanization": "kha, dai kha",
+          "zh": "好的，可以。（女性短回應）"
+        },
+        {
+          "id": "d003_s003",
+          "thai": "โอเคครับ เดี๋ยวไป",
+          "romanization": "oo-khee khrap, diao bpai",
+          "zh": "好，我等一下就去。"
+        },
+        {
+          "id": "d003_s004",
+          "thai": "ได้ค่ะ รอสักครู่นะคะ",
+          "romanization": "dai kha, raw sak khruu na kha",
+          "zh": "可以，請稍等一下。"
+        },
+        {
+          "id": "d003_s005",
+          "thai": "ขอบคุณครับ เดี๋ยวกลับมา",
+          "romanization": "khop khun khrap, diao glap maa",
+          "zh": "謝謝，我等一下回來。"
+        },
+        {
+          "id": "d003_s006",
+          "thai": "ไม่เป็นไรค่ะ เชิญเลย",
+          "romanization": "mai bpen rai kha, choen loei",
+          "zh": "沒關係，請吧。"
+        },
+        {
+          "id": "d003_s007",
+          "thai": "รับทราบครับ",
+          "romanization": "rap saap khrap",
+          "zh": "知道了、收到。"
+        }
+      ],
+      "vocabulary": [
+        {"thai": "ได้", "romanization": "dai", "zh": "可以、能夠"},
+        {"thai": "เดี๋ยว", "romanization": "diao", "zh": "等一下、稍後"},
+        {"thai": "รอ", "romanization": "raw", "zh": "等"},
+        {"thai": "สักครู่", "romanization": "sak khruu", "zh": "一下子、片刻"},
+        {"thai": "กลับมา", "romanization": "glap maa", "zh": "回來"},
+        {"thai": "เชิญ", "romanization": "choen", "zh": "請"},
+        {"thai": "เลย", "romanization": "loei", "zh": "就、吧"},
+        {"thai": "รับทราบ", "romanization": "rap saap", "zh": "知道了、收到"},
+        {"thai": "นะ", "romanization": "na", "zh": "柔化語氣"},
+        {"thai": "ครับ / ค่ะ", "romanization": "khrap / kha", "zh": "禮貌語尾"}
+      ],
+      "substitution_practice": [
+        {
+          "label_zh": "短回答替換",
+          "thai_template": "______ ครับ",
+          "romanization_template": "______ khrap",
+          "zh_prompt": "______。（男生短回應）",
+          "options": ["ได้", "โอเค", "รับทราบ"]
+        },
+        {
+          "label_zh": "請對方稍等",
+          "thai_template": "รอสักครู่______",
+          "romanization_template": "raw sak khruu ______",
+          "zh_prompt": "請稍等一下______。",
+          "options": ["นะครับ", "นะคะ"]
+        },
+        {
+          "label_zh": "回應後補動作",
+          "thai_template": "ได้ค่ะ เดี๋ยว______",
+          "romanization_template": "dai kha, diao ______",
+          "zh_prompt": "可以，我等一下______。",
+          "options": ["ไป", "กลับมา"]
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "thai": "ช่วยดูอันนี้หน่อยได้ไหมครับ",
+          "romanization": "chuai duu an-nii noi dai mai khrap",
+          "zh": "可以幫我看一下這個嗎？"
+        },
+        {
+          "speaker": "B",
+          "thai": "ได้ค่ะ รอสักครู่นะคะ",
+          "romanization": "dai kha, raw sak khruu na kha",
+          "zh": "可以，請稍等一下。"
+        },
+        {
+          "speaker": "A",
+          "thai": "ขอบคุณมากครับ",
+          "romanization": "khop khun maak khrap",
+          "zh": "非常謝謝。"
+        },
+        {
+          "speaker": "B",
+          "thai": "ไม่เป็นไรค่ะ เชิญเลย",
+          "romanization": "mai bpen rai kha, choen loei",
+          "zh": "沒關係，請吧。"
+        },
+        {
+          "speaker": "A",
+          "thai": "รับทราบครับ เดี๋ยวกลับมา",
+          "romanization": "rap saap khrap, diao glap maa",
+          "zh": "知道了，我等一下回來。"
+        }
+      ],
+      "speaking_mission": {
+        "prompt_zh": "請用泰語做一段 25 秒短回應練習：先說「好的」，再請對方稍等，最後說你等一下會回來。",
+        "target_thai": "ได้ครับ รอสักครู่นะครับ เดี๋ยวกลับมาครับ",
+        "target_romanization": "dai khrap, raw sak khruu na khrap, diao glap maa khrap",
+        "target_zh": "好的，請稍等一下，我等一下回來。"
+      },
+      "challenge_sentence": {
+        "thai": "โอเคครับ ถ้าเสร็จแล้วบอกผมได้เลย",
+        "romanization": "oo-khee khrap, thaa set laeo bok phom dai loei",
+        "zh": "好，如果好了就可以直接告訴我。"
+      }
+    },
+    "4": {
+      "title_zh": "Day 4: 第一次見面",
+      "scene_zh": "第一次見面時做迷你自我介紹",
+      "task_zh": "會問名字、說自己的名字，並用禮貌方式說很高興認識你。",
+      "focus_patterns": ["asking_name", "introducing_name", "nice_to_meet_you", "polite_particle"],
+      "warm_up": [
+        {
+          "thai": "คุณชื่ออะไรครับ",
+          "romanization": "khun chue a-rai khrap",
+          "zh": "你叫什麼名字？"
+        },
+        {
+          "thai": "ยินดีที่ได้รู้จักค่ะ",
+          "romanization": "yin-dii thii dai ruu-jàk kha",
+          "zh": "很高興認識你。"
+        }
+      ],
+      "core_sentences": [
+        {
+          "id": "d004_s001",
+          "thai": "คุณชื่ออะไรครับ",
+          "romanization": "khun chue a-rai khrap",
+          "zh": "你叫什麼名字？",
+          "note_zh": "ชื่อ 是「名字」，ถาม第一次見面的人很常用。"
+        },
+        {
+          "id": "d004_s002",
+          "thai": "ผมชื่ออันสันครับ",
+          "romanization": "phom chue Anson khrap",
+          "zh": "我叫 Anson。（男性）"
+        },
+        {
+          "id": "d004_s003",
+          "thai": "ฉันชื่อมี่ค่ะ",
+          "romanization": "chan chue Mii kha",
+          "zh": "我叫 Mee。（女性）"
+        },
+        {
+          "id": "d004_s004",
+          "thai": "เรียกผมว่าอันก็ได้ครับ",
+          "romanization": "riiak phom waa An gaaw dai khrap",
+          "zh": "你也可以叫我 An。"
+        },
+        {
+          "id": "d004_s005",
+          "thai": "ยินดีที่ได้รู้จักครับ",
+          "romanization": "yin-dii thii dai ruu-jàk khrap",
+          "zh": "很高興認識你。（男性）"
+        },
+        {
+          "id": "d004_s006",
+          "thai": "ยินดีที่ได้เจอคุณนะคะ",
+          "romanization": "yin-dii thii dai juu khun na kha",
+          "zh": "很高興見到你。（女性）"
+        },
+        {
+          "id": "d004_s007",
+          "thai": "เจอกันครั้งแรกครับ",
+          "romanization": "juu gan khrang raek khrap",
+          "zh": "這是我們第一次見面。"
+        }
+      ],
+      "vocabulary": [
+        {"thai": "ชื่อ", "romanization": "chue", "zh": "名字"},
+        {"thai": "อะไร", "romanization": "a-rai", "zh": "什麼"},
+        {"thai": "เรียก", "romanization": "riiak", "zh": "叫、稱呼"},
+        {"thai": "ว่า", "romanization": "waa", "zh": "叫做、說"},
+        {"thai": "ก็ได้", "romanization": "gaaw dai", "zh": "也可以"},
+        {"thai": "ยินดี", "romanization": "yin-dii", "zh": "高興、樂意"},
+        {"thai": "รู้จัก", "romanization": "ruu-jàk", "zh": "認識"},
+        {"thai": "เจอ", "romanization": "juu", "zh": "見到"},
+        {"thai": "ครั้งแรก", "romanization": "khrang raek", "zh": "第一次"},
+        {"thai": "นะ", "romanization": "na", "zh": "柔化語氣"}
+      ],
+      "substitution_practice": [
+        {
+          "label_zh": "問名字替換",
+          "thai_template": "คุณชื่อ______ครับ",
+          "romanization_template": "khun chue ______ khrap",
+          "zh_prompt": "你叫______嗎 / 你叫______？",
+          "options": ["อะไร", "อะไรนะ"]
+        },
+        {
+          "label_zh": "介紹自己的名字",
+          "thai_template": "ผมชื่อ______ครับ",
+          "romanization_template": "phom chue ______ khrap",
+          "zh_prompt": "我叫______。",
+          "options": ["อันสัน", "ต้น", "บอย"]
+        },
+        {
+          "label_zh": "禮貌地說很高興認識你",
+          "thai_template": "ยินดีที่ได้______ครับ",
+          "romanization_template": "yin-dii thii dai ______ khrap",
+          "zh_prompt": "很高興______。",
+          "options": ["รู้จัก", "เจอคุณ"]
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "thai": "สวัสดีครับ คุณชื่ออะไรครับ",
+          "romanization": "sa-wat-dii khrap, khun chue a-rai khrap",
+          "zh": "你好，你叫什麼名字？"
+        },
+        {
+          "speaker": "B",
+          "thai": "ฉันชื่อมี่ค่ะ แล้วคุณล่ะคะ",
+          "romanization": "chan chue Mii kha, laeo khun la kha",
+          "zh": "我叫 Mee，你呢？"
+        },
+        {
+          "speaker": "A",
+          "thai": "ผมชื่ออันสันครับ เรียกผมว่าอันก็ได้ครับ",
+          "romanization": "phom chue Anson khrap, riiak phom waa An gaaw dai khrap",
+          "zh": "我叫 Anson，你也可以叫我 An。"
+        },
+        {
+          "speaker": "B",
+          "thai": "ยินดีที่ได้รู้จักค่ะ",
+          "romanization": "yin-dii thii dai ruu-jàk kha",
+          "zh": "很高興認識你。"
+        },
+        {
+          "speaker": "A",
+          "thai": "ยินดีที่ได้เจอคุณครับ",
+          "romanization": "yin-dii thii dai juu khun khrap",
+          "zh": "很高興見到你。"
+        }
+      ],
+      "speaking_mission": {
+        "prompt_zh": "請用泰語做一段 25 秒第一次見面自我介紹：先問對方名字，再說自己的名字，最後說很高興認識你。",
+        "target_thai": "คุณชื่ออะไรครับ ผมชื่ออันสันครับ ยินดีที่ได้รู้จักครับ",
+        "target_romanization": "khun chue a-rai khrap, phom chue Anson khrap, yin-dii thii dai ruu-jàk khrap",
+        "target_zh": "你叫什麼名字？我叫 Anson，很高興認識你。"
+      },
+      "challenge_sentence": {
+        "thai": "เราเจอกันครั้งแรก แต่คุยกันสบายมากครับ",
+        "romanization": "rao juu gan khrang raek, dtae khui gan sa-baai maak khrap",
+        "zh": "我們雖然第一次見面，但聊起來很自在。"
+      }
+    },
+    "5": {
+      "title_zh": "Day 5: 在店裡打招呼並請人幫忙",
+      "scene_zh": "跟店員打招呼並說出自己需要什麼",
+      "task_zh": "能先禮貌打招呼，再請店員幫忙找東西或帶路。",
+      "focus_patterns": ["shop_greeting", "asking_help", "stating_need", "polite_request"],
+      "warm_up": [
+        {
+          "thai": "หวัดดีครับ รบกวนหน่อยครับ",
+          "romanization": "wat-dii khrap, rop-guuan noi khrap",
+          "zh": "你好，不好意思打擾一下。"
+        },
+        {
+          "thai": "ช่วยดูให้หน่อยได้ไหมคะ",
+          "romanization": "chuai duu hai noi dai mai kha",
+          "zh": "可以幫我看一下嗎？"
+        }
+      ],
+      "core_sentences": [
+        {
+          "id": "d005_s001",
+          "thai": "หวัดดีครับ พี่ว่างไหมครับ",
+          "romanization": "wat-dii khrap, phii waang mai khrap",
+          "zh": "你好，現在方便嗎？",
+          "note_zh": "หวัดดี 是比較口語的你好；พี่ 常用來禮貌稱呼店員或比你年長的人。"
+        },
+        {
+          "id": "d005_s002",
+          "thai": "ผมอยากถามเรื่องของชิ้นนี้ครับ",
+          "romanization": "phom yaak thaam rueang khong chin nii khrap",
+          "zh": "我想問這個東西的事。"
+        },
+        {
+          "id": "d005_s003",
+          "thai": "ช่วยหยิบอันนั้นให้ได้ไหมครับ",
+          "romanization": "chuai yip an nan hai dai mai khrap",
+          "zh": "可以幫我拿那個嗎？"
+        },
+        {
+          "id": "d005_s004",
+          "thai": "ผมหาของแบบนี้อยู่ครับ",
+          "romanization": "phom haa khong baaep nii yuu khrap",
+          "zh": "我正在找這種東西。"
+        },
+        {
+          "id": "d005_s005",
+          "thai": "มีสีอื่นอีกไหมคะ",
+          "romanization": "mii sii uuen iik mai kha",
+          "zh": "還有別的顏色嗎？"
+        },
+        {
+          "id": "d005_s006",
+          "thai": "ขอดูใกล้ ๆ หน่อยครับ",
+          "romanization": "kho duu glai glai noi khrap",
+          "zh": "我想近一點看一下。"
+        },
+        {
+          "id": "d005_s007",
+          "thai": "ถ้าไม่มี ไม่เป็นไรครับ ผมดูอีกนิด",
+          "romanization": "thaa mai mii, mai bpen rai khrap, phom duu iik nit",
+          "zh": "如果沒有也沒關係，我再看一下。",
+          "note_zh": "這句把拒絕壓力變小，聽起來自然也有禮貌。"
+        }
+      ],
+      "vocabulary": [
+        {"thai": "รบกวน", "romanization": "rop-guuan", "zh": "打擾一下、麻煩一下"},
+        {"thai": "ว่าง", "romanization": "waang", "zh": "有空、方便"},
+        {"thai": "หยิบ", "romanization": "yip", "zh": "拿取"},
+        {"thai": "ของชิ้นนี้", "romanization": "khong chin nii", "zh": "這個東西"},
+        {"thai": "หา", "romanization": "haa", "zh": "找"},
+        {"thai": "แบบนี้", "romanization": "baaep nii", "zh": "這種、這樣的"},
+        {"thai": "สีอื่น", "romanization": "sii uuen", "zh": "其他顏色"},
+        {"thai": "ใกล้ ๆ", "romanization": "glai glai", "zh": "近一點"},
+        {"thai": "อีกนิด", "romanization": "iik nit", "zh": "再一下、再一點"},
+        {"thai": "ถ้า", "romanization": "thaa", "zh": "如果"}
+      ],
+      "substitution_practice": [
+        {
+          "label_zh": "先打招呼再麻煩對方",
+          "thai_template": "หวัดดีครับ ______ หน่อยครับ",
+          "romanization_template": "wat-dii khrap ______ noi khrap",
+          "zh_prompt": "你好，麻煩 ______ 一下。",
+          "options": ["รบกวน", "ช่วยดูให้", "ช่วยหยิบให้"]
+        },
+        {
+          "label_zh": "說出你在找什麼",
+          "thai_template": "ผมหา______อยู่ครับ",
+          "romanization_template": "phom haa ______ yuu khrap",
+          "zh_prompt": "我正在找______。",
+          "options": ["ของแบบนี้", "เสื้อสีดำ", "ของชิ้นนั้น"]
+        },
+        {
+          "label_zh": "禮貌請店員拿或給你看",
+          "thai_template": "ขอดู______หน่อยครับ",
+          "romanization_template": "kho duu ______ noi khrap",
+          "zh_prompt": "我想看一下______。",
+          "options": ["ใกล้ ๆ", "อันนี้", "สองแบบนี้"]
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "thai": "หวัดดีครับ พี่ว่างไหมครับ",
+          "romanization": "wat-dii khrap, phii waang mai khrap",
+          "zh": "你好，現在方便嗎？"
+        },
+        {
+          "speaker": "B",
+          "thai": "ว่างค่ะ ต้องการอะไรคะ",
+          "romanization": "waang kha, dtawng-gaan a-rai kha",
+          "zh": "方便，你需要什麼呢？"
+        },
+        {
+          "speaker": "A",
+          "thai": "ผมหาของแบบนี้อยู่ครับ ช่วยหยิบอันนั้นให้ได้ไหมครับ",
+          "romanization": "phom haa khong baaep nii yuu khrap, chuai yip an nan hai dai mai khrap",
+          "zh": "我在找這種東西，可以幫我拿那個嗎？"
+        },
+        {
+          "speaker": "B",
+          "thai": "ได้ค่ะ ขอดูสีอื่นด้วยไหมคะ",
+          "romanization": "dai kha, kho duu sii uuen duai mai kha",
+          "zh": "可以，要不要也看看別的顏色？"
+        },
+        {
+          "speaker": "A",
+          "thai": "เอาครับ ขอดูใกล้ ๆ หน่อยครับ",
+          "romanization": "ao khrap, kho duu glai glai noi khrap",
+          "zh": "好，請讓我近一點看一下。"
+        }
+      ],
+      "speaking_mission": {
+        "prompt_zh": "請用泰語做一段 25 秒店內求助：先打招呼，再說你在找什麼，最後請店員拿給你看。",
+        "target_thai": "หวัดดีครับ ผมหาของแบบนี้อยู่ครับ ช่วยหยิบอันนั้นให้ได้ไหมครับ",
+        "target_romanization": "wat-dii khrap, phom haa khong baaep nii yuu khrap, chuai yip an nan hai dai mai khrap",
+        "target_zh": "你好，我在找這種東西，可以幫我拿那個嗎？"
+      },
+      "challenge_sentence": {
+        "thai": "ถ้ามีแบบที่เล็กกว่านี้ ผมอยากลองดูด้วยครับ",
+        "romanization": "thaa mii baaep thii lek gwaa nii, phom yaak long duu duai khrap",
+        "zh": "如果有比這個更小的款式，我也想看看。"
+      }
+    },
+    "6": {
+      "title_zh": "Day 6: 打招呼加上數量 1-5",
+      "scene_zh": "在攤位禮貌開口，順便說出要幾個",
+      "task_zh": "把打招呼、請人幫忙和數字一到五放進同一段簡單購買對話。",
+      "focus_patterns": ["mixed_review", "numbers_1_5", "quantity_request", "polite_purchase"],
+      "warm_up": [
+        {
+          "thai": "สวัสดีครับ วันนี้เอาสามชิ้นครับ",
+          "romanization": "sa-wat-dii khrap, wan-nii ao saam chin khrap",
+          "zh": "你好，今天我要三個。"
+        },
+        {
+          "thai": "ขออันนี้สองอันได้ไหมคะ",
+          "romanization": "kho an nii song an dai mai kha",
+          "zh": "這個可以要兩個嗎？"
+        }
+      ],
+      "core_sentences": [
+        {
+          "id": "d006_s001",
+          "thai": "สวัสดีครับ วันนี้ผมมาซื้อของนิดหน่อย",
+          "romanization": "sa-wat-dii khrap, wan-nii phom maa sue khong nit noi",
+          "zh": "你好，我今天來買一點東西。",
+          "note_zh": "มาซื้อของ 是很常見的「來買東西」。"
+        },
+        {
+          "id": "d006_s002",
+          "thai": "ขอน้ำหนึ่งขวดครับ",
+          "romanization": "kho naam nueng khuat khrap",
+          "zh": "我要一瓶水。"
+        },
+        {
+          "id": "d006_s003",
+          "thai": "เอาขนมสองห่อค่ะ",
+          "romanization": "ao kha-nom song haw kha",
+          "zh": "我要兩包零食。"
+        },
+        {
+          "id": "d006_s004",
+          "thai": "ช่วยหยิบมะม่วงสามลูกให้หน่อยได้ไหมครับ",
+          "romanization": "chuai yip ma-muang saam luuk hai noi dai mai khrap",
+          "zh": "可以幫我拿三顆芒果嗎？"
+        },
+        {
+          "id": "d006_s005",
+          "thai": "วันนี้ผมเอาสี่อย่างพอครับ",
+          "romanization": "wan-nii phom ao sii yaang phaw khrap",
+          "zh": "我今天拿四樣就夠了。"
+        },
+        {
+          "id": "d006_s006",
+          "thai": "ถ้ามีเล็ก ๆ ขอห้าอันครับ",
+          "romanization": "thaa mii lek lek, kho haa an khrap",
+          "zh": "如果有小一點的，我要五個。"
+        },
+        {
+          "id": "d006_s007",
+          "thai": "ขอบคุณครับ เดี๋ยวผมจ่ายเลย",
+          "romanization": "khop khun khrap, diao phom jaai loei",
+          "zh": "謝謝，我馬上付款。"
+        }
+      ],
+      "vocabulary": [
+        {"thai": "หนึ่ง", "romanization": "nueng", "zh": "一"},
+        {"thai": "สอง", "romanization": "song", "zh": "二"},
+        {"thai": "สาม", "romanization": "saam", "zh": "三"},
+        {"thai": "สี่", "romanization": "sii", "zh": "四"},
+        {"thai": "ห้า", "romanization": "haa", "zh": "五"},
+        {"thai": "ขวด", "romanization": "khuat", "zh": "瓶"},
+        {"thai": "ห่อ", "romanization": "haw", "zh": "包"},
+        {"thai": "ลูก", "romanization": "luuk", "zh": "顆、個（水果常用）"},
+        {"thai": "อย่าง", "romanization": "yaang", "zh": "樣、種"},
+        {"thai": "จ่าย", "romanization": "jaai", "zh": "付款"}
+      ],
+      "substitution_practice": [
+        {
+          "label_zh": "換數量",
+          "thai_template": "ขอ______ขวดครับ",
+          "romanization_template": "kho ______ khuat khrap",
+          "zh_prompt": "我要______瓶。",
+          "options": ["หนึ่ง", "สอง", "สาม"]
+        },
+        {
+          "label_zh": "換量詞和物品",
+          "thai_template": "เอา______ ______ค่ะ",
+          "romanization_template": "ao ______ ______ kha",
+          "zh_prompt": "我要______ ______。",
+          "options": ["สอง ห่อ", "สาม ลูก", "ห้า อัน"]
+        },
+        {
+          "label_zh": "禮貌請人幫你拿",
+          "thai_template": "ช่วยหยิบ______ให้หน่อยได้ไหมครับ",
+          "romanization_template": "chuai yip ______ hai noi dai mai khrap",
+          "zh_prompt": "可以幫我拿______嗎？",
+          "options": ["สองขวด", "สามลูก", "ห้าอัน"]
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "thai": "สวัสดีครับ วันนี้ผมมาซื้อของนิดหน่อย",
+          "romanization": "sa-wat-dii khrap, wan-nii phom maa sue khong nit noi",
+          "zh": "你好，我今天來買一點東西。"
+        },
+        {
+          "speaker": "B",
+          "thai": "ได้ค่ะ วันนี้ต้องการกี่อย่างคะ",
+          "romanization": "dai kha, wan-nii dtawng-gaan gii yaang kha",
+          "zh": "可以，今天你要幾樣呢？"
+        },
+        {
+          "speaker": "A",
+          "thai": "ขอน้ำหนึ่งขวด แล้วก็ขนมสองห่อครับ",
+          "romanization": "kho naam nueng khuat, laeo gaaw kha-nom song haw khrap",
+          "zh": "我要一瓶水，還有兩包零食。"
+        },
+        {
+          "speaker": "B",
+          "thai": "รับทราบค่ะ แล้วมะม่วงเอากี่ลูกคะ",
+          "romanization": "rap-saap kha, laeo ma-muang ao gii luuk kha",
+          "zh": "知道了，那芒果要幾顆呢？"
+        },
+        {
+          "speaker": "A",
+          "thai": "เอาสามลูกครับ ขอบคุณครับ เดี๋ยวผมจ่ายเลย",
+          "romanization": "ao saam luuk khrap, khop khun khrap, diao phom jaai loei",
+          "zh": "我要三顆，謝謝，我馬上付款。"
+        }
+      ],
+      "speaking_mission": {
+        "prompt_zh": "請用泰語做一段 25 秒採買口說：先打招呼，再說你要一到三種東西，至少帶出一個數字。",
+        "target_thai": "สวัสดีครับ วันนี้ผมมาซื้อของนิดหน่อย ขอน้ำหนึ่งขวด แล้วก็ขนมสองห่อครับ",
+        "target_romanization": "sa-wat-dii khrap, wan-nii phom maa sue khong nit noi, kho naam nueng khuat, laeo gaaw kha-nom song haw khrap",
+        "target_zh": "你好，我今天來買一點東西。我要一瓶水，還有兩包零食。"
+      },
+      "challenge_sentence": {
+        "thai": "ถ้าของชิ้นนี้ลดราคา ผมอยากเอาเพิ่มอีกห้าชิ้นครับ",
+        "romanization": "thaa khong chin nii lot raa-khaa, phom yaak ao pheerm iik haa chin khrap",
+        "zh": "如果這個有打折，我還想再多拿五個。"
+      }
+    }
+  },
+  "fallback_lesson_template": {
+    "title_zh": "每日泰語溝通練習",
+    "sections": ["warm_up", "core_sentences", "vocabulary", "substitution_practice", "dialogue", "speaking_mission"]
+  }
+}

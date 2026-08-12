@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f8f5" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="คำเก่า" />
+    <title>คำเก่า｜泰語複習索引</title>
+    <link rel="icon" href="assets/thai-time-reference.png" type="image/png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=8" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="回到全部筆記">
+          <span class="brand-mark">คำ</span>
+          <span>
+            <strong>คำเก่า</strong>
+            <small>泰語複習索引</small>
+          </span>
+        </a>
+
+        <div class="top-actions">
+          <button class="button button-secondary install-button" id="install-button" type="button" hidden>
+            <i data-lucide="download" aria-hidden="true"></i>
+            加入主畫面
+          </button>
+          <button class="button button-secondary" id="add-entry-button" type="button">
+            <i data-lucide="plus" aria-hidden="true"></i>
+            新增詞句
+          </button>
+          <button class="button button-secondary practice-launch" id="start-practice-button" type="button">
+            <i data-lucide="shapes" aria-hidden="true"></i>
+            入門練習
+          </button>
+          <button class="button button-primary" id="start-review-button" type="button">
+            <i data-lucide="play" aria-hidden="true"></i>
+            快速複習
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section class="search-band" aria-labelledby="page-title">
+          <div class="search-copy">
+            <p class="eyebrow">你的泰語記憶庫</p>
+            <h1 id="page-title">泰簡單</h1>
+            <p>中文、泰文、拼音都可以搜尋，也能直接按起首子音查找。</p>
+          </div>
+
+          <div class="search-tools">
+            <div class="search-control">
+              <i data-lucide="search" aria-hidden="true"></i>
+              <label class="sr-only" for="search-input">搜尋筆記</label>
+              <input id="search-input" type="search" autocomplete="off" placeholder="試試：好吃、อร่อย、aroi、kh..." />
+              <kbd>/</kbd>
+            </div>
+            <label class="speech-settings">
+              <i data-lucide="volume-2" aria-hidden="true"></i>
+              <span>泰文語速</span>
+              <select id="speech-rate" aria-label="泰文語速">
+                <option value="0.7">0.7x 慢速</option>
+                <option value="0.85" selected>0.85x 清楚</option>
+                <option value="1">1.0x 正常</option>
+              </select>
+            </label>
+          </div>
+
+          <dl class="stat-strip" aria-label="筆記統計">
+            <div>
+              <dt id="total-stat">0</dt>
+              <dd>已學詞句</dd>
+            </div>
+            <div>
+              <dt id="review-stat">0</dt>
+              <dd>待複習</dd>
+            </div>
+            <div>
+              <dt id="favorite-stat">0</dt>
+              <dd>已收藏</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="workspace">
+          <aside class="filters" aria-label="搜尋篩選">
+            <div class="filter-block">
+              <div class="filter-heading">
+                <h2>檢視</h2>
+              </div>
+              <div class="segmented" id="view-filter" role="group" aria-label="筆記檢視">
+                <button class="is-active" data-view="all" type="button">全部</button>
+                <button data-view="due" type="button">待複習</button>
+                <button data-view="favorite" type="button">收藏</button>
+              </div>
+            </div>
+
+            <div class="filter-block">
+              <div class="filter-heading">
+                <h2>主題</h2>
+                <button class="text-button" id="clear-category" type="button">清除</button>
+              </div>
+              <div class="category-list" id="category-filter"></div>
+            </div>
+
+            <figure class="source-figure">
+              <img src="assets/thai-time-reference.png" alt="泰文時間學習筆記頁面" />
+              <figcaption>
+                <strong>從筆記回到記憶</strong>
+                <span>搜尋結果保留來源主題與學習脈絡。</span>
+              </figcaption>
+            </figure>
+          </aside>
+
+          <div class="results-area">
+            <section class="initial-index" aria-labelledby="initial-heading">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Consonant index</p>
+                  <h2 id="initial-heading">按起首子音找</h2>
+                </div>
+                <button class="icon-button" id="clear-initial" type="button" title="清除子音篩選" aria-label="清除子音篩選">
+                  <i data-lucide="rotate-ccw" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div class="initial-scroll" id="initial-filter" aria-label="泰文起首子音"></div>
+
+              <div class="roman-filter-row">
+                <span>按讀音：</span>
+                <div id="roman-filter" class="roman-filter"></div>
+              </div>
+            </section>
+
+            <section class="result-section" aria-labelledby="result-heading">
+              <div class="section-heading result-heading">
+                <div>
+                  <p class="eyebrow" id="result-caption">全部筆記</p>
+                  <h2 id="result-heading"><span id="result-count">0</span> 個結果</h2>
+                </div>
+                <label class="sort-control">
+                  <span class="sr-only">排序</span>
+                  <i data-lucide="arrow-up-down" aria-hidden="true"></i>
+                  <select id="sort-select">
+                    <option value="recent">最近學習</option>
+                    <option value="thai">泰文字母</option>
+                    <option value="meaning">中文意思</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="active-filters" id="active-filters" aria-live="polite"></div>
+              <div class="result-list" id="result-list"></div>
+
+              <nav class="pagination" id="pagination" aria-label="搜尋結果分頁" hidden>
+                <button class="pagination-arrow" id="previous-page" type="button" title="上一頁" aria-label="上一頁">
+                  <i data-lucide="chevron-left" aria-hidden="true"></i>
+                </button>
+                <div class="pagination-pages" id="pagination-pages"></div>
+                <span class="page-summary" id="page-summary" aria-live="polite"></span>
+                <button class="pagination-arrow" id="next-page" type="button" title="下一頁" aria-label="下一頁">
+                  <i data-lucide="chevron-right" aria-hidden="true"></i>
+                </button>
+              </nav>
+
+              <div class="empty-state" id="empty-state" hidden>
+                <span class="empty-glyph">หา</span>
+                <h3>還沒有找到</h3>
+                <p>換一個中文、泰文或拼音關鍵字試試。</p>
+                <button class="button button-secondary" id="reset-filters" type="button">清除所有篩選</button>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog class="modal" id="entry-dialog">
+      <form method="dialog" id="entry-form">
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">Personal note</p>
+            <h2>新增詞句</h2>
+          </div>
+          <button class="icon-button" id="close-entry-dialog" type="button" title="關閉" aria-label="關閉新增詞句視窗">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="form-grid">
+          <label>
+            <span>中文意思</span>
+            <input name="meaning" required placeholder="例如：再說一次" />
+          </label>
+          <label>
+            <span>泰文</span>
+            <input name="thai" required lang="th" placeholder="พูดอีกครั้ง" />
+          </label>
+          <label>
+            <span>讀音</span>
+            <input name="pronunciation" required placeholder="phuut iik khrang" />
+          </label>
+          <label>
+            <span>主題</span>
+            <input name="category" list="category-options" required placeholder="日常會話" />
+            <datalist id="category-options"></datalist>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="button button-secondary" id="cancel-entry-dialog" type="button">取消</button>
+          <button class="button button-primary" value="default" type="submit">儲存詞句</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="review-modal practice-modal" id="practice-dialog">
+      <div class="review-shell practice-shell">
+        <header class="review-header">
+          <div>
+            <span id="practice-position">1 / 5</span>
+            <div class="review-progress"><span id="practice-progress-bar"></span></div>
+          </div>
+          <div class="practice-header-meta">
+            <span id="practice-score">0 答對</span>
+            <button class="icon-button" id="close-practice" type="button" title="結束練習" aria-label="結束入門練習">
+              <i data-lucide="x" aria-hidden="true"></i>
+            </button>
+          </div>
+        </header>
+        <main class="practice-card">
+          <div class="practice-kicker">
+            <span id="practice-type">泰文選中文</span>
+            <span id="practice-skill">閱讀辨認</span>
+          </div>
+          <p class="practice-instruction" id="practice-instruction">選出正確意思</p>
+          <div class="practice-prompt-wrap">
+            <button class="practice-audio" id="practice-audio" type="button" title="播放泰文" aria-label="播放題目泰文" hidden>
+              <i data-lucide="volume-2" aria-hidden="true"></i>
+              <span>點擊重播</span>
+            </button>
+            <h2 id="practice-prompt" lang="th"></h2>
+          </div>
+          <div class="practice-options" id="practice-options"></div>
+          <form class="practice-input-form" id="practice-input-form" hidden>
+            <label class="sr-only" for="practice-input">輸入泰文答案</label>
+            <input id="practice-input" lang="th" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="輸入泰文答案" />
+            <button class="button button-primary" type="submit">檢查答案</button>
+          </form>
+          <div class="practice-feedback" id="practice-feedback" aria-live="polite" hidden>
+            <div>
+              <strong id="practice-feedback-title"></strong>
+              <p id="practice-feedback-answer"></p>
+            </div>
+            <button class="button button-primary" id="practice-next" type="button">下一題</button>
+          </div>
+        </main>
+        <footer class="practice-footer">
+          <span>從辨認開始；答錯的詞會在本輪稍後再出現</span>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog class="review-modal" id="review-dialog">
+      <div class="review-shell">
+        <header class="review-header">
+          <div>
+            <span id="review-position">1 / 5</span>
+            <div class="review-progress"><span id="review-progress-bar"></span></div>
+          </div>
+          <button class="icon-button" id="close-review" type="button" title="結束複習" aria-label="結束複習">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </header>
+        <main class="review-card" id="review-card">
+          <p class="eyebrow" id="review-category">飲食與點餐</p>
+          <p class="review-prompt">這句泰文怎麼說？</p>
+          <h2 id="review-meaning">好吃</h2>
+          <div class="review-answer" id="review-answer" hidden>
+            <p class="review-thai" id="review-thai" lang="th">อร่อย</p>
+            <div class="review-pronunciation-line">
+              <p class="review-pronunciation" id="review-pronunciation">à-ràauy</p>
+              <button class="icon-button audio-button" id="review-audio" type="button" title="播放泰文發音" aria-label="播放泰文發音">
+                <i data-lucide="volume-2" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </main>
+        <footer class="review-footer">
+          <button class="button button-primary reveal-button" id="reveal-answer" type="button">
+            <i data-lucide="eye" aria-hidden="true"></i>
+            顯示答案
+          </button>
+          <div class="review-ratings" id="review-ratings" hidden>
+            <button data-rating="again" type="button"><strong>忘記</strong><span>稍後再出現</span></button>
+            <button data-rating="hard" type="button"><strong>困難</strong><span>明天</span></button>
+            <button data-rating="good" type="button"><strong>熟悉</strong><span>3 天後</span></button>
+          </div>
+        </footer>
+      </div>
+    </dialog>
+
+    <template id="entry-template">
+      <article class="entry-row">
+        <div class="entry-main">
+          <div class="entry-thai-line">
+            <h3 lang="th"></h3>
+            <span class="initial-badge"></span>
+          </div>
+          <div class="entry-pronunciation-line">
+            <p class="entry-pronunciation"></p>
+            <button class="icon-button audio-button" type="button" title="播放泰文發音" aria-label="播放泰文發音">
+              <i data-lucide="volume-2" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <div class="entry-meaning">
+          <strong></strong>
+          <span class="category-tag"></span>
+        </div>
+        <div class="entry-meta">
+          <span class="review-state"></span>
+          <button class="icon-button favorite-button" type="button" title="收藏" aria-label="收藏這個詞句">
+            <i data-lucide="bookmark" aria-hidden="true"></i>
+          </button>
+        </div>
+      </article>
+    </template>
+
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script src="data.js?v=8"></script>
+    <script src="app.js?v=8"></script>
+  </body>
+</html>
