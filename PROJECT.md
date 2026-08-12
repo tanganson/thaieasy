@@ -262,6 +262,9 @@ node --check web/sw.js
 
 ### 2026-08-12
 
+- 修正 Supabase Email Magic Link 回跳到無服務的 `localhost`：Auth Site URL 改為 `https://thaieasy.pages.dev`，並允許正式 Pages 網址及本機 `4173` 開發網址作 redirect。
+- 舊確認郵件仍包含原本 localhost URL，必須從網站重新寄出登入連結；新郵件會回到正式網站。
+
 - 新增 Supabase `user_learning_states` migration 與 RLS：每位登入者只能讀寫自己的 JSON 學習狀態。
 - 新增 Email Magic Link 登入、登出和同步狀態介面；收藏、複習、個人詞句及練習紀錄繼續先保存於 `localStorage`，登入後同步至 Supabase，離線仍可使用。
 - 首次登入時若雲端已有資料則下載，否則把現有本機狀態上傳；Supabase 前端只使用公開 publishable key，不包含 secret 或 service-role key。
