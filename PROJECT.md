@@ -262,6 +262,9 @@ node --check web/sw.js
 
 ### 2026-08-12
 
+- 修正「登入同步」無反應及部分瀏覽器顯示 0 筆資料：Supabase Browser SDK 改為隨專案部署，不再依賴外部 CDN；SDK 不可用時顯示明確錯誤。
+- Service Worker 從 cache-first 改為 network-first、離線時才使用快取，避免新版 HTML 與舊版 JavaScript／資料檔混用；修正版資源使用全新 `v=12` URL，快取提升至 `thai-review-shell-v12`，繞過裝置上已存在的錯誤 SDK 快取。
+
 - 將 Email Magic Link 登入改為完整的電郵＋密碼會員流程：支援登入、首次註冊、忘記／設定密碼、從 recovery 回呼設定新密碼，以及登出；Supabase session 會自動保留。
 - 既有 Magic Link 建立的帳戶可使用「忘記／設定密碼」建立第一個密碼；首次註冊只需驗證一次電郵，日後不再每次寄出登入郵件。
 - Supabase 密碼最低長度提升至 8 個字元；介面加入中文錯誤提示。核心資源更新至 `v=10`，Service Worker 快取提升至 `thai-review-shell-v10`。

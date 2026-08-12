@@ -1,4 +1,4 @@
-const CACHE_NAME = "thai-review-shell-v10";
+const CACHE_NAME = "thai-review-shell-v12";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,6 +6,7 @@ const APP_SHELL = [
   "./app.js",
   "./data.js",
   "./supabase-config.js",
+  "./vendor/supabase.min.js",
   "./manifest.webmanifest",
   "./assets/thai-time-reference.png",
 ];
@@ -24,5 +25,13 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
-  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        const copy = response.clone();
+        event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy)));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
+  );
 });

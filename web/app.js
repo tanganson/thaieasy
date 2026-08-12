@@ -82,10 +82,10 @@ let currentUser = null;
 let syncTimer = null;
 let authMode = "login";
 const supabaseSettings = window.THAI_EASY_SUPABASE;
-const supabaseClient = window.supabase?.createClient(
-  supabaseSettings?.url,
-  supabaseSettings?.publishableKey
-);
+const supabaseClient =
+  typeof window.supabase?.createClient === "function"
+    ? window.supabase.createClient(supabaseSettings?.url, supabaseSettings?.publishableKey)
+    : null;
 
 const persisted = loadState();
 const state = {
@@ -903,6 +903,7 @@ elements.installButton.addEventListener("click", async () => {
 elements.accountButton.addEventListener("click", () => {
   if (!currentUser) setAuthMode("login");
   renderAccountState();
+  if (!supabaseClient) setSyncStatus("同步服務載入失敗，請重新整理頁面");
   elements.authDialog.showModal();
 });
 
