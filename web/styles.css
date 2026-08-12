@@ -201,6 +201,7 @@ select:focus-visible {
 .auth-email {
   display: grid;
   gap: 8px;
+  margin-top: 14px;
 }
 
 .auth-email span {
@@ -220,6 +221,22 @@ select:focus-visible {
   margin: 12px 0 0;
   color: var(--teal-dark);
   font-size: 13px;
+}
+
+.auth-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 4px 0 20px;
+}
+
+.auth-links button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--teal-dark);
+  font-size: 13px;
+  text-decoration: underline;
 }
 
 .search-band {

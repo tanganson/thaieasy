@@ -262,6 +262,10 @@ node --check web/sw.js
 
 ### 2026-08-12
 
+- 將 Email Magic Link 登入改為完整的電郵＋密碼會員流程：支援登入、首次註冊、忘記／設定密碼、從 recovery 回呼設定新密碼，以及登出；Supabase session 會自動保留。
+- 既有 Magic Link 建立的帳戶可使用「忘記／設定密碼」建立第一個密碼；首次註冊只需驗證一次電郵，日後不再每次寄出登入郵件。
+- Supabase 密碼最低長度提升至 8 個字元；介面加入中文錯誤提示。核心資源更新至 `v=10`，Service Worker 快取提升至 `thai-review-shell-v10`。
+
 - 修正 Supabase Email Magic Link 回跳到無服務的 `localhost`：Auth Site URL 改為 `https://thaieasy.pages.dev`，並允許正式 Pages 網址及本機 `4173` 開發網址作 redirect。
 - 舊確認郵件仍包含原本 localhost URL，必須從網站重新寄出登入連結；新郵件會回到正式網站。
 

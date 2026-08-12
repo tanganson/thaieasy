@@ -63,14 +63,24 @@ const elements = {
   authDialog: document.querySelector("#auth-dialog"),
   authForm: document.querySelector("#auth-form"),
   authEmail: document.querySelector("#auth-email"),
+  authPassword: document.querySelector("#auth-password"),
+  authPasswordConfirm: document.querySelector("#auth-password-confirm"),
+  authTitle: document.querySelector("#auth-title"),
+  authCopy: document.querySelector("#auth-copy"),
+  passwordField: document.querySelector("#password-field"),
+  confirmPasswordField: document.querySelector("#confirm-password-field"),
+  authLinks: document.querySelector("#auth-links"),
   authStatus: document.querySelector("#auth-status"),
-  sendLinkButton: document.querySelector("#send-link-button"),
+  authSubmitButton: document.querySelector("#auth-submit-button"),
+  switchAuthMode: document.querySelector("#switch-auth-mode"),
+  forgotPasswordButton: document.querySelector("#forgot-password-button"),
   signOutButton: document.querySelector("#sign-out-button"),
 };
 
 let installPrompt = null;
 let currentUser = null;
 let syncTimer = null;
+let authMode = "login";
 const supabaseSettings = window.THAI_EASY_SUPABASE;
 const supabaseClient = window.supabase?.createClient(
   supabaseSettings?.url,
@@ -148,9 +158,57 @@ function renderAccountState() {
   elements.accountButton.classList.toggle("is-synced", signedIn);
   elements.accountLabel.textContent = signedIn ? "已同步" : "登入同步";
   elements.authEmail.hidden = signedIn;
-  elements.sendLinkButton.hidden = signedIn;
+  elements.passwordField.hidden = signedIn;
+  elements.confirmPasswordField.hidden = signedIn || authMode === "login";
+  elements.authLinks.hidden = signedIn || authMode === "recovery";
+  elements.authSubmitButton.hidden = signedIn;
   elements.signOutButton.hidden = !signedIn;
   if (signedIn) setSyncStatus(`已登入 ${currentUser.email}`);
+}
+
+function setAuthMode(mode) {
+  authMode = mode;
+  const profiles = {
+    login: {
+      title: "登入同步進度",
+      copy: "使用電郵和密碼登入。登入狀態會保留，不需要每次收取驗證郵件。",
+      submit: "登入",
+    },
+    signup: {
+      title: "建立同步帳戶",
+      copy: "首次註冊需要驗證一次電郵；完成後便可直接使用密碼登入。",
+      submit: "註冊",
+    },
+    recovery: {
+      title: "設定新密碼",
+      copy: "輸入至少 8 個字元的新密碼，完成後會保持登入。",
+      submit: "儲存新密碼",
+    },
+  };
+  const profile = profiles[mode];
+  elements.authTitle.textContent = profile.title;
+  elements.authCopy.textContent = profile.copy;
+  elements.authSubmitButton.textContent = profile.submit;
+  elements.passwordField.hidden = false;
+  elements.authSubmitButton.hidden = false;
+  elements.confirmPasswordField.hidden = mode === "login";
+  elements.authEmail.hidden = mode === "recovery";
+  elements.authLinks.hidden = mode === "recovery";
+  elements.authPassword.autocomplete = mode === "login" ? "current-password" : "new-password";
+  elements.switchAuthMode.textContent = mode === "signup" ? "已有帳戶？登入" : "首次註冊";
+  elements.authPassword.value = "";
+  elements.authPasswordConfirm.value = "";
+  setSyncStatus("");
+}
+
+function authErrorMessage(error) {
+  const message = error?.message || "發生未知錯誤";
+  if (/invalid login credentials/i.test(message)) return "電郵或密碼不正確";
+  if (/email not confirmed/i.test(message)) return "請先完成電郵驗證";
+  if (/user already registered/i.test(message)) return "此電郵已註冊，請直接登入或設定密碼";
+  if (/rate limit/i.test(message)) return "郵件發送次數已達上限，請稍後再試";
+  if (/password/i.test(message) && /least/i.test(message)) return "密碼至少需要 8 個字元";
+  return message;
 }
 
 async function syncToCloud() {
@@ -192,15 +250,24 @@ async function loadCloudState() {
 
 async function initializeAuth() {
   if (!supabaseClient) return;
+  const recoveryCallback = window.location.hash.includes("type=recovery");
   const { data } = await supabaseClient.auth.getSession();
   currentUser = data.session?.user || null;
   renderAccountState();
   if (currentUser) await loadCloudState();
-  supabaseClient.auth.onAuthStateChange((_event, session) => {
+  if (recoveryCallback) {
+    setAuthMode("recovery");
+    elements.authDialog.showModal();
+  }
+  supabaseClient.auth.onAuthStateChange((event, session) => {
     const nextUser = session?.user || null;
     const changed = nextUser?.id !== currentUser?.id;
     currentUser = nextUser;
     renderAccountState();
+    if (event === "PASSWORD_RECOVERY") {
+      setAuthMode("recovery");
+      elements.authDialog.showModal();
+    }
     if (changed && currentUser) window.setTimeout(loadCloudState, 0);
   });
 }
@@ -834,6 +901,7 @@ elements.installButton.addEventListener("click", async () => {
 });
 
 elements.accountButton.addEventListener("click", () => {
+  if (!currentUser) setAuthMode("login");
   renderAccountState();
   elements.authDialog.showModal();
 });
@@ -848,14 +916,64 @@ elements.authForm.addEventListener("submit", async (event) => {
     setSyncStatus("同步服務尚未設定");
     return;
   }
-  elements.sendLinkButton.disabled = true;
-  setSyncStatus("正在寄出登入連結...");
-  const { error } = await supabaseClient.auth.signInWithOtp({
-    email: elements.authEmail.value.trim(),
-    options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}` },
-  });
-  elements.sendLinkButton.disabled = false;
-  setSyncStatus(error ? `無法寄出：${error.message}` : "登入連結已寄出，請查看電郵");
+  const password = elements.authPassword.value;
+  const confirmation = elements.authPasswordConfirm.value;
+  if (password.length < 8) {
+    setSyncStatus("密碼至少需要 8 個字元");
+    return;
+  }
+  if (authMode !== "login" && password !== confirmation) {
+    setSyncStatus("兩次輸入的密碼不一致");
+    return;
+  }
+  elements.authSubmitButton.disabled = true;
+  setSyncStatus(authMode === "login" ? "正在登入..." : "正在處理...");
+  let result;
+  if (authMode === "signup") {
+    result = await supabaseClient.auth.signUp({
+      email: elements.authEmail.value.trim(),
+      password,
+      options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}` },
+    });
+  } else if (authMode === "recovery") {
+    result = await supabaseClient.auth.updateUser({ password });
+  } else {
+    result = await supabaseClient.auth.signInWithPassword({
+      email: elements.authEmail.value.trim(),
+      password,
+    });
+  }
+  elements.authSubmitButton.disabled = false;
+  if (result.error) {
+    setSyncStatus(authErrorMessage(result.error));
+    return;
+  }
+  if (authMode === "signup" && !result.data.session) {
+    setSyncStatus("驗證郵件已寄出；完成一次驗證後即可使用密碼登入");
+  } else if (authMode === "recovery") {
+    setSyncStatus("新密碼已儲存，帳戶已登入");
+  } else {
+    setSyncStatus("登入成功，正在同步進度...");
+  }
+});
+
+elements.switchAuthMode.addEventListener("click", () => {
+  setAuthMode(authMode === "signup" ? "login" : "signup");
+});
+
+elements.forgotPasswordButton.addEventListener("click", async () => {
+  if (!supabaseClient || !elements.authEmail.value.trim()) {
+    setSyncStatus("請先輸入電郵地址");
+    return;
+  }
+  elements.forgotPasswordButton.disabled = true;
+  setSyncStatus("正在寄出密碼設定郵件...");
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(
+    elements.authEmail.value.trim(),
+    { redirectTo: `${window.location.origin}${window.location.pathname}` }
+  );
+  elements.forgotPasswordButton.disabled = false;
+  setSyncStatus(error ? authErrorMessage(error) : "密碼設定郵件已寄出，請查看電郵");
 });
 
 elements.signOutButton.addEventListener("click", async () => {
