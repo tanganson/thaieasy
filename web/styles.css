@@ -181,6 +181,47 @@ select:focus-visible {
   color: #66520f;
 }
 
+.account-button.is-synced {
+  border-color: var(--teal);
+  background: var(--teal-pale);
+  color: var(--teal-dark);
+}
+
+.auth-modal {
+  width: min(520px, calc(100vw - 28px));
+}
+
+.auth-copy {
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.auth-email {
+  display: grid;
+  gap: 8px;
+}
+
+.auth-email span {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-email input {
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+}
+
+.auth-status {
+  min-height: 22px;
+  margin: 12px 0 0;
+  color: var(--teal-dark);
+  font-size: 13px;
+}
+
 .search-band {
   display: grid;
   max-width: 1480px;

@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=8" />
+    <link rel="stylesheet" href="styles.css?v=9" />
   </head>
   <body>
     <div class="app-shell">
@@ -26,6 +26,10 @@
         </a>
 
         <div class="top-actions">
+          <button class="button button-secondary account-button" id="account-button" type="button">
+            <i data-lucide="cloud" aria-hidden="true"></i>
+            <span id="account-label">登入同步</span>
+          </button>
           <button class="button button-secondary install-button" id="install-button" type="button" hidden>
             <i data-lucide="download" aria-hidden="true"></i>
             加入主畫面
@@ -216,6 +220,30 @@
       </form>
     </dialog>
 
+    <dialog class="modal auth-modal" id="auth-dialog">
+      <form id="auth-form">
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">Cloud sync</p>
+            <h2>登入同步進度</h2>
+          </div>
+          <button class="icon-button" id="close-auth-dialog" type="button" title="關閉" aria-label="關閉登入視窗">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </div>
+        <p class="auth-copy">輸入電郵後，我們會寄出一次性登入連結。登入後，收藏、複習及個人詞句會同步到你的帳戶。</p>
+        <label class="auth-email">
+          <span>電郵地址</span>
+          <input id="auth-email" type="email" autocomplete="email" required placeholder="name@example.com" />
+        </label>
+        <p class="auth-status" id="auth-status" aria-live="polite"></p>
+        <div class="modal-actions">
+          <button class="button button-secondary" id="sign-out-button" type="button" hidden>登出</button>
+          <button class="button button-primary" id="send-link-button" type="submit">寄出登入連結</button>
+        </div>
+      </form>
+    </dialog>
+
     <dialog class="review-modal practice-modal" id="practice-dialog">
       <div class="review-shell practice-shell">
         <header class="review-header">
@@ -330,7 +358,9 @@
     </template>
 
     <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-    <script src="data.js?v=8"></script>
-    <script src="app.js?v=8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js?v=9"></script>
+    <script src="data.js?v=9"></script>
+    <script src="app.js?v=9"></script>
   </body>
 </html>

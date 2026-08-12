@@ -1,10 +1,11 @@
-const CACHE_NAME = "thai-review-shell-v8";
+const CACHE_NAME = "thai-review-shell-v9";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
   "./data.js",
+  "./supabase-config.js",
   "./manifest.webmanifest",
   "./assets/thai-time-reference.png",
 ];

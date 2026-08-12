@@ -58,9 +58,24 @@ const elements = {
   practiceFeedbackTitle: document.querySelector("#practice-feedback-title"),
   practiceFeedbackAnswer: document.querySelector("#practice-feedback-answer"),
   practiceNext: document.querySelector("#practice-next"),
+  accountButton: document.querySelector("#account-button"),
+  accountLabel: document.querySelector("#account-label"),
+  authDialog: document.querySelector("#auth-dialog"),
+  authForm: document.querySelector("#auth-form"),
+  authEmail: document.querySelector("#auth-email"),
+  authStatus: document.querySelector("#auth-status"),
+  sendLinkButton: document.querySelector("#send-link-button"),
+  signOutButton: document.querySelector("#sign-out-button"),
 };
 
 let installPrompt = null;
+let currentUser = null;
+let syncTimer = null;
+const supabaseSettings = window.THAI_EASY_SUPABASE;
+const supabaseClient = window.supabase?.createClient(
+  supabaseSettings?.url,
+  supabaseSettings?.publishableKey
+);
 
 const persisted = loadState();
 const state = {
@@ -100,15 +115,94 @@ function loadState() {
 }
 
 function saveState() {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify({
-      favorites: [...state.favorites],
-      reviews: state.reviews,
-      customEntries: state.customEntries,
-      practiceRecords: state.practiceRecords,
-    })
-  );
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedState()));
+  scheduleCloudSync();
+}
+
+function serializedState() {
+  return {
+    favorites: [...state.favorites],
+    reviews: state.reviews,
+    customEntries: state.customEntries,
+    practiceRecords: state.practiceRecords,
+  };
+}
+
+function applyPersistedState(nextState) {
+  state.favorites = new Set(nextState.favorites || []);
+  state.reviews = nextState.reviews || {};
+  state.customEntries = nextState.customEntries || [];
+  state.practiceRecords = nextState.practiceRecords || [];
+  state.entries = [...window.THAI_REVIEW_DATA.entries, ...state.customEntries];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedState()));
+  renderFilters();
+  renderResults();
+}
+
+function setSyncStatus(message) {
+  elements.authStatus.textContent = message;
+}
+
+function renderAccountState() {
+  const signedIn = Boolean(currentUser);
+  elements.accountButton.classList.toggle("is-synced", signedIn);
+  elements.accountLabel.textContent = signedIn ? "已同步" : "登入同步";
+  elements.authEmail.hidden = signedIn;
+  elements.sendLinkButton.hidden = signedIn;
+  elements.signOutButton.hidden = !signedIn;
+  if (signedIn) setSyncStatus(`已登入 ${currentUser.email}`);
+}
+
+async function syncToCloud() {
+  if (!supabaseClient || !currentUser || !navigator.onLine) return;
+  setSyncStatus("正在同步...");
+  const { error } = await supabaseClient.from("user_learning_states").upsert({
+    user_id: currentUser.id,
+    state: serializedState(),
+    updated_at: new Date().toISOString(),
+  });
+  setSyncStatus(error ? "同步失敗，本機資料仍已保存" : "進度已同步");
+}
+
+function scheduleCloudSync() {
+  if (!currentUser) return;
+  window.clearTimeout(syncTimer);
+  syncTimer = window.setTimeout(syncToCloud, 500);
+}
+
+async function loadCloudState() {
+  if (!supabaseClient || !currentUser) return;
+  setSyncStatus("正在讀取雲端進度...");
+  const { data, error } = await supabaseClient
+    .from("user_learning_states")
+    .select("state")
+    .eq("user_id", currentUser.id)
+    .maybeSingle();
+  if (error) {
+    setSyncStatus("無法讀取雲端進度，本機資料不受影響");
+    return;
+  }
+  if (data?.state) {
+    applyPersistedState(data.state);
+    setSyncStatus("已載入雲端進度");
+  } else {
+    await syncToCloud();
+  }
+}
+
+async function initializeAuth() {
+  if (!supabaseClient) return;
+  const { data } = await supabaseClient.auth.getSession();
+  currentUser = data.session?.user || null;
+  renderAccountState();
+  if (currentUser) await loadCloudState();
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    const nextUser = session?.user || null;
+    const changed = nextUser?.id !== currentUser?.id;
+    currentUser = nextUser;
+    renderAccountState();
+    if (changed && currentUser) window.setTimeout(loadCloudState, 0);
+  });
 }
 
 function shuffled(values) {
@@ -739,6 +833,41 @@ elements.installButton.addEventListener("click", async () => {
   elements.installButton.hidden = true;
 });
 
+elements.accountButton.addEventListener("click", () => {
+  renderAccountState();
+  elements.authDialog.showModal();
+});
+
+document.querySelector("#close-auth-dialog").addEventListener("click", () => {
+  elements.authDialog.close();
+});
+
+elements.authForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!supabaseClient) {
+    setSyncStatus("同步服務尚未設定");
+    return;
+  }
+  elements.sendLinkButton.disabled = true;
+  setSyncStatus("正在寄出登入連結...");
+  const { error } = await supabaseClient.auth.signInWithOtp({
+    email: elements.authEmail.value.trim(),
+    options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}` },
+  });
+  elements.sendLinkButton.disabled = false;
+  setSyncStatus(error ? `無法寄出：${error.message}` : "登入連結已寄出，請查看電郵");
+});
+
+elements.signOutButton.addEventListener("click", async () => {
+  if (!supabaseClient) return;
+  await supabaseClient.auth.signOut();
+  currentUser = null;
+  renderAccountState();
+  setSyncStatus("已登出；本機資料仍會保留");
+});
+
+window.addEventListener("online", scheduleCloudSync);
+
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }
@@ -746,3 +875,4 @@ if ("serviceWorker" in navigator && location.protocol !== "file:") {
 renderFilters();
 renderResults();
 window.lucide?.createIcons();
+initializeAuth();

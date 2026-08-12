@@ -40,7 +40,8 @@
 | 薄弱字追蹤 | 規劃中 | 尚未實作薄弱分數、篩選及集中複習 |
 | 資料匯出／匯入 | 規劃中 | 尚未提供 JSON 備份及還原介面 |
 | 學習進度頁面 | 規劃中 | 等累積足夠複習資料後加入 |
-| 正式資料庫 | 未開始 | 本地資料模型穩定後再部署 |
+| 正式資料庫 | 接入中 | Supabase Free project `thaieasy` 位於新加坡 `ap-southeast-1`；已加入使用者學習狀態 schema、RLS、Email Magic Link 登入及 localStorage 離線優先同步 |
+| Cloudflare Pages 部署 | 已完成 | Production URL：`https://thaieasy.pages.dev`；專案 `thaieasy`，production branch `main` |
 
 ## 3. 專案結構
 
@@ -260,6 +261,18 @@ node --check web/sw.js
 ## 13. 更新紀錄
 
 ### 2026-08-12
+
+- 新增 Supabase `user_learning_states` migration 與 RLS：每位登入者只能讀寫自己的 JSON 學習狀態。
+- 新增 Email Magic Link 登入、登出和同步狀態介面；收藏、複習、個人詞句及練習紀錄繼續先保存於 `localStorage`，登入後同步至 Supabase，離線仍可使用。
+- 首次登入時若雲端已有資料則下載，否則把現有本機狀態上傳；Supabase 前端只使用公開 publishable key，不包含 secret 或 service-role key。
+- 核心資源更新至 `v=9`，Service Worker 快取提升至 `thai-review-shell-v9`。
+- 建立 Cloudflare Pages 專案 `thaieasy` 並部署 `web/`，production URL 為 `https://thaieasy.pages.dev`。
+- 驗證：production GET 載入「泰簡單」及 `v=9` 資源；Service Worker 回傳 `thai-review-shell-v9`；Supabase migration 成功，未登入使用公開 publishable key 查詢時 RLS 回傳空結果且不洩露資料。
+
+- 建立並連結 Supabase Free project `thaieasy`，project ref 為 `pxrmizrtermsxowsqwil`，區域為 `ap-southeast-1`（新加坡），狀態驗證為 `ACTIVE_HEALTHY`。
+- 目前只完成雲端資料庫基礎設施與本地 CLI link；尚未建立正式 schema、登入或前端同步，學習資料仍只保存在瀏覽器 `localStorage`。
+- 敏感的資料庫密碼保存在本機受限權限檔案，不納入 Git；Supabase access token 不寫入專案。
+- 驗證：`supabase projects list` 顯示新 project ACTIVE_HEALTHY，`supabase link` 成功。
 
 - 建立 Git 版本控制基線；新增 `.gitignore`，排除 macOS `.DS_Store`、`tmp/` 渲染檢查檔及 Python 快取，保留課程、筆記、PDF、網站與本機啟動器。
 
