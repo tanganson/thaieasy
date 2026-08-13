@@ -42,7 +42,7 @@
 | 學習進度頁面 | 規劃中 | 等累積足夠複習資料後加入 |
 | 正式資料庫 | 接入中 | Supabase Free project `thaieasy` 位於新加坡 `ap-southeast-1`；已加入使用者學習狀態 schema、RLS、Email Magic Link 登入及 localStorage 離線優先同步 |
 | Cloudflare Pages 部署 | 已完成 | Production URL：`https://thaieasy.pages.dev`；專案 `thaieasy`，production branch `main` |
-| 即時翻譯頁面 | 已完成（第一版） | 使用 Cloudflare Pages Worker 代理 CloudVein 的 Anthropic 相容 API（Claude Haiku 4.5）；泰中雙向、自動判斷、可編輯結果、泰文播放及收藏詞條；API key 使用 Cloudflare Secret |
+| 即時翻譯頁面 | 已完成（第二版） | 使用 Azure Translator 提供穩定的泰中翻譯，Claude Haiku 4.5 僅非阻塞補充讀音與學習提示；泰中雙向、自動判斷、可編輯結果、泰文播放及收藏詞條；API keys 使用 Cloudflare Secrets |
 
 ## 3. 專案結構
 
@@ -269,6 +269,10 @@ node --check web/sw.js
 ## 13. 更新紀錄
 
 ### 2026-08-13
+
+- 即時翻譯主供應商由 CloudVein Claude 切換至 Azure Translator（East Asia）；Azure 結果作為唯一翻譯內容，Claude 只補充泰文讀音、詞性、語氣及學習提示，補充服務失敗時仍會回傳基本翻譯。
+- Azure API key、region 及 endpoint 已透過 Wrangler CLI 加密保存於 Cloudflare Pages production secrets，沒有寫入前端、`.env` 或 Git；Worker 對 Azure 暫時性錯誤保留三次重試及清晰錯誤訊息。
+- 影響檔案：`web/_worker.js`、`.dev.vars.example`、`PROJECT.md`；驗證：Worker JavaScript 語法、Git diff 格式、正式環境泰中雙向 API 及 provider 欄位。
 
 - 整理使用者提供的 2026 年 4–7 月課堂筆記，只匯入現有詞庫缺少且可可靠確認泰文的詞語與例句；新增獨立分類及來源標記，避免把重複內容、拼音草稿及純文法說明當成詞條。
 - 核心資源提升至 `v=14`，Service Worker 快取提升至 `thai-review-shell-v14`；影響檔案：`output/markdown/thai_google_doc_organized_notes.md`、`web/data.js`、`web/index.html`、`web/sw.js`、`PROJECT.md`。
