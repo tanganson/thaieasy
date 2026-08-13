@@ -784,6 +784,13 @@ kbd {
   gap: 10px;
 }
 
+.entry-thai-line .favorite-button {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  margin-left: 2px;
+}
+
 .entry-thai-line h3 {
   margin: 0;
   overflow-wrap: anywhere;
@@ -856,6 +863,12 @@ kbd {
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
+}
+
+.entry-meta .audio-button {
+  width: 38px;
+  height: 38px;
+  flex-basis: 38px;
 }
 
 .review-state {

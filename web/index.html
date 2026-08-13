@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=24" />
+    <link rel="stylesheet" href="styles.css?v=25" />
   </head>
   <body>
     <div class="app-shell">
@@ -413,12 +413,12 @@
           <div class="entry-thai-line">
             <h3 lang="th"></h3>
             <span class="initial-badge"></span>
+            <button class="icon-button favorite-button" type="button" title="收藏" aria-label="收藏這個詞句">
+              <i data-lucide="bookmark" aria-hidden="true"></i>
+            </button>
           </div>
           <div class="entry-pronunciation-line">
             <p class="entry-pronunciation"></p>
-            <button class="icon-button audio-button" type="button" title="播放泰文發音" aria-label="播放泰文發音">
-              <i data-lucide="volume-2" aria-hidden="true"></i>
-            </button>
           </div>
         </div>
         <div class="entry-meaning">
@@ -427,8 +427,8 @@
         </div>
         <div class="entry-meta">
           <span class="review-state"></span>
-          <button class="icon-button favorite-button" type="button" title="收藏" aria-label="收藏這個詞句">
-            <i data-lucide="bookmark" aria-hidden="true"></i>
+          <button class="icon-button audio-button" type="button" title="播放泰文發音" aria-label="播放泰文發音">
+            <i data-lucide="volume-2" aria-hidden="true"></i>
           </button>
         </div>
       </article>
@@ -437,7 +437,7 @@
     <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
     <script src="vendor/supabase.min.js?v=13"></script>
     <script src="supabase-config.js?v=13"></script>
-    <script src="data.js?v=24"></script>
-    <script src="app.js?v=24"></script>
+    <script src="data.js?v=25"></script>
+    <script src="app.js?v=25"></script>
   </body>
 </html>
