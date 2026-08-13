@@ -442,6 +442,7 @@ function setMobileFilters(open) {
 
 function setMobileMenu(open) {
   elements.topActions.classList.toggle("is-open", open);
+  document.body.classList.toggle("menu-open", open);
   elements.mobileMenuButton.setAttribute("aria-expanded", String(open));
 }
 
@@ -988,7 +989,10 @@ elements.mobileFilterButton.addEventListener("click", () => {
   setMobileFilters(!document.body.classList.contains("filters-open"));
 });
 elements.closeMobileFilters.addEventListener("click", () => setMobileFilters(false));
-elements.filterBackdrop.addEventListener("click", () => setMobileFilters(false));
+elements.filterBackdrop.addEventListener("click", () => {
+  setMobileFilters(false);
+  setMobileMenu(false);
+});
 elements.mobileMenuButton.addEventListener("click", () => {
   setMobileFilters(false);
   setMobileMenu(!elements.topActions.classList.contains("is-open"));
