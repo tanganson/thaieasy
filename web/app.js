@@ -416,11 +416,12 @@ function renderFilters() {
   });
 
   elements.initialFilter.innerHTML = "";
+  elements.initialFilter.classList.toggle("is-vowel-mode", state.soundType === "vowel");
   THAI_SOUND_INDEX[state.soundType].forEach((sound) => {
     const button = document.createElement("button");
     button.type = "button";
     const active = state.soundType === "consonant" ? state.initial === sound.symbol : state.vowel === sound.symbol;
-    button.className = `initial-button${active ? " is-active" : ""}`;
+    button.className = `initial-button${state.soundType === "vowel" ? " vowel-button" : ""}${active ? " is-active" : ""}`;
     button.dataset.sound = sound.symbol;
     button.textContent = sound.symbol;
     button.title = `${sound.name} · ${sound.roman}`;
