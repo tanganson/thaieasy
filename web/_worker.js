@@ -7,6 +7,13 @@ const ADMIN_ROLES = new Set(["content_editor", "support_admin", "admin", "super_
 const ALL_ROLES = new Set(["student", "teacher", "content_editor", "support_admin", "admin", "super_admin"]);
 const ROLE_LEVEL = { student: 0, teacher: 1, content_editor: 1, support_admin: 2, admin: 3, super_admin: 4 };
 const MAX_ADMIN_BODY = 16_384;
+const PRODUCTION_HOST = "thaieasy.pages.dev";
+
+function redirectPreviewToProduction(url) {
+  if (!url.hostname.endsWith(`.${PRODUCTION_HOST}`)) return null;
+  url.hostname = PRODUCTION_HOST;
+  return Response.redirect(url.toString(), 308);
+}
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -458,6 +465,8 @@ async function enrich(request, env) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const productionRedirect = redirectPreviewToProduction(url);
+    if (productionRedirect) return productionRedirect;
     if (url.pathname.startsWith("/api/admin/")) {
       try { return await adminApi(request, env, url.pathname); }
       catch (error) {
