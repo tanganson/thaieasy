@@ -11,6 +11,13 @@ ENTRY_RE = re.compile(r"^-\s+(.+?)｜(.+?)｜(.+?)\s*$")
 HEADING_RE = re.compile(r"^##\s+(?:\d+\.\s+)?(.+?)\s*$")
 SOURCE_RE = re.compile(r"^<!--\s*source:\s*(.+?)\s*-->$")
 LESSON_SOURCE = "2026 年 4–7 月課堂筆記"
+LEGACY_SOURCE_HEADINGS = {"2026 年 4–7 月課堂筆記"}
+FORBIDDEN_CATEGORY_PATTERNS = [
+    re.compile(r"(?:19|20)\d{2}"),
+    re.compile(r"\d{1,2}\s*[年/-]\s*\d{1,2}"),
+    re.compile(r"(?:課堂|上課|匯入|新增|整理|來源|批次|即時翻譯).*(?:筆記|收藏|資料)?"),
+    re.compile(r"(?:筆記|收藏|匯入批次|資料來源)$"),
+]
 
 CATEGORY_RULES = [
     ("日期", "今天 明天 昨天 今年 明年 去年 這個月 上個月 下個月 星期 生日"),
@@ -29,6 +36,11 @@ def infer_lesson_category(meaning):
         if any(keyword in meaning for keyword in keywords.split()):
             return category
     return "日常動作與工作"
+
+
+def is_valid_category(category):
+    value = category.strip()
+    return bool(value) and len(value) <= 24 and not any(pattern.search(value) for pattern in FORBIDDEN_CATEGORY_PATTERNS)
 
 
 def slugify(value):
@@ -51,7 +63,9 @@ def parse_notes():
         heading = HEADING_RE.match(line)
         if heading:
             category = heading.group(1)
-            if category not in category_order and category not in {"學習方法"}:
+            if not is_valid_category(category) and category not in LEGACY_SOURCE_HEADINGS:
+                raise ValueError(f"不允許來源／日期型分類：{category}。請把來源放在 source，分類改用內容主題。")
+            if is_valid_category(category) and category not in category_order and category not in {"學習方法"}:
                 category_order.append(category)
             continue
 
@@ -64,6 +78,8 @@ def parse_notes():
             continue
         entry_id = f"note-{len(entries) + 1:03d}-{slugify(thai)[:24]}"
         entry_category = infer_lesson_category(meaning) if source == LESSON_SOURCE else category
+        if not is_valid_category(entry_category):
+            raise ValueError(f"詞條「{meaning}」使用不允許的分類：{entry_category}")
         entries.append(
             {
                 "id": entry_id,
@@ -75,7 +91,6 @@ def parse_notes():
             }
         )
 
-    category_order = [item for item in category_order if item != "2026 年 4–7 月課堂筆記"]
     return entries, category_order
 
 

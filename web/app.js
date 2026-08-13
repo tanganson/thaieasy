@@ -110,6 +110,12 @@ const supabaseClient =
     : null;
 
 const HIDDEN_CATEGORIES = new Set(["2026 年 4–7 月課堂筆記", "即時翻譯收藏"]);
+const FORBIDDEN_CATEGORY_PATTERNS = [/(?:19|20)\d{2}/, /\d{1,2}\s*[年/-]\s*\d{1,2}/, /(?:課堂|上課|匯入|新增|整理|來源|批次|即時翻譯).*(?:筆記|收藏|資料)?/, /(?:筆記|收藏|匯入批次|資料來源)$/];
+
+function isValidCategory(category) {
+  const value = String(category || "").trim();
+  return Boolean(value) && value.length <= 24 && !FORBIDDEN_CATEGORY_PATTERNS.some((pattern) => pattern.test(value));
+}
 
 function inferEntryCategory(meaning, thai = "") {
   const value = `${meaning} ${thai}`;
@@ -127,7 +133,7 @@ function inferEntryCategory(meaning, thai = "") {
 }
 
 function migrateEntryCategories(entries) {
-  return entries.map((entry) => HIDDEN_CATEGORIES.has(entry.category)
+  return entries.map((entry) => HIDDEN_CATEGORIES.has(entry.category) || !isValidCategory(entry.category)
     ? { ...entry, category: inferEntryCategory(entry.meaning, entry.thai) }
     : entry);
 }
@@ -785,12 +791,20 @@ function nextPracticeQuestion() {
 }
 
 function addEntry(formData) {
+  const requestedCategory = formData.get("category").trim();
+  const categoryInput = elements.entryForm.elements.category;
+  if (!isValidCategory(requestedCategory)) {
+    categoryInput.setCustomValidity("分類必須描述內容主題，不能使用年份、日期範圍、課堂筆記、匯入批次或收藏來源名稱。");
+    categoryInput.reportValidity();
+    return;
+  }
+  categoryInput.setCustomValidity("");
   const entry = {
     id: `custom-${Date.now()}`,
     meaning: formData.get("meaning").trim(),
     thai: formData.get("thai").trim(),
     pronunciation: formData.get("pronunciation").trim(),
-    category: formData.get("category").trim(),
+    category: requestedCategory,
     source: "個人新增",
   };
   state.customEntries.push(entry);
@@ -1008,6 +1022,7 @@ elements.entryForm.addEventListener("submit", (event) => {
   event.preventDefault();
   addEntry(new FormData(elements.entryForm));
 });
+elements.entryForm.elements.category.addEventListener("input", (event) => event.target.setCustomValidity(""));
 
 function closeEntryDialog() {
   elements.entryForm.reset();
