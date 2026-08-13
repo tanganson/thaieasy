@@ -1,7 +1,7 @@
 # คำเก่า｜泰語學習與快速複習專案
 
 > 專案監察文件（Single Source of Truth）  
-> 最後更新：2026-08-12  
+> 最後更新：2026-08-13
 > 文件狀態：持續維護
 
 ## 1. 專案目標
@@ -42,6 +42,7 @@
 | 學習進度頁面 | 規劃中 | 等累積足夠複習資料後加入 |
 | 正式資料庫 | 接入中 | Supabase Free project `thaieasy` 位於新加坡 `ap-southeast-1`；已加入使用者學習狀態 schema、RLS、Email Magic Link 登入及 localStorage 離線優先同步 |
 | Cloudflare Pages 部署 | 已完成 | Production URL：`https://thaieasy.pages.dev`；專案 `thaieasy`，production branch `main` |
+| 即時翻譯頁面 | 已完成（第一版） | 使用 Cloudflare Pages Worker 代理 CloudVein 的 Anthropic 相容 API（Claude Haiku 4.5）；泰中雙向、自動判斷、可編輯結果、泰文播放及收藏詞條；API key 使用 Cloudflare Secret |
 
 ## 3. 專案結構
 
@@ -231,6 +232,7 @@ node --check web/sw.js
 - Service Worker 採簡單 cache-first 策略，更新版本需要人工提升快取名稱。
 - 目前只有最後一次複習結果，尚未保存完整複習事件歷史。
 - 尚未建立自動化測試套件。
+- 即時翻譯需要網路及 CloudVein API key；翻譯文字會傳送至第三方 CloudVein 相容 API。目前未加入登入強制、IP 速率限制或 Turnstile，正式公開前應在 Cloudflare 層加入防濫用及用量告警。
 
 ## 11. 路線圖
 
@@ -259,6 +261,15 @@ node --check web/sw.js
 5. 未完成的功能必須標示為「規劃中」或「未開始」。
 
 ## 13. 更新紀錄
+
+### 2026-08-13
+
+- 新增「即時翻譯」入口，支援自動判斷及手動選擇泰文／繁體中文方向；結果可編輯、播放泰文並收藏為「即時翻譯收藏」個人詞條。
+- 新增 Cloudflare Pages Advanced Mode Worker `/api/translate`，以 `claude-haiku-4-5` 呼叫 CloudVein 的 Anthropic 相容 Messages API；限制每次 500 字元，使用固定 JSON 結果及結構化錯誤回應，API key 僅從 `ANTHROPIC_API_KEY` secret 讀取。
+- 翻譯收藏沿用現有 `customEntries` 及 `favorites`，未登入保存在本機，登入後透過既有 Supabase 學習狀態同步；相同泰文及中文詞條不重複新增。
+- 核心資源提升至 `v=13`，Service Worker 快取提升至 `thai-review-shell-v13`。
+- 影響檔案：`web/_worker.js`、`.dev.vars.example`、`.gitignore`、`web/index.html`、`web/app.js`、`web/styles.css`、`web/sw.js`、`PROJECT.md`。
+- 驗證：`node --check` 及 `git diff --check` 通過；Cloudflare Secret 已確認為 encrypted；production 首頁、`v=13` 資源及 `thai-review-shell-v13` 已確認。正式端點實測 `สวัสดี` 翻成「你好」、讀音 `sa-wàt-dee`，以及「沒關係」翻成 `ไม่เป็นไร`、讀音 `mai pen rai`，兩個方向均回傳 HTTP 200 及完整結構化欄位。
 
 ### 2026-08-12
 

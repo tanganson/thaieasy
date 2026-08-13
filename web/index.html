@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f6f8f5" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="คำเก่า" />
+    <meta name="apple-mobile-web-app-title" content="泰簡單" />
     <title>คำเก่า｜泰語複習索引</title>
     <link rel="icon" href="assets/thai-time-reference.png" type="image/png" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=12" />
+    <link rel="stylesheet" href="styles.css?v=13" />
   </head>
   <body>
     <div class="app-shell">
@@ -37,6 +37,10 @@
           <button class="button button-secondary" id="add-entry-button" type="button">
             <i data-lucide="plus" aria-hidden="true"></i>
             新增詞句
+          </button>
+          <button class="button button-secondary translate-launch" id="translate-button" type="button">
+            <i data-lucide="languages" aria-hidden="true"></i>
+            即時翻譯
           </button>
           <button class="button button-secondary practice-launch" id="start-practice-button" type="button">
             <i data-lucide="shapes" aria-hidden="true"></i>
@@ -256,6 +260,50 @@
       </form>
     </dialog>
 
+    <dialog class="modal translation-modal" id="translation-dialog">
+      <form id="translation-form">
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">Claude Haiku</p>
+            <h2>即時翻譯</h2>
+          </div>
+          <button class="icon-button" id="close-translation-dialog" type="button" title="關閉" aria-label="關閉即時翻譯">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </div>
+        <p class="translation-copy">貼上泰文或繁體中文，確認結果後可收藏成個人詞條。</p>
+        <div class="translation-direction" role="group" aria-label="翻譯方向">
+          <button type="button" class="is-active" data-direction="auto">自動判斷</button>
+          <button type="button" data-direction="th-zh">泰文 → 中文</button>
+          <button type="button" data-direction="zh-th">中文 → 泰文</button>
+        </div>
+        <label class="translation-input-label">
+          <span>原文 <small id="translation-count">0 / 500</small></span>
+          <textarea id="translation-input" maxlength="500" rows="5" placeholder="例如：ไม่เป็นไร หรือ 沒關係"></textarea>
+        </label>
+        <div class="modal-actions translation-actions">
+          <span class="translation-status" id="translation-status" aria-live="polite"></span>
+          <button class="button button-primary" id="translation-submit" type="submit"><i data-lucide="sparkles" aria-hidden="true"></i>翻譯</button>
+        </div>
+        <section class="translation-result" id="translation-result" hidden aria-labelledby="translation-result-heading">
+          <div class="translation-result-heading">
+            <div><p class="eyebrow">結果</p><h3 id="translation-result-heading">翻譯內容</h3></div>
+            <span class="translation-model">Claude Haiku</span>
+          </div>
+          <div class="translation-fields">
+            <label><span>泰文</span><textarea id="translation-thai" lang="th" rows="2"></textarea></label>
+            <label><span>繁體中文</span><textarea id="translation-chinese" rows="2"></textarea></label>
+            <label><span>讀音</span><input id="translation-pronunciation" /></label>
+            <label><span>詞性／語氣</span><input id="translation-notes" /></label>
+          </div>
+          <div class="translation-result-actions">
+            <button class="button button-secondary" id="translation-speak" type="button"><i data-lucide="volume-2" aria-hidden="true"></i>播放泰文</button>
+            <button class="button button-primary" id="translation-save" type="button"><i data-lucide="bookmark-plus" aria-hidden="true"></i>收藏詞條</button>
+          </div>
+        </section>
+      </form>
+    </dialog>
+
     <dialog class="review-modal practice-modal" id="practice-dialog">
       <div class="review-shell practice-shell">
         <header class="review-header">
@@ -370,9 +418,9 @@
     </template>
 
     <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-    <script src="vendor/supabase.min.js?v=12"></script>
-    <script src="supabase-config.js?v=12"></script>
-    <script src="data.js?v=12"></script>
-    <script src="app.js?v=12"></script>
+    <script src="vendor/supabase.min.js?v=13"></script>
+    <script src="supabase-config.js?v=13"></script>
+    <script src="data.js?v=13"></script>
+    <script src="app.js?v=13"></script>
   </body>
 </html>

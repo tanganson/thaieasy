@@ -75,12 +75,27 @@ const elements = {
   switchAuthMode: document.querySelector("#switch-auth-mode"),
   forgotPasswordButton: document.querySelector("#forgot-password-button"),
   signOutButton: document.querySelector("#sign-out-button"),
+  translateButton: document.querySelector("#translate-button"),
+  translationDialog: document.querySelector("#translation-dialog"),
+  translationForm: document.querySelector("#translation-form"),
+  translationInput: document.querySelector("#translation-input"),
+  translationCount: document.querySelector("#translation-count"),
+  translationStatus: document.querySelector("#translation-status"),
+  translationSubmit: document.querySelector("#translation-submit"),
+  translationResult: document.querySelector("#translation-result"),
+  translationThai: document.querySelector("#translation-thai"),
+  translationChinese: document.querySelector("#translation-chinese"),
+  translationPronunciation: document.querySelector("#translation-pronunciation"),
+  translationNotes: document.querySelector("#translation-notes"),
+  translationSpeak: document.querySelector("#translation-speak"),
+  translationSave: document.querySelector("#translation-save"),
 };
 
 let installPrompt = null;
 let currentUser = null;
 let syncTimer = null;
 let authMode = "login";
+let translationDirection = "auto";
 const supabaseSettings = window.THAI_EASY_SUPABASE;
 const supabaseClient =
   typeof window.supabase?.createClient === "function"
@@ -743,6 +758,74 @@ function addEntry(formData) {
   renderResults();
 }
 
+function detectTranslationDirection(text) {
+  if (translationDirection !== "auto") return translationDirection;
+  return /[\u0E00-\u0E7F]/.test(text) ? "th-zh" : "zh-th";
+}
+
+function setTranslationStatus(message, isError = false) {
+  elements.translationStatus.textContent = message;
+  elements.translationStatus.classList.toggle("is-error", isError);
+}
+
+function openTranslation() {
+  elements.translationForm.reset();
+  elements.translationResult.hidden = true;
+  elements.translationSave.disabled = false;
+  setTranslationStatus("");
+  elements.translationCount.textContent = "0 / 500";
+  document.querySelectorAll("[data-direction]").forEach((button) => button.classList.toggle("is-active", button.dataset.direction === translationDirection));
+  elements.translationDialog.showModal();
+  elements.translationInput.focus();
+}
+
+async function translateText() {
+  const text = elements.translationInput.value.trim();
+  if (!text) return setTranslationStatus("請先輸入泰文或中文", true);
+  elements.translationSubmit.disabled = true;
+  setTranslationStatus("正在翻譯...");
+  try {
+    const response = await fetch("/api/translate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ text, direction: detectTranslationDirection(text) }) });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || "翻譯失敗");
+    const result = payload.result || {};
+    elements.translationThai.value = result.thai || "";
+    elements.translationChinese.value = result.traditionalChinese || "";
+    elements.translationPronunciation.value = result.pronunciation || "";
+    elements.translationNotes.value = [result.partOfSpeech, result.tone, result.notes].filter(Boolean).join(" · ");
+    elements.translationResult.hidden = false;
+    elements.translationSpeak.dataset.thai = result.thai || "";
+    setTranslationStatus("翻譯完成，請先確認內容");
+  } catch (error) {
+    setTranslationStatus(error.message || "翻譯失敗，請稍後再試", true);
+  } finally {
+    elements.translationSubmit.disabled = false;
+  }
+}
+
+function saveTranslationEntry() {
+  const thai = elements.translationThai.value.trim();
+  const meaning = elements.translationChinese.value.trim();
+  if (!thai || !meaning) return setTranslationStatus("泰文和中文都需要填寫", true);
+  const duplicate = state.entries.find((entry) => entry.thai === thai && entry.meaning === meaning);
+  if (duplicate) {
+    state.favorites.add(duplicate.id);
+    saveState();
+    setTranslationStatus("已存在相同詞條，已替你收藏");
+    renderResults();
+    return;
+  }
+  const entry = { id: `translated-${Date.now()}`, meaning, thai, pronunciation: elements.translationPronunciation.value.trim(), category: "即時翻譯收藏", source: "即時翻譯", originalText: elements.translationInput.value.trim(), translationDirection: detectTranslationDirection(elements.translationInput.value.trim()), createdAt: new Date().toISOString() };
+  state.customEntries.push(entry);
+  state.entries.push(entry);
+  state.favorites.add(entry.id);
+  saveState();
+  renderFilters();
+  renderResults();
+  setTranslationStatus("已收藏到你的詞條");
+  elements.translationSave.disabled = true;
+}
+
 elements.search.addEventListener("input", (event) => {
   state.query = event.target.value;
   renderFirstPage();
@@ -899,6 +982,17 @@ elements.installButton.addEventListener("click", async () => {
   installPrompt = null;
   elements.installButton.hidden = true;
 });
+
+elements.translateButton.addEventListener("click", openTranslation);
+document.querySelector("#close-translation-dialog").addEventListener("click", () => elements.translationDialog.close());
+document.querySelectorAll("[data-direction]").forEach((button) => button.addEventListener("click", () => {
+  translationDirection = button.dataset.direction;
+  document.querySelectorAll("[data-direction]").forEach((item) => item.classList.toggle("is-active", item === button));
+}));
+elements.translationInput.addEventListener("input", () => { elements.translationCount.textContent = `${elements.translationInput.value.length} / 500`; });
+elements.translationForm.addEventListener("submit", (event) => { event.preventDefault(); translateText(); });
+elements.translationSpeak.addEventListener("click", () => speakThai(elements.translationThai.value.trim()));
+elements.translationSave.addEventListener("click", saveTranslationEntry);
 
 elements.accountButton.addEventListener("click", () => {
   if (!currentUser) setAuthMode("login");

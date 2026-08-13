@@ -3,5 +3,7 @@
 tmp/
 supabase/.temp/
 .wrangler/
+.dev.vars*
+.env*
 __pycache__/
 *.pyc
