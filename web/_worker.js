@@ -1,6 +1,7 @@
 const MAX_INPUT_LENGTH = 500;
 const MODEL = "claude-haiku-4-5";
 const API_URL = "https://api.cloudvein.cc/v1/messages";
+const RETRYABLE_STATUSES = new Set([403, 429, 500, 502, 503, 504]);
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -25,13 +26,14 @@ function parseResult(raw) {
 async function callTranslationApi(env, messages, maxTokens = 800) {
   const requestBody = JSON.stringify({ model: MODEL, max_tokens: maxTokens, temperature: 0, messages });
   let upstream;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
     upstream = await fetch(API_URL, {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
       body: requestBody,
     });
-    if (![403, 429, 500, 502, 503, 504].includes(upstream.status) || attempt === 1) break;
+    if (!RETRYABLE_STATUSES.has(upstream.status) || attempt === 2) break;
+    await new Promise((resolve) => setTimeout(resolve, attempt === 0 ? 250 : 750));
   }
   if (!upstream.ok) return { upstream };
   const payload = await upstream.json();
@@ -58,7 +60,7 @@ async function translate(request, env) {
     const status = upstream.status;
     let error = "翻譯服務回應錯誤，請稍後再試";
     if (status === 401) error = "翻譯 API key 無效或已撤銷";
-    else if (status === 403) error = "翻譯 API key 沒有使用此模型的權限";
+    else if (status === 403) error = "翻譯服務暫時繁忙，請稍後再試";
     else if (status === 404) error = "找不到指定的 Claude 模型，請檢查模型設定";
     else if (status === 429) error = "翻譯 API 額度不足或請求過於頻繁";
     return json({ error, upstreamStatus: status }, status === 429 ? 429 : 502);
@@ -66,8 +68,11 @@ async function translate(request, env) {
   if (response.result) return json({ model: MODEL, input: text, direction, result: response.result });
   try {
     const repairPrompt = `把以下內容修復成單一有效 JSON object。只輸出 JSON，不要 Markdown。必須包含字串欄位 thai、traditionalChinese、pronunciation、partOfSpeech、tone、notes：\n${response.raw.slice(0, 4000)}`;
-    const repaired = await callTranslationApi(env, [{ role: "user", content: repairPrompt }], 500);
-    if (repaired.result) return json({ model: MODEL, input: text, direction, result: repaired.result, repaired: true });
+    for (let repairAttempt = 0; repairAttempt < 2; repairAttempt += 1) {
+      const repaired = await callTranslationApi(env, [{ role: "user", content: repairPrompt }], 500);
+      if (!repaired.upstream.ok) continue;
+      if (repaired.result) return json({ model: MODEL, input: text, direction, result: repaired.result, repaired: true });
+    }
   } catch {
     return json({ error: "翻譯結果格式不完整，請再試一次" }, 502);
   }

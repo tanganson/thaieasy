@@ -267,11 +267,12 @@ node --check web/sw.js
 - 新增「即時翻譯」入口，支援自動判斷及手動選擇泰文／繁體中文方向；結果可編輯、播放泰文並收藏為「即時翻譯收藏」個人詞條。
 - 新增 Cloudflare Pages Advanced Mode Worker `/api/translate`，以 `claude-haiku-4-5` 呼叫 CloudVein 的 Anthropic 相容 Messages API；限制每次 500 字元，使用固定 JSON 結果及結構化錯誤回應，API key 僅從 `ANTHROPIC_API_KEY` secret 讀取。
 - 翻譯收藏沿用現有 `customEntries` 及 `favorites`，未登入保存在本機，登入後透過既有 Supabase 學習狀態同步；相同泰文及中文詞條不重複新增。
-- CloudVein 偶爾回傳 Markdown 或非標準 JSON；Worker 會先擷取並驗證 JSON，失敗時以同一模型自動修復一次，再回傳給前端，避免用家需要手動重試。
-- CloudVein 偶爾會間歇性回傳 403、429 或 5xx；Worker 對這些暫時性狀態自動重試一次，兩次均失敗才把錯誤顯示給用家。
+- CloudVein 偶爾回傳 Markdown 或非標準 JSON；Worker 會先擷取並驗證 JSON，必要時以同一模型最多修復兩次，再回傳給前端，避免用家需要手動重試。所有修復結果仍必須通過欄位驗證。
+- CloudVein 偶爾會間歇性回傳 403、429 或 5xx；Worker 對這些暫時性狀態最多自動重試兩次，使用短暫遞增延遲，三次均失敗才向用家顯示「服務暫時繁忙」。
 - 核心資源提升至 `v=13`，Service Worker 快取提升至 `thai-review-shell-v13`。
 - 影響檔案：`web/_worker.js`、`.dev.vars.example`、`.gitignore`、`web/index.html`、`web/app.js`、`web/styles.css`、`web/sw.js`、`PROJECT.md`。
 - 驗證：`node --check` 及 `git diff --check` 通過；Cloudflare Secret 已確認為 encrypted；production 首頁、`v=13` 資源及 `thai-review-shell-v13` 已確認。正式端點實測 `สวัสดี` 翻成「你好」、讀音 `sa-wàt-dee`，以及「沒關係」翻成 `ไม่เป็นไร`、讀音 `mai pen rai`，兩個方向均回傳 HTTP 200。針對「今天沒有下雨」連續測試三次均回傳 HTTP 200，其中一次成功觸發非標準 JSON 自動修復。
+- 再現 CloudVein 間歇性 403 及格式修復失敗後，production 重新實測「今天沒有下雨」成功回傳 `วันนี้ไม่มีฝนตก`、讀音 `wan-nee mai mee fon tok` 及完整學習欄位；暫時性 403 現在顯示為服務繁忙，不再誤報永久權限問題。
 
 ### 2026-08-12
 
