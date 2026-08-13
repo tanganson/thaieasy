@@ -4,12 +4,25 @@ const PRACTICE_SIZE = 5;
 const THAI_CONSONANTS = new Set(
   "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ".split("")
 );
+const THAI_SOUND_INDEX = {
+  consonant: [
+    ["ก","กอ ไก่","gor gai"],["ข","ขอ ไข่","khor khai"],["ฃ","ฃอ ขวด","khor khuat"],["ค","คอ ควาย","khor khwai"],["ฅ","ฅอ คน","khor khon"],["ฆ","ฆอ ระฆัง","khor ra-khang"],["ง","งอ งู","ngor ngu"],["จ","จอ จาน","jor jaan"],["ฉ","ฉอ ฉิ่ง","chor ching"],["ช","ชอ ช้าง","chor chang"],["ซ","ซอ โซ่","sor so"],["ฌ","ฌอ เฌอ","chor choe"],["ญ","ญอ หญิง","yor ying"],["ฎ","ฎอ ชฎา","dor cha-da"],["ฏ","ฏอ ปฏัก","dtor pa-tak"],["ฐ","ฐอ ฐาน","thor thaan"],["ฑ","ฑอ มณโฑ","thor mon-tho"],["ฒ","ฒอ ผู้เฒ่า","thor phu-thao"],["ณ","ณอ เณร","nor nen"],["ด","ดอ เด็ก","dor dek"],["ต","ตอ เต่า","dtor dtao"],["ถ","ถอ ถุง","thor thung"],["ท","ทอ ทหาร","thor tha-han"],["ธ","ธอ ธง","thor thong"],["น","นอ หนู","nor nu"],["บ","บอ ใบไม้","bor bai-mai"],["ป","ปอ ปลา","bpor bpla"],["ผ","ผอ ผึ้ง","phor phueng"],["ฝ","ฝอ ฝา","for fa"],["พ","พอ พาน","phor phan"],["ฟ","ฟอ ฟัน","for fan"],["ภ","ภอ สำเภา","phor sam-phao"],["ม","มอ ม้า","mor maa"],["ย","ยอ ยักษ์","yor yak"],["ร","รอ เรือ","ror ruea"],["ล","ลอ ลิง","lor ling"],["ว","วอ แหวน","wor waen"],["ศ","ศอ ศาลา","sor sa-la"],["ษ","ษอ ฤๅษี","sor rue-si"],["ส","สอ เสือ","sor suea"],["ห","หอ หีบ","hor hip"],["ฬ","ฬอ จุฬา","lor ju-la"],["อ","ออ อ่าง","or ang"],["ฮ","ฮอ นกฮูก","hor nok-huk"]
+  ].map(([symbol,name,roman]) => ({ symbol,name,roman,speech:name })),
+  vowel: [
+    ["-ะ","สระ อะ","sa-ra a","ะ"],["-า","สระ อา","sa-ra aa","า"],["-ิ","สระ อิ","sa-ra i","ิ"],["-ี","สระ อี","sa-ra ii","ี"],["-ึ","สระ อึ","sa-ra ue","ึ"],["-ื","สระ อือ","sa-ra uue","ื"],["-ุ","สระ อุ","sa-ra u","ุ"],["-ู","สระ อู","sa-ra uu","ู"],["เ-ะ","สระ เอะ","sa-ra e","เ"],["เ-","สระ เอ","sa-ra ee","เ"],["แ-ะ","สระ แอะ","sa-ra ae","แ"],["แ-","สระ แอ","sa-ra aae","แ"],["โ-ะ","สระ โอะ","sa-ra o","โ"],["โ-","สระ โอ","sa-ra oo","โ"],["เ-าะ","สระ เอาะ","sa-ra aw","เ"],["-อ","สระ ออ","sa-ra aaw","อ"],["เ-อะ","สระ เออะ","sa-ra oe","เ"],["เ-อ","สระ เออ","sa-ra ooe","เ"],["เ-ีย","สระ เอีย","sa-ra ia","เ"],["เ-ือ","สระ เอือ","sa-ra uea","เ"],["-ัว","สระ อัว","sa-ra ua","ัว"],["ไ-","สระ ไอ ไม้มลาย","sa-ra ai mai-ma-lai","ไ"],["ใ-","สระ ใอ ไม้ม้วน","sa-ra ai mai-muan","ใ"],["เ-า","สระ เอา","sa-ra ao","เ"]
+  ].map(([symbol,name,roman,match]) => ({ symbol,name,roman,match,speech:name }))
+};
 
 const elements = {
   search: document.querySelector("#search-input"),
   categoryFilter: document.querySelector("#category-filter"),
   initialFilter: document.querySelector("#initial-filter"),
-  romanFilter: document.querySelector("#roman-filter"),
+  soundTypeTabs: document.querySelector("#sound-type-tabs"),
+  soundDetail: document.querySelector("#sound-detail"),
+  soundDetailThai: document.querySelector("#sound-detail-thai"),
+  soundDetailName: document.querySelector("#sound-detail-name"),
+  soundDetailRoman: document.querySelector("#sound-detail-roman"),
+  soundDetailAudio: document.querySelector("#sound-detail-audio"),
   viewFilter: document.querySelector("#view-filter"),
   resultList: document.querySelector("#result-list"),
   resultCount: document.querySelector("#result-count"),
@@ -146,7 +159,8 @@ const state = {
   query: "",
   category: "",
   initial: "",
-  roman: "",
+  soundType: "consonant",
+  vowel: "",
   view: "all",
   sort: "recent",
   page: 1,
@@ -369,12 +383,6 @@ function initialConsonant(thai) {
   return "·";
 }
 
-function romanInitial(pronunciation) {
-  const value = normalize(pronunciation).replace(/[^a-z]/g, "");
-  const clusters = ["kh", "ph", "th", "ch", "bp", "dt", "ng"];
-  return clusters.find((cluster) => value.startsWith(cluster)) || value[0] || "?";
-}
-
 function reviewInfo(entry) {
   const record = state.reviews[entry.id];
   if (!record) return { due: true, label: "尚未複習" };
@@ -407,27 +415,16 @@ function renderFilters() {
     elements.categoryFilter.append(button);
   });
 
-  const initials = uniqueSorted(state.entries.map((entry) => initialConsonant(entry.thai)));
   elements.initialFilter.innerHTML = "";
-  initials.forEach((initial) => {
+  THAI_SOUND_INDEX[state.soundType].forEach((sound) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.className = `initial-button${state.initial === initial ? " is-active" : ""}`;
-    button.dataset.initial = initial;
-    button.textContent = initial;
-    button.title = `顯示起首子音 ${initial}`;
+    const active = state.soundType === "consonant" ? state.initial === sound.symbol : state.vowel === sound.symbol;
+    button.className = `initial-button${active ? " is-active" : ""}`;
+    button.dataset.sound = sound.symbol;
+    button.textContent = sound.symbol;
+    button.title = `${sound.name} · ${sound.roman}`;
     elements.initialFilter.append(button);
-  });
-
-  const romanInitials = uniqueSorted(state.entries.map((entry) => romanInitial(entry.pronunciation)));
-  elements.romanFilter.innerHTML = "";
-  romanInitials.forEach((initial) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = `roman-button${state.roman === initial ? " is-active" : ""}`;
-    button.dataset.roman = initial;
-    button.textContent = initial;
-    elements.romanFilter.append(button);
   });
 
   elements.categoryOptions.innerHTML = uniqueSorted(state.entries.map((entry) => entry.category))
@@ -456,7 +453,10 @@ function getFilteredEntries() {
     }
     if (state.category && entry.category !== state.category) return false;
     if (state.initial && initialConsonant(entry.thai) !== state.initial) return false;
-    if (state.roman && romanInitial(entry.pronunciation) !== state.roman) return false;
+    if (state.vowel) {
+      const sound = THAI_SOUND_INDEX.vowel.find((item) => item.symbol === state.vowel);
+      if (sound && !entry.thai.includes(sound.match)) return false;
+    }
     if (state.view === "favorite" && !state.favorites.has(entry.id)) return false;
     if (state.view === "due" && !reviewInfo(entry).due) return false;
     return true;
@@ -566,7 +566,7 @@ function renderActiveFilters() {
   const filters = [];
   if (state.category) filters.push(`主題：${state.category}`);
   if (state.initial) filters.push(`聲母：${state.initial}`);
-  if (state.roman) filters.push(`讀音：${state.roman}`);
+  if (state.vowel) filters.push(`韻母：${state.vowel}`);
   elements.activeFilters.innerHTML = filters
     .map((filter) => `<span class="filter-chip">${filter}</span>`)
     .join("");
@@ -582,7 +582,7 @@ function resetFilters() {
   state.query = "";
   state.category = "";
   state.initial = "";
-  state.roman = "";
+  state.vowel = "";
   state.view = "all";
   state.page = 1;
   elements.search.value = "";
@@ -926,20 +926,31 @@ elements.categoryFilter.addEventListener("click", (event) => {
 });
 
 elements.initialFilter.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-initial]");
+  const button = event.target.closest("[data-sound]");
   if (!button) return;
-  state.initial = state.initial === button.dataset.initial ? "" : button.dataset.initial;
+  const sound = THAI_SOUND_INDEX[state.soundType].find((item) => item.symbol === button.dataset.sound);
+  if (state.soundType === "consonant") state.initial = state.initial === sound.symbol ? "" : sound.symbol;
+  else state.vowel = state.vowel === sound.symbol ? "" : sound.symbol;
+  elements.soundDetail.hidden = false;
+  elements.soundDetailThai.textContent = sound.symbol;
+  elements.soundDetailName.textContent = sound.name;
+  elements.soundDetailRoman.textContent = sound.roman;
+  elements.soundDetailAudio.dataset.speech = sound.speech;
   renderFilters();
   renderFirstPage();
 });
-
-elements.romanFilter.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-roman]");
+elements.soundTypeTabs.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-sound-type]");
   if (!button) return;
-  state.roman = state.roman === button.dataset.roman ? "" : button.dataset.roman;
+  state.soundType = button.dataset.soundType;
+  state.initial = "";
+  state.vowel = "";
+  elements.soundDetail.hidden = true;
+  elements.soundTypeTabs.querySelectorAll("button").forEach((item) => item.classList.toggle("is-active", item === button));
   renderFilters();
   renderFirstPage();
 });
+elements.soundDetailAudio.addEventListener("click", () => speakThai(elements.soundDetailAudio.dataset.speech));
 
 elements.viewFilter.addEventListener("click", (event) => {
   const button = event.target.closest("[data-view]");
@@ -1010,7 +1021,8 @@ elements.categoryFilter.addEventListener("click", () => {
 
 document.querySelector("#clear-initial").addEventListener("click", () => {
   state.initial = "";
-  state.roman = "";
+  state.vowel = "";
+  elements.soundDetail.hidden = true;
   renderFilters();
   renderFirstPage();
 });

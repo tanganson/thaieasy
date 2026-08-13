@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=21" />
+    <link rel="stylesheet" href="styles.css?v=22" />
   </head>
   <body>
     <div class="app-shell">
@@ -143,18 +143,21 @@
             <section class="initial-index" aria-labelledby="initial-heading">
               <div class="section-heading">
                 <div>
-                  <p class="eyebrow">Consonant index</p>
-                  <h2 id="initial-heading">按起首子音找</h2>
+                  <p class="eyebrow">Thai sound index</p>
+                  <h2 id="initial-heading">聲母與韻母</h2>
                 </div>
                 <button class="icon-button" id="clear-initial" type="button" title="清除子音篩選" aria-label="清除子音篩選">
                   <i data-lucide="rotate-ccw" aria-hidden="true"></i>
                 </button>
               </div>
-              <div class="initial-scroll" id="initial-filter" aria-label="泰文起首子音"></div>
-
-              <div class="roman-filter-row">
-                <span>按讀音：</span>
-                <div id="roman-filter" class="roman-filter"></div>
+              <div class="sound-type-tabs" id="sound-type-tabs" role="group" aria-label="選擇聲母或韻母">
+                <button class="is-active" data-sound-type="consonant" type="button">聲母</button>
+                <button data-sound-type="vowel" type="button">韻母</button>
+              </div>
+              <div class="initial-scroll" id="initial-filter" aria-label="泰文字音"></div>
+              <div class="sound-detail" id="sound-detail" hidden>
+                <div><strong id="sound-detail-thai"></strong><span id="sound-detail-name"></span><span id="sound-detail-roman"></span></div>
+                <button class="icon-button" id="sound-detail-audio" type="button" title="播放字音" aria-label="播放字音"><i data-lucide="volume-2" aria-hidden="true"></i></button>
               </div>
             </section>
 
@@ -434,7 +437,7 @@
     <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
     <script src="vendor/supabase.min.js?v=13"></script>
     <script src="supabase-config.js?v=13"></script>
-    <script src="data.js?v=21"></script>
-    <script src="app.js?v=21"></script>
+    <script src="data.js?v=22"></script>
+    <script src="app.js?v=22"></script>
   </body>
 </html>
