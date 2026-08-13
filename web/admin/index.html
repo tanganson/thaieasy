@@ -34,6 +34,7 @@
           <button class="nav-button is-active" data-view="overview"><i data-lucide="layout-dashboard"></i><span>總覽</span></button>
           <button class="nav-button" data-view="accounts"><i data-lucide="users"></i><span>帳號管理</span></button>
           <button class="nav-button" data-view="groups"><i data-lucide="school"></i><span>學習群組</span></button>
+          <button class="nav-button" data-view="content"><i data-lucide="book-open"></i><span>教材管理</span></button>
           <button class="nav-button" data-view="audit"><i data-lucide="scroll-text"></i><span>審計紀錄</span></button>
         </nav>
         <div class="sidebar-user">
@@ -109,6 +110,12 @@
             </table>
           </div>
         </section>
+
+        <section class="admin-view" data-panel="content">
+          <div class="section-toolbar"><div class="toolbar-copy"><strong>教材管理</strong><span>編輯、發布及封存共用教材</span></div><select id="content-status-filter" aria-label="按教材狀態篩選"><option value="">全部狀態</option><option value="draft">草稿</option><option value="published">已發布</option><option value="archived">已封存</option></select></div>
+          <div class="table-shell"><table><thead><tr><th>泰文</th><th>中文</th><th>分類</th><th>來源</th><th>狀態</th><th>版本</th><th><span class="sr-only">操作</span></th></tr></thead><tbody id="content-body"></tbody></table></div>
+          <p class="table-empty" id="content-empty" hidden>沒有符合條件的教材。</p>
+        </section>
       </section>
     </div>
 
@@ -151,6 +158,8 @@
         <footer><button class="secondary-button" type="button" data-close-dialog="member-dialog">取消</button><button class="primary-button" type="submit">加入群組</button></footer>
       </form>
     </dialog>
+
+    <dialog id="entry-dialog"><form id="entry-form" method="dialog"><header><div><p class="eyebrow">Content</p><h2>編輯教材</h2></div><button class="dialog-close" type="button" data-close-dialog="entry-dialog" aria-label="關閉"><i data-lucide="x"></i></button></header><input id="entry-id" type="hidden" /><label>泰文<input id="entry-thai" required /></label><label>羅馬拼音<input id="entry-pronunciation" /></label><label>中文意思<input id="entry-meaning" required /></label><label>分類<input id="entry-category" required /></label><label>來源<input id="entry-source" /></label><label>狀態<select id="entry-status"><option value="draft">草稿</option><option value="published">已發布</option><option value="archived">已封存</option></select></label><label>修改原因<textarea id="entry-reason" minlength="3" maxlength="500" rows="3" required></textarea><p class="form-status" id="entry-form-status" aria-live="polite"></p><footer><button class="secondary-button" type="button" data-close-dialog="entry-dialog">取消</button><button class="primary-button" type="submit">儲存版本</button></footer></form></dialog>
 
     <script src="../vendor/supabase.min.js?v=13"></script>
     <script src="../supabase-config.js?v=13"></script>

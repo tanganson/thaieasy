@@ -4,6 +4,7 @@ const roles = ["student", "teacher", "content_editor", "support_admin", "admin",
 const roleLabels = { student:"學生", teacher:"老師", content_editor:"內容編輯", support_admin:"支援管理員", admin:"管理員", super_admin:"最高管理員" };
 const actionLabels = { "user.invite":"建立帳號", "user.update":"更新帳號", "user.password_reset":"寄出密碼設定", "user.delete":"永久刪除帳號", "group.create":"建立群組", "group.member_add":"加入群組", "group.member_remove":"移除群組" };
 const state = { actor:null, users:[], groups:[], memberships:[], audit:[], selectedGroupId:null };
+state.entries = [];
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -35,7 +36,7 @@ async function api(path, options = {}) {
 }
 
 function setView(view) {
-  const profiles = { overview:["Workspace","營運總覽"], accounts:["Membership","帳號管理"], groups:["Learning groups","學習群組"], audit:["Governance","審計紀錄"] };
+  const profiles = { overview:["Workspace","營運總覽"], accounts:["Membership","帳號管理"], groups:["Learning groups","學習群組"], content:["Content library","教材管理"], audit:["Governance","審計紀錄"] };
   $$(".nav-button").forEach((button) => button.classList.toggle("is-active", button.dataset.view === view));
   $$(".admin-view").forEach((panel) => panel.classList.toggle("is-active", panel.dataset.panel === view));
   $("#view-eyebrow").textContent = profiles[view][0];
@@ -89,7 +90,14 @@ function renderAudit() {
   $("#audit-body").innerHTML = state.audit.map((log) => { const actor=userById(log.actor_user_id), target=userById(log.target_user_id); return `<tr><td>${formatDate(log.created_at)}</td><td>${actionLabels[log.action] || escapeHtml(log.action)}</td><td>${escapeHtml(actor?.display_name || actor?.email || "系統")}</td><td>${escapeHtml(target?.display_name || target?.email || "-")}</td><td>${escapeHtml(log.reason)}</td></tr>`; }).join("");
 }
 
-function renderAll() { renderOverview(); renderAccounts(); renderGroups(); renderAudit(); icons(); }
+function renderContent() {
+  const rows = state.entries;
+  $("#content-empty").hidden = rows.length > 0;
+  $("#content-body").innerHTML = rows.map((entry) => `<tr><td lang="th">${escapeHtml(entry.thai)}</td><td>${escapeHtml(entry.meaning)}</td><td>${escapeHtml(entry.category)}</td><td>${escapeHtml(entry.source)}</td><td>${escapeHtml(entry.status)}</td><td>v${entry.version}</td><td><button class="row-action" data-edit-entry="${escapeHtml(entry.id)}" title="編輯教材" aria-label="編輯教材"><i data-lucide="pencil"></i></button></td></tr>`).join("");
+  icons();
+}
+
+function renderAll() { renderOverview(); renderAccounts(); renderGroups(); renderAudit(); renderContent(); icons(); }
 
 async function loadData() {
   const mePayload = await api("/api/admin/me");
@@ -104,6 +112,11 @@ async function loadData() {
   state.groups = groupsPayload.groups;
   state.memberships = groupsPayload.memberships;
   state.audit = auditPayload.logs;
+  if (["content_editor", "admin", "super_admin"].includes(state.actor.role)) {
+    const contentStatus = $("#content-status-filter")?.value || "";
+    const contentPayload = await api(`/api/admin/entries${contentStatus ? `?status=${encodeURIComponent(contentStatus)}` : ""}`);
+    state.entries = contentPayload.entries;
+  } else state.entries = [];
   $("#actor-name").textContent = state.actor.display_name || "管理員";
   $("#actor-role").textContent = roleLabels[state.actor.role];
   $("#actor-avatar").textContent = (state.actor.display_name || "管").slice(0, 1);
@@ -111,7 +124,20 @@ async function loadData() {
   $("#invite-user").hidden = !["admin", "super_admin"].includes(state.actor.role);
   $("#create-group").hidden = !["admin", "super_admin"].includes(state.actor.role);
   document.querySelector('[data-view="groups"]').hidden = !["admin", "super_admin"].includes(state.actor.role);
+  document.querySelector('[data-view="content"]').hidden = !["content_editor", "admin", "super_admin"].includes(state.actor.role);
   renderAll();
+}
+
+function openEntryDialog(entry) {
+  $("#entry-id").value = entry.id; $("#entry-thai").value = entry.thai; $("#entry-pronunciation").value = entry.pronunciation || "";
+  $("#entry-meaning").value = entry.meaning; $("#entry-category").value = entry.category; $("#entry-source").value = entry.source || ""; $("#entry-status").value = entry.status; $("#entry-reason").value = ""; $("#entry-form-status").textContent = ""; $("#entry-dialog").showModal();
+}
+
+async function saveEntry(event) {
+  event.preventDefault();
+  const id = $("#entry-id").value;
+  const body = { thai:$("#entry-thai").value, pronunciation:$("#entry-pronunciation").value, meaning:$("#entry-meaning").value, category:$("#entry-category").value, source:$("#entry-source").value, status:$("#entry-status").value, reason:$("#entry-reason").value };
+  try { const result = await api(`/api/admin/entries/${encodeURIComponent(id)}`, { method:"PATCH", body:JSON.stringify(body) }); $("#entry-dialog").close(); notify(`教材已更新至 v${result.entry.version}`); await loadData(); } catch (error) { $("#entry-form-status").textContent = error.message; }
 }
 
 async function enterAdmin() {
@@ -216,6 +242,9 @@ $("#user-role").innerHTML = roleOptions();
 $("#login-form").addEventListener("submit", async (event) => { event.preventDefault(); $("#login-status").textContent="正在登入..."; const {error}=await client.auth.signInWithPassword({email:$("#login-email").value.trim(),password:$("#login-password").value}); if(error){$("#login-status").textContent="電郵、密碼或帳號權限不正確";return;} await enterAdmin(); });
 $("#sign-out").addEventListener("click", async () => { await client.auth.signOut(); location.reload(); });
 $("#refresh-button").addEventListener("click", async () => { try { await loadData(); notify("資料已更新"); } catch(error){notify(error.message,true);} });
+$("#content-status-filter")?.addEventListener("change", () => loadData());
+$("#content-body")?.addEventListener("click", (event) => { const button = event.target.closest("[data-edit-entry]"); if (button) openEntryDialog(state.entries.find((entry) => entry.id === button.dataset.editEntry)); });
+$("#entry-form")?.addEventListener("submit", saveEntry);
 $$(".nav-button").forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
 $("#account-search").addEventListener("input", renderAccounts);
 $("#role-filter").addEventListener("change", renderAccounts);

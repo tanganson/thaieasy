@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=28" />
+    <link rel="stylesheet" href="styles.css?v=29" />
   </head>
   <body>
     <div class="app-shell">
@@ -95,7 +95,7 @@
           <dl class="stat-strip" aria-label="筆記統計">
             <div>
               <dt id="total-stat">0</dt>
-              <dd>已學詞句</dd>
+              <dd>公共詞句</dd>
             </div>
             <div>
               <dt id="review-stat">0</dt>
@@ -121,6 +121,7 @@
               </div>
               <div class="segmented" id="view-filter" role="group" aria-label="筆記檢視">
                 <button class="is-active" data-view="all" type="button">全部</button>
+                <button data-view="learning" type="button">我的學習庫</button>
                 <button data-view="due" type="button">待複習</button>
                 <button data-view="favorite" type="button">收藏</button>
               </div>
@@ -432,6 +433,9 @@
         </div>
         <div class="entry-meta">
           <span class="review-state"></span>
+          <button class="icon-button learning-button" type="button" title="加入我的學習庫" aria-label="加入我的學習庫">
+            <i data-lucide="library" aria-hidden="true"></i>
+          </button>
           <button class="icon-button audio-button" type="button" title="播放泰文發音" aria-label="播放泰文發音">
             <i data-lucide="volume-2" aria-hidden="true"></i>
           </button>
@@ -442,7 +446,7 @@
     <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
     <script src="vendor/supabase.min.js?v=13"></script>
     <script src="supabase-config.js?v=13"></script>
-    <script src="data.js?v=28"></script>
-    <script src="app.js?v=28"></script>
+    <script src="data.js?v=29"></script>
+    <script src="app.js?v=29"></script>
   </body>
 </html>

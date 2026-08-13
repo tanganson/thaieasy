@@ -1,7 +1,7 @@
 # คำเก่า｜泰語學習與快速複習專案
 
 > 專案監察文件（Single Source of Truth）  
-> 最後更新：2026-08-13
+> 最後更新：2026-08-14
 > 文件狀態：持續維護
 
 ## 1. 專案目標
@@ -41,9 +41,9 @@
 | 薄弱字追蹤 | 規劃中 | 尚未實作薄弱分數、篩選及集中複習 |
 | 資料匯出／匯入 | 規劃中 | 尚未提供 JSON 備份及還原介面 |
 | 學習進度頁面 | 規劃中 | 等累積足夠複習資料後加入 |
-| 正式資料庫 | 接入中 | Supabase Free project `thaieasy` 位於新加坡 `ap-southeast-1`；已加入使用者學習狀態 schema、RLS、電郵密碼會員登入及 localStorage 離線優先同步 |
+| 正式資料庫 | 已接入（公共詞庫／學生學習庫第一版） | Supabase Free project `thaieasy` 位於新加坡 `ap-southeast-1`；`entries` 與 `public_entries` 已有 405 筆公共教材，學生學習範圍、進度、複習事件及筆記匯入候選表已建立 RLS；現有 JSON 狀態保留作為兼容同步 |
 | 會員角色系統 | 已完成（第一版） | 訪客可完整使用公共內容；會員角色包含學生、老師、內容編輯、支援管理員、管理員及最高管理員，帳號可停用或恢復 |
-| 管理後台 | 已完成（第一版） | `/admin/` 提供會員搜尋、角色與狀態管理、邀請／密碼設定、學習群組、成員管理及不可變審計紀錄 |
+| 管理後台 | 已完成（第一版） | `/admin/` 提供會員搜尋、角色與狀態管理、邀請／密碼設定、學習群組、成員管理、公共教材版本編輯及不可變審計紀錄 |
 | Cloudflare Pages 部署 | 已完成 | Production URL：`https://thaieasy.pages.dev`；專案 `thaieasy`，production branch `main` |
 | 即時翻譯頁面 | 已完成（第二版） | 使用 Azure Translator 提供穩定的泰中翻譯，Claude Haiku 4.5 僅非阻塞補充讀音與學習提示；泰中雙向、自動判斷、可編輯結果、泰文播放及收藏詞條；API keys 使用 Cloudflare Secrets |
 
@@ -333,10 +333,15 @@ node --check web/sw.js
 - 目前只有最後一次複習結果，尚未保存完整複習事件歷史。
 - 尚未建立自動化測試套件。
 - 即時翻譯需要網路及 CloudVein API key；翻譯文字會傳送至第三方 CloudVein 相容 API。目前未加入登入強制、IP 速率限制或 Turnstile，正式公開前應在 Cloudflare 層加入防濫用及用量告警。
+- 教材內容管理目前以 `entries` 作為管理後台寫入來源，902 migration 會鏡像至學生使用的 `public_entries`；網站線上會先讀取 `public_entries`，離線才回退 `web/data.js`。離線衝突合併仍是後續工作。
+- AI 筆記匯入目前完成私有工作／候選資料表，尚未接入 OCR、Agent 執行器及學生確認畫面；AI 不會自動寫入學生正式學習庫。
 
 ## 11. 路線圖
 
 ### 下一階段
+
+- 接入筆記上載、OCR／AI Agent 候選抽取及學生確認流程；確認後才寫入 `student_custom_entries` 與 `student_learning_entries`。
+- 加入教材新增、審核佇列、批次匯入、版本比較及多人編輯衝突提示。
 
 1. 建立可遷移的本地資料版本及 JSON 匯出／匯入。
 2. 保存完整複習事件，加入薄弱分數與狀態。
@@ -353,6 +358,16 @@ node --check web/sw.js
 ## 12. 文件更新規則
 
 每次修改專案時，必須在同一次更新中：
+
+### 2026-08-14 公共詞庫與學生學習庫第一版
+
+- 新增 `public_entries`／`public_entry_versions` 公共詞庫，並以 902 migration 將現有管理表 `entries` 自動鏡像；遠端查證兩者均為 405 筆。
+- 新增每位學生以 `user_id` 隔離的 `student_learning_entries`、`student_custom_entries`、`user_entry_progress`、`review_events`、`note_import_jobs` 及 `note_import_candidates`，所有學生資料均啟用 RLS。
+- 主站會先讀取 Supabase `public_entries` 已發布內容，網路或資料庫失敗才回退到 PWA 的 `web/data.js`，因此管理員發布的新版本可直接成為公共瀏覽內容。
+- 登入學生可在詞條旁加入／移出「我的學習庫」，新增「我的學習庫」檢視；快速複習及入門練習只從該學生範圍抽題，每次快速複習也會以冪等事件 ID 同步至不可變 `review_events`。舊收藏、舊複習及自訂詞會在首次使用時兼容加入學習範圍，未登入仍可瀏覽完整公共內容。
+- 筆記匯入先建立私有工作／候選資料結構，保留來源片段、頁碼、可信度及人工決策欄位；OCR／AI Agent 與確認 UI 留待下一階段，禁止未審核 AI 內容直接進入正式學習庫。
+- 核心資源更新至 `v=29`，Service Worker 快取提升至 `thai-review-shell-v29`。
+- 驗證：Supabase 遠端 schema／405 筆公共資料及匿名 RLS 讀取、JavaScript/Python 語法及 `git diff --check` 通過；Cloudflare Pages `v29` 預覽顯示 405 筆，390×844 無水平溢出，未登入加入學習庫會要求登入，console 無錯誤。
 
 1. 更新本文件頂部的「最後更新」日期。
 2. 更新「目前狀態」及受影響的資料模型、流程或限制。

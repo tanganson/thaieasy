@@ -156,6 +156,7 @@ function migrateEntryCategories(entries) {
 const persisted = loadState();
 persisted.customEntries = migrateEntryCategories(persisted.customEntries);
 const state = {
+  publicEntries: [...window.THAI_REVIEW_DATA.entries],
   entries: [...window.THAI_REVIEW_DATA.entries, ...persisted.customEntries],
   categories: [...window.THAI_REVIEW_DATA.categories],
   query: "",
@@ -169,14 +170,29 @@ const state = {
   favorites: new Set(persisted.favorites),
   reviews: persisted.reviews,
   customEntries: persisted.customEntries,
+  learningEntryIds: new Set(persisted.learningEntryIds || []),
   reviewQueue: [],
   reviewIndex: 0,
   practiceRecords: persisted.practiceRecords,
+  reviewEvents: persisted.reviewEvents,
   practiceQueue: [],
   practiceIndex: 0,
   practiceCorrect: 0,
   practiceAnswered: false,
 };
+
+function currentPublicEntryIds() {
+  return new Set(state.publicEntries.map((entry) => entry.id));
+}
+
+function learningIdsFromState(value, customEntries) {
+  return [...new Set([
+    ...(value.learningEntryIds || []),
+    ...Object.keys(value.reviews || {}),
+    ...(value.favorites || []),
+    ...customEntries.map((entry) => entry.id),
+  ])];
+}
 
 function loadState() {
   try {
@@ -185,14 +201,17 @@ function loadState() {
     if (customEntries.some((entry, index) => entry.category !== stored.customEntries?.[index]?.category)) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...stored, customEntries }));
     }
+    const learningEntryIds = learningIdsFromState(stored, customEntries);
     return {
       favorites: stored.favorites || [],
       reviews: stored.reviews || {},
       customEntries,
       practiceRecords: stored.practiceRecords || [],
+      reviewEvents: stored.reviewEvents || [],
+      learningEntryIds,
     };
   } catch {
-    return { favorites: [], reviews: {}, customEntries: [], practiceRecords: [] };
+    return { favorites: [], reviews: {}, customEntries: [], practiceRecords: [], reviewEvents: [], learningEntryIds: [] };
   }
 }
 
@@ -207,6 +226,8 @@ function serializedState() {
     reviews: state.reviews,
     customEntries: state.customEntries,
     practiceRecords: state.practiceRecords,
+    reviewEvents: state.reviewEvents,
+    learningEntryIds: [...state.learningEntryIds],
   };
 }
 
@@ -215,7 +236,10 @@ function applyPersistedState(nextState) {
   state.reviews = nextState.reviews || {};
   state.customEntries = migrateEntryCategories(nextState.customEntries || []);
   state.practiceRecords = nextState.practiceRecords || [];
-  state.entries = [...window.THAI_REVIEW_DATA.entries, ...state.customEntries];
+  state.reviewEvents = nextState.reviewEvents || [];
+  state.learningEntryIds = new Set(learningIdsFromState(nextState, state.customEntries));
+  state.customEntries.forEach((entry) => state.learningEntryIds.add(entry.id));
+  state.entries = [...state.publicEntries, ...state.customEntries];
   localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedState()));
   renderFilters();
   renderResults();
@@ -302,6 +326,7 @@ async function syncToCloud() {
     state: serializedState(),
     updated_at: new Date().toISOString(),
   });
+  if (!error) await syncStructuredLearning();
   setSyncStatus(error ? "同步失敗，本機資料仍已保存" : "進度已同步");
 }
 
@@ -325,14 +350,79 @@ async function loadCloudState() {
   }
   if (data?.state) {
     applyPersistedState(data.state);
+    await loadStructuredLearning();
     setSyncStatus("已載入雲端進度");
   } else {
+    await loadStructuredLearning();
     await syncToCloud();
   }
 }
 
+async function loadStructuredLearning() {
+  if (!supabaseClient || !currentUser) return;
+  const { data, error } = await supabaseClient.from("student_learning_entries").select("public_entry_id,custom_entry_id").eq("user_id", currentUser.id);
+  if (error) return;
+  if (data?.length) {
+    state.learningEntryIds = new Set(data.flatMap((row) => [row.public_entry_id, row.custom_entry_id].filter(Boolean)));
+    state.customEntries.forEach((entry) => state.learningEntryIds.add(entry.id));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedState()));
+    renderResults();
+  } else {
+    await syncStructuredLearning();
+  }
+}
+
+async function syncStructuredLearning() {
+  if (!supabaseClient || !currentUser || !navigator.onLine) return;
+  const publicIds = currentPublicEntryIds();
+  const existingResult = await supabaseClient.from("student_learning_entries").select("id,public_entry_id,custom_entry_id").eq("user_id", currentUser.id);
+  if (existingResult.error) return;
+  const customEntries = state.customEntries.filter((entry) => state.learningEntryIds.has(entry.id));
+  if (customEntries.length) {
+    const { error } = await supabaseClient.from("student_custom_entries").upsert(customEntries.map((entry) => ({
+      id: entry.id, user_id: currentUser.id, meaning: entry.meaning, thai: entry.thai,
+      pronunciation: entry.pronunciation, category: entry.category, source: entry.source || "個人新增",
+      source_reference: entry.originalText || null, updated_at: new Date().toISOString(),
+    })), { onConflict: "id,user_id" });
+    if (error) return;
+  }
+  const memberships = [...state.learningEntryIds].flatMap((entryId) => {
+    if (publicIds.has(entryId)) return [{ user_id: currentUser.id, public_entry_id: entryId, added_via: "legacy" }];
+    if (state.customEntries.some((entry) => entry.id === entryId)) return [{ user_id: currentUser.id, custom_entry_id: entryId, added_via: "legacy" }];
+    return [];
+  });
+  const existingKeys = new Set((existingResult.data || []).map((row) => row.public_entry_id || row.custom_entry_id));
+  const staleRows = (existingResult.data || []).filter((row) => !state.learningEntryIds.has(row.public_entry_id || row.custom_entry_id));
+  for (const row of staleRows) await supabaseClient.from("student_learning_entries").delete().eq("id", row.id).eq("user_id", currentUser.id);
+  const missingMemberships = memberships.filter((row) => !existingKeys.has(row.public_entry_id || row.custom_entry_id));
+  if (missingMemberships.length) await supabaseClient.from("student_learning_entries").insert(missingMemberships);
+  const progressRows = [...state.learningEntryIds].map((entryId) => {
+    const review = state.reviews[entryId];
+    if (!review) return null;
+    const base = { user_id: currentUser.id, rating: review.rating, due_at: review.dueAt, reviewed_at: new Date(review.reviewedAt).toISOString(), review_count: 1 };
+    return publicIds.has(entryId) ? { ...base, public_entry_id: entryId } : { ...base, custom_entry_id: entryId };
+  }).filter(Boolean);
+  const progressResult = await supabaseClient.from("user_entry_progress").select("id,public_entry_id,custom_entry_id").eq("user_id", currentUser.id);
+  if (!progressResult.error) {
+    const progressByEntry = new Map((progressResult.data || []).map((row) => [row.public_entry_id || row.custom_entry_id, row.id]));
+    for (const row of progressRows) {
+      const entryId = row.public_entry_id || row.custom_entry_id;
+      const progressId = progressByEntry.get(entryId);
+      if (progressId) await supabaseClient.from("user_entry_progress").update(row).eq("id", progressId).eq("user_id", currentUser.id);
+      else await supabaseClient.from("user_entry_progress").insert(row);
+    }
+  }
+  const reviewEvents = state.reviewEvents.flatMap((event) => {
+    if (publicIds.has(event.entryId)) return [{ user_id: currentUser.id, client_event_id: event.clientEventId, public_entry_id: event.entryId, entry_version: event.entryVersion || 1, result: event.result, answered_at: event.answeredAt, exercise_type: "quick_review" }];
+    if (state.customEntries.some((entry) => entry.id === event.entryId)) return [{ user_id: currentUser.id, client_event_id: event.clientEventId, custom_entry_id: event.entryId, result: event.result, answered_at: event.answeredAt, exercise_type: "quick_review" }];
+    return [];
+  });
+  if (reviewEvents.length) await supabaseClient.from("review_events").upsert(reviewEvents, { onConflict: "user_id,client_event_id", ignoreDuplicates: true });
+}
+
 async function initializeAuth() {
   if (!supabaseClient) return;
+  await loadPublicEntries();
   const recoveryCallback = window.location.hash.includes("type=recovery");
   const { data } = await supabaseClient.auth.getSession();
   currentUser = data.session?.user || null;
@@ -356,6 +446,22 @@ async function initializeAuth() {
       window.setTimeout(renderAdminAccess, 0);
     }
   });
+}
+
+async function loadPublicEntries() {
+  if (!supabaseClient || !navigator.onLine) return;
+  const { data, error } = await supabaseClient
+    .from("public_entries")
+    .select("id,thai,meaning,pronunciation,category,source,version")
+    .eq("status", "published")
+    .order("sort_order", { ascending: true })
+    .order("id", { ascending: true });
+  if (error || !data?.length) return;
+  state.publicEntries = data;
+  state.entries = [...state.publicEntries, ...state.customEntries];
+  state.categories = [...new Set(data.map((entry) => entry.category))];
+  renderFilters();
+  renderResults();
 }
 
 function shuffled(values) {
@@ -462,6 +568,7 @@ function setMobileMenu(open) {
 function getFilteredEntries() {
   const query = normalize(state.query);
   let entries = state.entries.filter((entry) => {
+    if (state.view === "learning" && !state.learningEntryIds.has(entry.id)) return false;
     if (query) {
       const searchable = normalize(
         `${entry.meaning} ${entry.thai} ${entry.pronunciation} ${entry.category}`
@@ -506,6 +613,7 @@ function renderResults() {
     const row = fragment.querySelector(".entry-row");
     const favoriteButton = fragment.querySelector(".favorite-button");
     const info = reviewInfo(entry);
+    const learningButton = fragment.querySelector(".learning-button");
 
     row.dataset.entryId = entry.id;
     fragment.querySelector("h3").textContent = entry.thai;
@@ -517,6 +625,9 @@ function renderResults() {
     favoriteButton.classList.toggle("is-active", state.favorites.has(entry.id));
     favoriteButton.setAttribute("aria-pressed", state.favorites.has(entry.id));
     favoriteButton.title = state.favorites.has(entry.id) ? "取消收藏" : "收藏";
+    learningButton.classList.toggle("is-active", state.learningEntryIds.has(entry.id));
+    learningButton.setAttribute("aria-pressed", state.learningEntryIds.has(entry.id));
+    learningButton.title = state.learningEntryIds.has(entry.id) ? "移出我的學習庫" : "加入我的學習庫";
     const audioButton = fragment.querySelector(".audio-button");
     audioButton.dataset.thai = entry.thai;
     audioButton.dataset.pronunciation = entry.pronunciation;
@@ -573,6 +684,7 @@ function renderFirstPage() {
 }
 
 function resultCaption() {
+  if (state.view === "learning") return "我的學習庫";
   if (state.view === "favorite") return "收藏內容";
   if (state.view === "due") return "今天待複習";
   if (state.query) return `搜尋「${state.query}」`;
@@ -591,7 +703,7 @@ function renderActiveFilters() {
 
 function updateStats() {
   elements.totalStat.textContent = state.entries.length;
-  elements.reviewStat.textContent = state.entries.filter((entry) => reviewInfo(entry).due).length;
+  elements.reviewStat.textContent = state.entries.filter((entry) => state.learningEntryIds.has(entry.id) && reviewInfo(entry).due).length;
   elements.favoriteStat.textContent = state.favorites.size;
 }
 
@@ -612,14 +724,41 @@ function resetFilters() {
 
 function toggleFavorite(entryId) {
   if (state.favorites.has(entryId)) state.favorites.delete(entryId);
-  else state.favorites.add(entryId);
+  else {
+    state.favorites.add(entryId);
+    state.learningEntryIds.add(entryId);
+  }
+  saveState();
+  renderResults();
+}
+
+function toggleLearningEntry(entryId) {
+  if (!currentUser) {
+    setAuthMode("login");
+    setSyncStatus("登入後即可建立你的專屬學習庫");
+    elements.authDialog.showModal();
+    return;
+  }
+  if (state.learningEntryIds.has(entryId)) state.learningEntryIds.delete(entryId);
+  else state.learningEntryIds.add(entryId);
   saveState();
   renderResults();
 }
 
 function openReview() {
-  const due = state.entries.filter((entry) => reviewInfo(entry).due);
-  state.reviewQueue = (due.length ? due : state.entries)
+  const learningEntries = state.entries.filter((entry) => state.learningEntryIds.has(entry.id));
+  if (!currentUser) {
+    setAuthMode("login");
+    setSyncStatus("登入後先加入詞條，快速複習才會記錄你的專屬進度");
+    elements.authDialog.showModal();
+    return;
+  }
+  if (!learningEntries.length) {
+    window.alert("你的學習庫目前沒有詞條。請先在詞條旁按書本按鈕加入。 ");
+    return;
+  }
+  const due = learningEntries.filter((entry) => reviewInfo(entry).due);
+  state.reviewQueue = (due.length ? due : learningEntries)
     .sort(() => Math.random() - 0.5)
     .slice(0, 10);
   state.reviewIndex = 0;
@@ -657,6 +796,14 @@ function rateReview(rating) {
     reviewedAt: Date.now(),
     dueAt: dueAt.toISOString(),
   };
+  state.reviewEvents.push({
+    clientEventId: globalThis.crypto?.randomUUID?.() || `review-${Date.now()}-${entry.id}`,
+    entryId: entry.id,
+    entryVersion: entry.version || 1,
+    result: rating,
+    answeredAt: new Date().toISOString(),
+  });
+  if (state.reviewEvents.length > 5000) state.reviewEvents.splice(0, state.reviewEvents.length - 5000);
   saveState();
   state.reviewIndex += 1;
   renderReviewCard();
@@ -704,10 +851,21 @@ function buildPracticeQuestion(entry, index) {
 }
 
 function openPractice() {
-  const due = state.entries.filter((entry) => reviewInfo(entry).due);
+  const learningEntries = state.entries.filter((entry) => state.learningEntryIds.has(entry.id));
+  if (!currentUser) {
+    setAuthMode("login");
+    setSyncStatus("登入後先加入詞條，入門練習才會記錄你的專屬進度");
+    elements.authDialog.showModal();
+    return;
+  }
+  if (!learningEntries.length) {
+    window.alert("你的學習庫目前沒有詞條。請先加入要學習的詞條。 ");
+    return;
+  }
+  const due = learningEntries.filter((entry) => reviewInfo(entry).due);
   const seenIds = new Set(state.practiceRecords.slice(-80).map((record) => record.entryId));
-  const longUnseen = state.entries.filter((entry) => !seenIds.has(entry.id));
-  const pool = [...due, ...longUnseen, ...state.entries];
+  const longUnseen = learningEntries.filter((entry) => !seenIds.has(entry.id));
+  const pool = [...due, ...longUnseen, ...learningEntries];
   const unique = [];
   const used = new Set();
   shuffled(pool).forEach((entry) => {
@@ -826,6 +984,7 @@ function addEntry(formData) {
   };
   state.customEntries.push(entry);
   state.entries.push(entry);
+  state.learningEntryIds.add(entry.id);
   if (!state.categories.includes(entry.category)) state.categories.push(entry.category);
   saveState();
   elements.entryForm.reset();
@@ -913,6 +1072,7 @@ function saveTranslationEntry() {
   const duplicate = state.entries.find((entry) => entry.thai === thai && entry.meaning === meaning);
   if (duplicate) {
     state.favorites.add(duplicate.id);
+    state.learningEntryIds.add(duplicate.id);
     saveState();
     setTranslationStatus("已存在相同詞條，已替你收藏");
     renderResults();
@@ -922,6 +1082,7 @@ function saveTranslationEntry() {
   state.customEntries.push(entry);
   state.entries.push(entry);
   state.favorites.add(entry.id);
+  state.learningEntryIds.add(entry.id);
   saveState();
   renderFilters();
   renderResults();
@@ -984,6 +1145,12 @@ elements.resultList.addEventListener("click", (event) => {
   if (audioButton) {
     event.stopPropagation();
     speakThai(audioButton.dataset.thai);
+    return;
+  }
+  const learningButton = event.target.closest(".learning-button");
+  if (learningButton) {
+    event.stopPropagation();
+    toggleLearningEntry(learningButton.closest(".entry-row").dataset.entryId);
     return;
   }
   const button = event.target.closest(".favorite-button");

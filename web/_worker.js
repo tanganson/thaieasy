@@ -3,7 +3,7 @@ const MODEL = "claude-haiku-4-5";
 const CLAUDE_API_URL = "https://api.cloudvein.cc/v1/messages";
 const DEFAULT_AZURE_ENDPOINT = "https://api.cognitive.microsofttranslator.com";
 const RETRYABLE_STATUSES = new Set([403, 429, 500, 502, 503, 504]);
-const ADMIN_ROLES = new Set(["support_admin", "admin", "super_admin"]);
+const ADMIN_ROLES = new Set(["content_editor", "support_admin", "admin", "super_admin"]);
 const ALL_ROLES = new Set(["student", "teacher", "content_editor", "support_admin", "admin", "super_admin"]);
 const ROLE_LEVEL = { student: 0, teacher: 1, content_editor: 1, support_admin: 2, admin: 3, super_admin: 4 };
 const MAX_ADMIN_BODY = 16_384;
@@ -281,8 +281,40 @@ async function listAuditLogs(request, env) {
   return json({ logs: result.payload || [] });
 }
 
+async function listContentEntries(request, env, admin) {
+  const url = new URL(request.url);
+  const status = url.searchParams.get("status");
+  const filter = status ? `&status=eq.${encodeURIComponent(status)}` : "";
+  const result = await supabaseRequest(env, `/rest/v1/entries?select=*&order=updated_at.desc${filter}`);
+  if (!result.response.ok) return json({ error: "無法讀取教材" }, 502);
+  return json({ entries: result.payload || [], actor: admin.profile });
+}
+
+async function updateContentEntry(request, env, admin, entryId) {
+  const body = await parseJsonBody(request);
+  const reason = cleanReason(body.reason);
+  if (reason.length < 3) return json({ error: "請提供至少 3 個字元的修改原因" }, 400);
+  const current = await supabaseRequest(env, `/rest/v1/entries?id=eq.${encodeURIComponent(entryId)}&select=*&limit=1`);
+  const entry = current.payload?.[0];
+  if (!current.response.ok || !entry) return json({ error: "找不到教材" }, 404);
+  const allowed = ["thai", "pronunciation", "meaning", "category", "source", "status"];
+  const updates = Object.fromEntries(allowed.filter((key) => typeof body[key] === "string").map((key) => [key, body[key].trim()]));
+  if (updates.status && !["draft", "published", "archived"].includes(updates.status)) return json({ error: "教材狀態不正確" }, 400);
+  if (!Object.keys(updates).length) return json({ error: "沒有可更新內容" }, 400);
+  updates.version = Number(entry.version) + 1;
+  updates.updated_by = admin.user.id;
+  updates.updated_at = new Date().toISOString();
+  const result = await supabaseRequest(env, `/rest/v1/entries?id=eq.${encodeURIComponent(entryId)}`, {
+    method: "PATCH", headers: { prefer: "return=representation" }, body: JSON.stringify(updates),
+  });
+  if (!result.response.ok) return json({ error: "教材更新失敗" }, 502);
+  await audit(env, admin.user.id, "entry.update", reason, { metadata: { entry_id: entryId, version: updates.version }, before_state: entry, after_state: result.payload?.[0] });
+  return json({ entry: result.payload?.[0] });
+}
+
 async function adminApi(request, env, pathname) {
-  const auth = await requireAdmin(request, env);
+  const isContent = pathname === "/api/admin/entries" || pathname.startsWith("/api/admin/entries/");
+  const auth = await requireAdmin(request, env, isContent ? "content_editor" : "support_admin");
   if (auth.error) return auth.error;
   if (pathname === "/api/admin/me" && request.method === "GET") return json({ user: auth.user, profile: auth.profile });
   if (pathname === "/api/admin/users" && request.method === "GET") return listAdminUsers(request, env, auth);
@@ -299,6 +331,9 @@ async function adminApi(request, env, pathname) {
   const removeMemberMatch = pathname.match(/^\/api\/admin\/groups\/([0-9a-f-]+)\/members\/([0-9a-f-]+)$/i);
   if (removeMemberMatch && request.method === "DELETE") return removeGroupMember(request, env, auth, removeMemberMatch[1], removeMemberMatch[2]);
   if (pathname === "/api/admin/audit" && request.method === "GET") return listAuditLogs(request, env);
+  if (pathname === "/api/admin/entries" && request.method === "GET") return listContentEntries(request, env, auth);
+  const entryMatch = pathname.match(/^\/api\/admin\/entries\/([^/]+)$/);
+  if (entryMatch && request.method === "PATCH") return updateContentEntry(request, env, auth, entryMatch[1]);
   return json({ error: "找不到管理 API" }, 404);
 }
 

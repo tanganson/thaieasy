@@ -448,7 +448,7 @@ kbd {
 
 .segmented {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   padding: 3px;
   border: 1px solid var(--line);
   border-radius: 5px;
@@ -881,6 +881,12 @@ kbd {
   border-color: #e4b83d;
   background: var(--yellow-pale);
   color: #806510;
+}
+
+.learning-button.is-active {
+  border-color: var(--teal);
+  background: var(--teal-pale);
+  color: var(--teal-dark);
 }
 
 .empty-state {
