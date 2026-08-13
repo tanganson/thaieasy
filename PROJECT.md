@@ -27,6 +27,7 @@
 | 主題篩選與排序 | 已完成 | 可按主題、最近學習、泰文及中文排序 |
 | 結果分頁 | 已完成 | 每頁最多 25 筆，支援頁碼、上一頁及下一頁 |
 | Sidebar 獨立滾動 | 已完成 | 桌面版主題欄與主內容分開滾動；手機版維持自然單欄滾動 |
+| 手機分類導覽 | 已完成 | 手機 Top Bar 提供分類按鈕，以左側滑出面板顯示檢視及完整主題列表；選取後自動關閉 |
 | 收藏 | 已完成 | 保存在瀏覽器本地儲存 |
 | 快速複習 | 已完成 | 每輪最多 10 筆，支援忘記／困難／熟悉 |
 | 複習排程 | 已完成（基礎版） | 忘記：10 分鐘；困難：1 天；熟悉：3 天 |
@@ -181,6 +182,76 @@ Markdown 可用 `<!-- source: 來源名稱 -->` 切換後續詞句的 `source` �
 
 預計顯示：7／30 天複習量、掌握狀態分布、最薄弱詞句、最薄弱泰文聲母、主題掌握程度及連續學習天數。
 
+## 8A. 擴大資料庫後的複習可靠性
+
+快速複習的準確性不能只靠「最後一次評分」。內容、題目、答案和學習事件必須可以追溯：
+
+1. `entries` 作為內容主檔，採不可變 ID；修正泰文、拼音或中文時建立 `entry_versions`，保留 `version`、來源、審核者及審核時間。舊事件仍指向原版本，避免日後改字造成歷史成績被改寫。
+2. 每次作答寫入 append-only `review_events`，至少包含 `user_id`、`entry_id`、`entry_version`、`exercise_type`、`target_skill`、`result`、`response_ms`、`answered_at`、`client_event_id`。`client_event_id` 加唯一索引，避免離線同步重複計算。
+3. `user_entry_progress` 只存可重算的快取（`due_at`、`stability`、`difficulty`、`retrievability`、`streak`、`last_event_at`、`algorithm_version`）。排程器以事件更新快取，必要時可以用相同演算法版本重建。
+4. 題目產生必須排除同義重複、答案洩漏和無效干擾項；每題保存 `question_id` 及選項快照，才能在錯誤報告中重現當時題目。正式上線前先以現有簡單排程跑基準，再以 FSRS 或 SM-2 的固定版本做 A/B 比較，不要直接混用多套公式。
+5. 可靠性指標至少包括：到期題完成率、答對率、隔日保留率、重複事件率、題目申訴率及同步衝突率。每次改演算法都增加 `algorithm_version`，不可靜默改變舊排程。
+
+建議的資料庫邊界如下：內容表是全站共用；`review_events`、`user_entry_progress`、`favorites`、`study_sessions` 和 `user_learning_settings` 都以 `user_id` 為分區鍵。初期仍可把本地狀態匯出成事件，再批次建立彙總進度。
+
+## 8B. 學生系統的隔離與資料模型
+
+Supabase Auth 的 `auth.uid()` 是身份唯一來源，前端傳入的 `user_id` 不具信任性。所有學生資料表啟用 RLS，並要求 `user_id = auth.uid()`；教師／管理者日後透過明確的 `class_memberships` 角色政策讀取被授權學生，不能以「知道 ID」繞過隔離。
+
+建議新增以下表（取代長期依賴單一 JSON）：
+
+| 表 | 用途 |
+| --- | --- |
+| `profiles` | 顯示名稱、母語、時區及建立時間 |
+| `user_learning_settings` | 每日分鐘數、每日新詞上限、目標技能、羅馬拼音顯示、通知及自訂範圍 |
+| `study_plans` / `study_plan_items` | 學生選定的課程、主題或自訂詞庫快照 |
+| `review_events` | 不可變作答紀錄，可離線同步 |
+| `user_entry_progress` | 每位學生對每個 entry 的排程與能力彙總 |
+| `study_sessions` | 一次學習開始／結束、裝置及統計 |
+
+### 老師群組（one-to-many）
+
+老師與群組採 `teacher 1 -> many groups`：一位老師可以建立及管理多個班級／學習群組；每個群組保存名稱、邀請碼、課程設定及建立者。群組與學生之間使用 membership 表，而不是把 `group_id` 直接寫進學生帳戶，因為同一學生日後可能同時參加多個群組。
+
+| 表 | 關係及用途 | 主要欄位 |
+| --- | --- | --- |
+| `teacher_profiles` | 一位老師一個公開教學身份 | `user_id`、`display_name`、`created_at` |
+| `learning_groups` | 一位老師可有多個群組 | `id`、`owner_teacher_id`、`name`、`invite_code`、`status`、`created_at` |
+| `group_memberships` | 群組與學生的成員關係 | `group_id`、`student_id`、`role`、`status`、`joined_at`、`left_at` |
+| `group_plans` | 群組共用的課程／範圍 | `group_id`、`plan_snapshot`、`version`、`published_at` |
+
+`learning_groups.owner_teacher_id` 必須只能指向具教師身份的帳戶；RLS 允許群組擁有者管理群組和成員，學生只能讀取自己所在群組及被發布的計劃。老師查看學生表現時只提供彙總（完成率、掌握分布、薄弱主題），除非學生明確授權，不直接暴露完整作答內容。若產品最後要求嚴格的一對多（學生只能屬於一個群組），可在 `group_memberships` 加 `unique(student_id) where status = 'active'`；預設先保留多群組能力。
+
+每個同步請求使用冪等事件 ID和伺服器時間；衝突時採事件合併，不能用整包 JSON 的最後寫入覆蓋另一裝置。帳戶刪除以 cascade 清除個人資料，內容主檔不跟著刪除。
+
+## 8C. 學生可設定的學習範圍
+
+設定介面分成「目標」和「範圍」兩層，預設提供安全的入門選項：
+
+- 目標：旅行生存、日常對話、閱讀、聽力、口說；可選一個主目標及最多兩個次目標。
+- 範圍：課程階段／週、主題、來源、收藏、薄弱字、自訂詞條；支援包含及排除，並顯示預計詞條數。
+- 節奏：每日 5／10／15／30 分鐘、每日新內容上限 3／5／10、是否顯示羅馬拼音。
+- 模式：跟隨路線（自動解鎖）、自由練習（只在所選範圍抽題）、考前衝刺（提高指定日期前的到期題比例）。
+
+每次開始學習先產生 `study_plan` 快照；之後內容分類改名不會改變學生當時的範圍。若範圍太窄導致沒有足夠題目，明確提示並只放寬同一主題的舊題，不暗中加入未選內容。
+
+## 8D. 「由淺入深」的可計算定義
+
+難度不是單一標籤，也不只按詞頻。每個詞條／句子使用五個維度評分（0–4）：字形負擔、發音負擔、詞彙頻率、句法複雜度、溝通任務負擔；另保存前置條件（例如數字、量詞先於購物句）。內容難度可計算為加權分數，但學生解鎖依「能力掌握」而非分數本身。
+
+初始內部級別：`A0 生存辨認`、`A1 基本回應`、`A2 日常互動`、`B1 敘事與意見`、`B2 自然變化`。升級條件採最近 20 次相關事件：辨認正確率至少 85%、主動回想至少 75%、連續兩次在不同題型答對，且沒有高優先級前置技能未掌握。新級別先以 10% challenge 題試探；錯誤率超過 35% 就降回上一級的混合複習。
+
+自學者的預設路線沿用 365 天五階段和每週節奏：60% 已學複習、30% 新內容、10% 挑戰。完成單元不等於永久掌握；只有在間隔後仍達到門檻才標記為 `mastered`。學生可隨時跳級，但先做短 placement test，結果只調整起始隊列，不刪除未掌握內容。
+
+## 8E. 建議落地順序
+
+1. 先完成 localStorage JSON 匯出／匯入及事件格式，讓現有單人資料可回復。
+2. 將 `reviews` 寫入本地 `review_events`，由事件重建 `user_entry_progress`，加入冪等 ID 和 `algorithm_version`。
+3. 建立 Supabase 正規化表與 RLS，保留 `user_learning_states` 作為過渡讀取來源，完成一次性遷移後再停止整包覆蓋。
+4. 加入學習設定、範圍快照和 placement test；最後建立教師群組、邀請碼／審核加入、群組課程發布及彙總進度頁面。
+
+這個順序先解決「數據變大仍可信」的基礎，再增加學生體驗；任何新題型都必須先定義 `target_skill`、評分規則及通過門檻，才可進入正式排程。
+
 ## 9. 執行與驗證
 
 本地測試伺服器：
@@ -269,6 +340,14 @@ node --check web/sw.js
 ## 13. 更新紀錄
 
 ### 2026-08-13
+
+- 美化 Top Bar：桌面版把次要工具整理成一致工具列並突出快速複習；手機版改為品牌、分類及功能兩個清晰入口，完整操作收納在兩欄功能選單，避免按鈕擠壓或消失。
+- 手機版新增左側滑出分類面板，包含全部／待複習／收藏及完整主題列表，支援遮罩、關閉按鈕、選取主題後自動收起及背景捲動鎖定。
+- 核心資源提升至 `v=15`，Service Worker 快取提升至 `thai-review-shell-v15`；影響檔案：`web/index.html`、`web/styles.css`、`web/app.js`、`web/sw.js`、`PROJECT.md`。驗證：390px 手機版分類面板、主題選取自動關閉、功能選單、背景捲動鎖定及水平溢出通過；1440px 桌面 Top Bar 無重疊，瀏覽器無 console error。
+
+- 補充教師群組模型：採「一位老師可管理多個群組」的 one-to-many 關係，以 `teacher_profiles`、`learning_groups`、`group_memberships` 及 `group_plans` 分離身份、群組、成員和課程發布；學生進度仍歸學生本人，老師預設只看彙總資料。另記錄可選的嚴格單群組約束及邀請／審核流程。驗證：`git diff --check` 通過，未新增 migration。
+
+- 補充擴大資料庫及學生系統架構規格：以內容版本、不可變 `review_events`、可重算的個人進度快取及冪等同步確保快速複習可追溯；定義 Supabase RLS 的學生隔離、學習範圍／計劃快照、每日節奏及 placement test；將難度拆為字形、發音、頻率、句法和任務五個維度，並以跨題型掌握門檻控制由淺入深與跳級。驗證：對照現有 `user_learning_states` migration、365 天課程比例、現有本地狀態及資料庫相容設計，確認規格與目前功能及遷移順序一致；尚未新增資料庫 migration 或前端功能。
 
 - 即時翻譯主供應商由 CloudVein Claude 切換至 Azure Translator（East Asia）；Azure 結果作為唯一翻譯內容，Claude 只補充泰文讀音、詞性、語氣及學習提示，補充服務失敗時仍會回傳基本翻譯。
 - Azure API key、region 及 endpoint 已透過 Wrangler CLI 加密保存於 Cloudflare Pages production secrets，沒有寫入前端、`.env` 或 Git；Worker 對 Azure 暫時性錯誤保留三次重試及清晰錯誤訊息。

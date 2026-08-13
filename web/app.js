@@ -89,6 +89,11 @@ const elements = {
   translationNotes: document.querySelector("#translation-notes"),
   translationSpeak: document.querySelector("#translation-speak"),
   translationSave: document.querySelector("#translation-save"),
+  mobileFilterButton: document.querySelector("#mobile-filter-button"),
+  closeMobileFilters: document.querySelector("#close-mobile-filters"),
+  filterBackdrop: document.querySelector("#filter-backdrop"),
+  mobileMenuButton: document.querySelector("#mobile-menu-button"),
+  topActions: document.querySelector("#top-actions"),
 };
 
 let installPrompt = null;
@@ -392,6 +397,16 @@ function renderFilters() {
   elements.categoryOptions.innerHTML = uniqueSorted(state.entries.map((entry) => entry.category))
     .map((category) => `<option value="${category}"></option>`)
     .join("");
+}
+
+function setMobileFilters(open) {
+  document.body.classList.toggle("filters-open", open);
+  elements.mobileFilterButton.setAttribute("aria-expanded", String(open));
+}
+
+function setMobileMenu(open) {
+  elements.topActions.classList.toggle("is-open", open);
+  elements.mobileMenuButton.setAttribute("aria-expanded", String(open));
 }
 
 function getFilteredEntries() {
@@ -895,6 +910,23 @@ document.querySelector("#clear-category").addEventListener("click", () => {
   state.category = "";
   renderFilters();
   renderFirstPage();
+});
+
+elements.mobileFilterButton.addEventListener("click", () => {
+  setMobileMenu(false);
+  setMobileFilters(!document.body.classList.contains("filters-open"));
+});
+elements.closeMobileFilters.addEventListener("click", () => setMobileFilters(false));
+elements.filterBackdrop.addEventListener("click", () => setMobileFilters(false));
+elements.mobileMenuButton.addEventListener("click", () => {
+  setMobileFilters(false);
+  setMobileMenu(!elements.topActions.classList.contains("is-open"));
+});
+elements.topActions.addEventListener("click", (event) => {
+  if (event.target.closest("button")) setMobileMenu(false);
+});
+elements.categoryFilter.addEventListener("click", () => {
+  if (window.matchMedia("(max-width: 760px)").matches) setMobileFilters(false);
 });
 
 document.querySelector("#clear-initial").addEventListener("click", () => {

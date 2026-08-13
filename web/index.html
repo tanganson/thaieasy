@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=14" />
+    <link rel="stylesheet" href="styles.css?v=15" />
   </head>
   <body>
     <div class="app-shell">
@@ -25,7 +25,16 @@
           </span>
         </a>
 
-        <div class="top-actions">
+        <div class="mobile-nav-actions">
+          <button class="mobile-nav-button" id="mobile-filter-button" type="button" aria-controls="filters" aria-expanded="false">
+            <i data-lucide="panel-left" aria-hidden="true"></i><span>分類</span>
+          </button>
+          <button class="mobile-nav-button" id="mobile-menu-button" type="button" aria-controls="top-actions" aria-expanded="false">
+            <i data-lucide="menu" aria-hidden="true"></i><span>功能</span>
+          </button>
+        </div>
+
+        <div class="top-actions" id="top-actions">
           <button class="button button-secondary account-button" id="account-button" type="button">
             <i data-lucide="cloud" aria-hidden="true"></i>
             <span id="account-label">登入同步</span>
@@ -96,7 +105,12 @@
         </section>
 
         <section class="workspace">
-          <aside class="filters" aria-label="搜尋篩選">
+          <button class="filter-backdrop" id="filter-backdrop" type="button" aria-label="關閉分類面板"></button>
+          <aside class="filters" id="filters" aria-label="搜尋篩選">
+            <div class="mobile-filter-header">
+              <div><p class="eyebrow">Browse notes</p><h2>瀏覽與分類</h2></div>
+              <button class="icon-button" id="close-mobile-filters" type="button" aria-label="關閉分類面板"><i data-lucide="x" aria-hidden="true"></i></button>
+            </div>
             <div class="filter-block">
               <div class="filter-heading">
                 <h2>檢視</h2>
@@ -420,7 +434,7 @@
     <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
     <script src="vendor/supabase.min.js?v=13"></script>
     <script src="supabase-config.js?v=13"></script>
-    <script src="data.js?v=14"></script>
-    <script src="app.js?v=14"></script>
+    <script src="data.js?v=15"></script>
+    <script src="app.js?v=15"></script>
   </body>
 </html>
