@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=29" />
+    <link rel="stylesheet" href="styles.css?v=30" />
   </head>
   <body>
     <div class="app-shell">
@@ -36,8 +36,8 @@
 
         <div class="top-actions" id="top-actions">
           <button class="button button-secondary account-button" id="account-button" type="button">
-            <i data-lucide="cloud" aria-hidden="true"></i>
-            <span id="account-label">登入同步</span>
+            <i data-lucide="user-round" aria-hidden="true"></i>
+            <span id="account-label">會員登入</span>
           </button>
           <a class="button button-secondary" id="admin-link" href="/admin/" hidden>
             <i data-lucide="shield-check" aria-hidden="true"></i>
@@ -250,15 +250,31 @@
       <form id="auth-form">
         <div class="modal-header">
           <div>
-            <p class="eyebrow">Cloud sync</p>
-            <h2 id="auth-title">登入同步進度</h2>
+            <p class="eyebrow">Member account</p>
+            <h2 id="auth-title">會員登入</h2>
           </div>
           <button class="icon-button" id="close-auth-dialog" type="button" title="關閉" aria-label="關閉登入視窗">
             <i data-lucide="x" aria-hidden="true"></i>
           </button>
         </div>
-        <p class="auth-copy" id="auth-copy">使用電郵和密碼登入。登入狀態會保留，不需要每次收取驗證郵件。</p>
-        <label class="auth-email">
+        <div class="auth-tabs" id="auth-tabs" role="tablist" aria-label="會員帳戶操作">
+          <button class="is-active" type="button" role="tab" aria-selected="true" data-auth-mode="login">登入</button>
+          <button type="button" role="tab" aria-selected="false" data-auth-mode="signup">註冊</button>
+        </div>
+        <p class="auth-copy" id="auth-copy">登入後可在不同裝置使用你的學習庫、收藏和複習進度。</p>
+        <section class="member-summary" id="member-summary" hidden aria-label="會員資料">
+          <div class="member-avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
+          <div>
+            <strong id="member-name">會員</strong>
+            <span id="member-email"></span>
+          </div>
+          <span class="member-badge">會員</span>
+        </section>
+        <label class="auth-email" id="display-name-field" hidden>
+          <span>顯示名稱</span>
+          <input id="auth-display-name" type="text" autocomplete="name" maxlength="80" placeholder="例如：Anson" />
+        </label>
+        <label class="auth-email" id="auth-email-field">
           <span>電郵地址</span>
           <input id="auth-email" type="email" autocomplete="email" required placeholder="name@example.com" />
         </label>
@@ -272,8 +288,7 @@
         </label>
         <p class="auth-status" id="auth-status" aria-live="polite"></p>
         <div class="auth-links" id="auth-links">
-          <button id="forgot-password-button" type="button">忘記／設定密碼</button>
-          <button id="switch-auth-mode" type="button">首次註冊</button>
+          <button id="forgot-password-button" type="button">忘記密碼？</button>
         </div>
         <div class="modal-actions">
           <button class="button button-secondary" id="sign-out-button" type="button" hidden>登出</button>
@@ -446,7 +461,7 @@
     <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
     <script src="vendor/supabase.min.js?v=13"></script>
     <script src="supabase-config.js?v=13"></script>
-    <script src="data.js?v=29"></script>
-    <script src="app.js?v=29"></script>
+    <script src="data.js?v=30"></script>
+    <script src="app.js?v=30"></script>
   </body>
 </html>

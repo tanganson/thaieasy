@@ -76,6 +76,10 @@ const elements = {
   adminLink: document.querySelector("#admin-link"),
   authDialog: document.querySelector("#auth-dialog"),
   authForm: document.querySelector("#auth-form"),
+  authTabs: document.querySelector("#auth-tabs"),
+  displayNameField: document.querySelector("#display-name-field"),
+  authDisplayName: document.querySelector("#auth-display-name"),
+  authEmailField: document.querySelector("#auth-email-field"),
   authEmail: document.querySelector("#auth-email"),
   authPassword: document.querySelector("#auth-password"),
   authPasswordConfirm: document.querySelector("#auth-password-confirm"),
@@ -86,10 +90,12 @@ const elements = {
   authLinks: document.querySelector("#auth-links"),
   authStatus: document.querySelector("#auth-status"),
   authSubmitButton: document.querySelector("#auth-submit-button"),
-  switchAuthMode: document.querySelector("#switch-auth-mode"),
   forgotPasswordButton: document.querySelector("#forgot-password-button"),
   signOutButton: document.querySelector("#sign-out-button"),
   changePasswordButton: document.querySelector("#change-password-button"),
+  memberSummary: document.querySelector("#member-summary"),
+  memberName: document.querySelector("#member-name"),
+  memberEmail: document.querySelector("#member-email"),
   translateButton: document.querySelector("#translate-button"),
   translationDialog: document.querySelector("#translation-dialog"),
   translationForm: document.querySelector("#translation-form"),
@@ -251,17 +257,30 @@ function setSyncStatus(message) {
 
 function renderAccountState() {
   const signedIn = Boolean(currentUser);
+  const changingPassword = authMode === "recovery";
   elements.accountButton.classList.toggle("is-synced", signedIn);
-  elements.accountLabel.textContent = signedIn ? "已同步" : "登入同步";
-  elements.authEmail.hidden = signedIn;
-  elements.passwordField.hidden = signedIn;
-  elements.confirmPasswordField.hidden = signedIn || authMode === "login";
-  elements.authLinks.hidden = signedIn || authMode === "recovery";
-  elements.authSubmitButton.hidden = signedIn;
-  elements.signOutButton.hidden = !signedIn;
-  elements.changePasswordButton.hidden = !signedIn;
+  elements.accountLabel.textContent = signedIn ? "會員中心" : "會員登入";
+  elements.authTabs.hidden = signedIn || changingPassword;
+  elements.memberSummary.hidden = !signedIn || changingPassword;
+  elements.displayNameField.hidden = signedIn || authMode !== "signup";
+  elements.authDisplayName.required = !signedIn && authMode === "signup";
+  elements.authEmailField.hidden = signedIn || changingPassword;
+  elements.authEmail.required = !signedIn && !changingPassword;
+  elements.passwordField.hidden = signedIn && !changingPassword;
+  elements.confirmPasswordField.hidden = signedIn ? !changingPassword : authMode === "login";
+  elements.authLinks.hidden = signedIn || changingPassword || authMode === "signup";
+  elements.authSubmitButton.hidden = signedIn && !changingPassword;
+  elements.signOutButton.hidden = !signedIn || changingPassword;
+  elements.changePasswordButton.hidden = !signedIn || changingPassword;
   if (!signedIn) elements.adminLink.hidden = true;
-  if (signedIn) setSyncStatus(`已登入 ${currentUser.email}`);
+  if (signedIn) {
+    elements.authTitle.textContent = changingPassword ? "設定新密碼" : "會員中心";
+    elements.authCopy.textContent = changingPassword
+      ? "輸入至少 8 個字元的新密碼，儲存後會繼續保持登入。"
+      : "你的學習庫、收藏和複習進度會在背景自動保存。";
+    elements.memberName.textContent = currentUser.user_metadata?.display_name?.trim() || "泰簡單會員";
+    elements.memberEmail.textContent = currentUser.email || "";
+  }
 }
 
 async function renderAdminAccess() {
@@ -276,14 +295,14 @@ function setAuthMode(mode) {
   authMode = mode;
   const profiles = {
     login: {
-      title: "登入同步進度",
-      copy: "使用電郵和密碼登入。登入狀態會保留，不需要每次收取驗證郵件。",
+      title: "會員登入",
+      copy: "登入後可在不同裝置使用你的學習庫、收藏和複習進度。",
       submit: "登入",
     },
     signup: {
-      title: "建立同步帳戶",
-      copy: "首次註冊需要驗證一次電郵；完成後便可直接使用密碼登入。",
-      submit: "註冊",
+      title: "建立會員帳戶",
+      copy: "免費註冊後只需驗證一次電郵，日後可直接使用密碼登入。",
+      submit: "建立帳戶",
     },
     recovery: {
       title: "設定新密碼",
@@ -296,16 +315,16 @@ function setAuthMode(mode) {
   elements.authCopy.textContent = profile.copy;
   elements.authSubmitButton.textContent = profile.submit;
   elements.changePasswordButton.hidden = true;
-  elements.passwordField.hidden = false;
-  elements.authSubmitButton.hidden = false;
-  elements.confirmPasswordField.hidden = mode === "login";
-  elements.authEmail.hidden = mode === "recovery";
-  elements.authLinks.hidden = mode === "recovery";
   elements.authPassword.autocomplete = mode === "login" ? "current-password" : "new-password";
-  elements.switchAuthMode.textContent = mode === "signup" ? "已有帳戶？登入" : "首次註冊";
+  elements.authTabs.querySelectorAll("[data-auth-mode]").forEach((button) => {
+    const active = button.dataset.authMode === mode;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
   elements.authPassword.value = "";
   elements.authPasswordConfirm.value = "";
   setSyncStatus("");
+  renderAccountState();
 }
 
 function authErrorMessage(error) {
@@ -320,14 +339,13 @@ function authErrorMessage(error) {
 
 async function syncToCloud() {
   if (!supabaseClient || !currentUser || !navigator.onLine) return;
-  setSyncStatus("正在同步...");
   const { error } = await supabaseClient.from("user_learning_states").upsert({
     user_id: currentUser.id,
     state: serializedState(),
     updated_at: new Date().toISOString(),
   });
   if (!error) await syncStructuredLearning();
-  setSyncStatus(error ? "同步失敗，本機資料仍已保存" : "進度已同步");
+  if (error) setSyncStatus("暫時無法保存雲端進度，本機資料仍已保留");
 }
 
 function scheduleCloudSync() {
@@ -338,7 +356,6 @@ function scheduleCloudSync() {
 
 async function loadCloudState() {
   if (!supabaseClient || !currentUser) return;
-  setSyncStatus("正在讀取雲端進度...");
   const { data, error } = await supabaseClient
     .from("user_learning_states")
     .select("state")
@@ -351,7 +368,6 @@ async function loadCloudState() {
   if (data?.state) {
     applyPersistedState(data.state);
     await loadStructuredLearning();
-    setSyncStatus("已載入雲端進度");
   } else {
     await loadStructuredLearning();
     await syncToCloud();
@@ -1303,9 +1319,9 @@ elements.translationSpeak.addEventListener("click", () => speakThai(elements.tra
 elements.translationSave.addEventListener("click", saveTranslationEntry);
 
 elements.accountButton.addEventListener("click", () => {
-  if (!currentUser) setAuthMode("login");
+  if (!currentUser || authMode === "recovery") setAuthMode("login");
   renderAccountState();
-  if (!supabaseClient) setSyncStatus("同步服務載入失敗，請重新整理頁面");
+  if (!supabaseClient) setSyncStatus("會員服務載入失敗，請重新整理頁面");
   elements.authDialog.showModal();
 });
 
@@ -1316,9 +1332,10 @@ document.querySelector("#close-auth-dialog").addEventListener("click", () => {
 elements.authForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!supabaseClient) {
-    setSyncStatus("同步服務尚未設定");
+    setSyncStatus("會員服務尚未設定");
     return;
   }
+  const displayName = elements.authDisplayName.value.trim();
   const password = elements.authPassword.value;
   const confirmation = elements.authPasswordConfirm.value;
   if (password.length < 8) {
@@ -1329,6 +1346,10 @@ elements.authForm.addEventListener("submit", async (event) => {
     setSyncStatus("兩次輸入的密碼不一致");
     return;
   }
+  if (authMode === "signup" && !displayName) {
+    setSyncStatus("請輸入顯示名稱");
+    return;
+  }
   elements.authSubmitButton.disabled = true;
   setSyncStatus(authMode === "login" ? "正在登入..." : "正在處理...");
   let result;
@@ -1336,7 +1357,10 @@ elements.authForm.addEventListener("submit", async (event) => {
     result = await supabaseClient.auth.signUp({
       email: elements.authEmail.value.trim(),
       password,
-      options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}` },
+      options: {
+        emailRedirectTo: `${window.location.origin}${window.location.pathname}`,
+        data: { display_name: displayName },
+      },
     });
   } else if (authMode === "recovery") {
     result = await supabaseClient.auth.updateUser({ password });
@@ -1352,16 +1376,19 @@ elements.authForm.addEventListener("submit", async (event) => {
     return;
   }
   if (authMode === "signup" && !result.data.session) {
-    setSyncStatus("驗證郵件已寄出；完成一次驗證後即可使用密碼登入");
+    setSyncStatus("驗證郵件已寄出。請完成一次電郵驗證，再回來登入會員帳戶。");
   } else if (authMode === "recovery") {
+    authMode = "login";
+    renderAccountState();
     setSyncStatus("新密碼已儲存，帳戶已登入");
   } else {
-    setSyncStatus("登入成功，正在同步進度...");
+    setSyncStatus("登入成功");
   }
 });
 
-elements.switchAuthMode.addEventListener("click", () => {
-  setAuthMode(authMode === "signup" ? "login" : "signup");
+elements.authTabs.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-auth-mode]");
+  if (button) setAuthMode(button.dataset.authMode);
 });
 
 elements.forgotPasswordButton.addEventListener("click", async () => {
@@ -1388,8 +1415,9 @@ elements.signOutButton.addEventListener("click", async () => {
   if (!supabaseClient) return;
   await supabaseClient.auth.signOut();
   currentUser = null;
+  setAuthMode("login");
   renderAccountState();
-  setSyncStatus("已登出；本機資料仍會保留");
+  setSyncStatus("已登出會員帳戶；此裝置的本機資料仍會保留");
 });
 
 window.addEventListener("online", scheduleCloudSync);

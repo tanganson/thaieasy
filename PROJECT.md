@@ -43,6 +43,7 @@
 | 學習進度頁面 | 規劃中 | 等累積足夠複習資料後加入 |
 | 正式資料庫 | 已接入（公共詞庫／學生學習庫第一版） | Supabase Free project `thaieasy` 位於新加坡 `ap-southeast-1`；`entries` 與 `public_entries` 已有 405 筆公共教材，學生學習範圍、進度、複習事件及筆記匯入候選表已建立 RLS；現有 JSON 狀態保留作為兼容同步 |
 | 會員角色系統 | 已完成（第一版） | 訪客可完整使用公共內容；會員角色包含學生、老師、內容編輯、支援管理員、管理員及最高管理員，帳號可停用或恢復 |
+| 會員註冊／登入 | 已完成 | 前台提供登入／註冊分頁及會員中心；支援顯示名稱、一次電郵驗證、密碼登入、密碼重設及背景保存學習資料 |
 | 管理後台 | 已完成（第一版） | `/admin/` 提供會員搜尋、角色與狀態管理、邀請／密碼設定、學習群組、成員管理、公共教材版本編輯及不可變審計紀錄 |
 | Cloudflare Pages 部署 | 已完成 | Production URL：`https://thaieasy.pages.dev`；專案 `thaieasy`，production branch `main` |
 | 即時翻譯頁面 | 已完成（第二版） | 使用 Azure Translator 提供穩定的泰中翻譯，Claude Haiku 4.5 僅非阻塞補充讀音與學習提示；泰中雙向、自動判斷、可編輯結果、泰文播放及收藏詞條；API keys 使用 Cloudflare Secrets |
@@ -361,6 +362,7 @@ node --check web/sw.js
 
 ### 2026-08-14 公共詞庫與學生學習庫第一版
 
+- 將前台「登入同步」重整為正式會員註冊／登入流程：頂部入口改為「會員登入／會員中心」，登入視窗加入登入／註冊分頁、註冊顯示名稱及登入後會員資料卡；保留既有 Supabase 帳戶、電郵驗證、密碼重設、登入 session、RLS 與學習資料，日常雲端保存改為背景執行，只在失敗時提示。核心資源提升至 `v=30`，Service Worker 快取提升至 `thai-review-shell-v30`。驗證：`node --check`、`git diff --check`、桌面及 390×844 手機會員視窗通過；註冊欄位與必填狀態正確、無水平溢出及 console 錯誤；Cloudflare production 已載入 `v30` 資源並顯示新版會員流程。
 - 新增 `public_entries`／`public_entry_versions` 公共詞庫，並以 902 migration 將現有管理表 `entries` 自動鏡像；遠端查證兩者均為 405 筆。
 - 新增每位學生以 `user_id` 隔離的 `student_learning_entries`、`student_custom_entries`、`user_entry_progress`、`review_events`、`note_import_jobs` 及 `note_import_candidates`，所有學生資料均啟用 RLS。
 - 主站會先讀取 Supabase `public_entries` 已發布內容，網路或資料庫失敗才回退到 PWA 的 `web/data.js`，因此管理員發布的新版本可直接成為公共瀏覽內容。
