@@ -42,6 +42,8 @@
 | 資料匯出／匯入 | 規劃中 | 尚未提供 JSON 備份及還原介面 |
 | 學習進度頁面 | 規劃中 | 等累積足夠複習資料後加入 |
 | 正式資料庫 | 接入中 | Supabase Free project `thaieasy` 位於新加坡 `ap-southeast-1`；已加入使用者學習狀態 schema、RLS、Email Magic Link 登入及 localStorage 離線優先同步 |
+| 會員角色系統 | 已完成（第一版） | 訪客可完整使用公共內容；會員角色包含學生、老師、內容編輯、支援管理員、管理員及最高管理員，帳號可停用或恢復 |
+| 管理後台 | 已完成（第一版） | `/admin/` 提供會員搜尋、角色與狀態管理、邀請／密碼設定、學習群組、成員管理及不可變審計紀錄 |
 | Cloudflare Pages 部署 | 已完成 | Production URL：`https://thaieasy.pages.dev`；專案 `thaieasy`，production branch `main` |
 | 即時翻譯頁面 | 已完成（第二版） | 使用 Azure Translator 提供穩定的泰中翻譯，Claude Haiku 4.5 僅非阻塞補充讀音與學習提示；泰中雙向、自動判斷、可編輯結果、泰文播放及收藏詞條；API keys 使用 Cloudflare Secrets |
 
@@ -67,7 +69,9 @@ Thai/
 │   ├── data.js                       # 自動產生的網站詞句資料
 │   ├── manifest.webmanifest          # PWA 設定
 │   ├── sw.js                         # 離線快取
+│   ├── admin/                        # 會員、角色與學習群組管理後台
 │   └── assets/                       # 網站圖片資源
+├── supabase/migrations/              # 學習狀態、會員角色、群組及 RLS
 └── 泰語複習.app/                     # macOS 快速啟動器
 ```
 
@@ -235,6 +239,14 @@ Supabase Auth 的 `auth.uid()` 是身份唯一來源，前端傳入的 `user_id`
 
 每個同步請求使用冪等事件 ID和伺服器時間；衝突時採事件合併，不能用整包 JSON 的最後寫入覆蓋另一裝置。帳戶刪除以 cascade 清除個人資料，內容主檔不跟著刪除。
 
+### 已落地的會員與管理後台第一版
+
+`profiles` 以 Supabase `auth.users` 為身份來源，新註冊帳號由 trigger 自動建立學生 profile。角色固定為 `student`、`teacher`、`content_editor`、`support_admin`、`admin` 及 `super_admin`；帳號狀態為 `active` 或 `suspended`。停用帳號時，Cloudflare Worker 會同步更新 profile 狀態及 Supabase Auth ban，既有學習狀態 RLS 亦要求帳號有效。
+
+管理操作只能經 `/api/admin/*` 進入。Worker 先驗證 Supabase access token，再讀取有效角色；`SUPABASE_SERVICE_ROLE_KEY` 只保存在 Cloudflare Pages encrypted secret，不存在前端或 Git。支援管理員可處理一般帳號狀態及密碼設定，管理員可建立帳號、變更非管理角色和管理群組，只有最高管理員可授予管理角色或永久刪除帳號。
+
+`learning_groups` 保存老師擁有的群組及 8 位邀請碼，`group_memberships` 保存學生／助教關係；`admin_audit_logs` 只可由後端追加，記錄執行者、對象、操作、原因及前後狀態。第一版後台不提供查看密碼或直接設定可讀密碼，帳號透過邀請或密碼設定郵件啟用。
+
 ## 8C. 學生可設定的學習範圍
 
 設定介面分成「目標」和「範圍」兩層，預設提供安全的入門選項：
@@ -351,6 +363,11 @@ node --check web/sw.js
 ## 13. 更新紀錄
 
 ### 2026-08-13
+
+- 建立會員與管理後台第一版：新增六級角色、帳號有效／停用狀態、自動 profile、老師群組、群組成員及管理審計 schema，並以 RLS 阻止已停用帳號繼續同步學習資料。
+- 新增 `/admin/` 響應式後台，提供會員搜尋與篩選、邀請帳號、角色／狀態管理、密碼設定郵件、學習群組、成員管理及審計紀錄；主站只向有效管理角色顯示後台入口。
+- 新增同源 `/api/admin/*` 管理 API；每次請求驗證 Supabase JWT 及資料庫角色，Supabase `service_role` 只保存於 Cloudflare encrypted secret。管理操作要求原因，最高管理員不能停用或刪除自己。
+- 既有 `tomasdanson@gmail.com` 設為首位 `super_admin`；另建立學生、老師、內容編輯、支援管理員及管理員獨立角色帳號，使用同一 Gmail 收件箱的 `+role` 別名，沒有共享或寫入 Git 的預設密碼。核心資源提升至 `v=27`，Service Worker 快取提升至 `thai-review-shell-v27`。
 
 - 簡化手機版詞條卡：在 760px 以下隱藏「打招呼與基本禮貌」等分類標籤，分類資料及桌面顯示保持不變；同步收緊卡片上下留白，增加每屏可見詞條數。核心資源提升至 `v=26`，Service Worker 快取提升至 `thai-review-shell-v26`。驗證：390×844 下 25 張卡的分類標籤均不顯示，上下留白為 14px、水平溢出為 0 且 console 無錯誤；1440×900 下分類標籤仍正常顯示。
 

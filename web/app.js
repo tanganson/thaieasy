@@ -73,6 +73,7 @@ const elements = {
   practiceNext: document.querySelector("#practice-next"),
   accountButton: document.querySelector("#account-button"),
   accountLabel: document.querySelector("#account-label"),
+  adminLink: document.querySelector("#admin-link"),
   authDialog: document.querySelector("#auth-dialog"),
   authForm: document.querySelector("#auth-form"),
   authEmail: document.querySelector("#auth-email"),
@@ -233,7 +234,16 @@ function renderAccountState() {
   elements.authLinks.hidden = signedIn || authMode === "recovery";
   elements.authSubmitButton.hidden = signedIn;
   elements.signOutButton.hidden = !signedIn;
+  if (!signedIn) elements.adminLink.hidden = true;
   if (signedIn) setSyncStatus(`已登入 ${currentUser.email}`);
+}
+
+async function renderAdminAccess() {
+  elements.adminLink.hidden = true;
+  if (!supabaseClient || !currentUser) return;
+  const { data } = await supabaseClient.from("profiles").select("role,status").eq("user_id", currentUser.id).maybeSingle();
+  elements.adminLink.hidden = !data || data.status !== "active" || !["support_admin", "admin", "super_admin"].includes(data.role);
+  window.lucide?.createIcons();
 }
 
 function setAuthMode(mode) {
@@ -324,7 +334,7 @@ async function initializeAuth() {
   const { data } = await supabaseClient.auth.getSession();
   currentUser = data.session?.user || null;
   renderAccountState();
-  if (currentUser) await loadCloudState();
+  if (currentUser) await Promise.all([loadCloudState(), renderAdminAccess()]);
   if (recoveryCallback) {
     setAuthMode("recovery");
     elements.authDialog.showModal();
@@ -338,7 +348,10 @@ async function initializeAuth() {
       setAuthMode("recovery");
       elements.authDialog.showModal();
     }
-    if (changed && currentUser) window.setTimeout(loadCloudState, 0);
+    if (changed && currentUser) {
+      window.setTimeout(loadCloudState, 0);
+      window.setTimeout(renderAdminAccess, 0);
+    }
   });
 }
 

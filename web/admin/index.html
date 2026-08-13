@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#10231f" />
+    <title>泰簡單｜管理後台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="admin.css?v=1" />
+  </head>
+  <body>
+    <main class="auth-screen" id="auth-screen">
+      <section class="auth-panel" aria-labelledby="login-title">
+        <a href="/" class="auth-brand"><span lang="th">คำ</span><strong>泰簡單</strong></a>
+        <p class="eyebrow">Administration</p>
+        <h1 id="login-title">管理後台</h1>
+        <p>只限獲授權的支援及管理帳號。</p>
+        <form id="login-form">
+          <label>電郵地址<input id="login-email" type="email" autocomplete="email" required /></label>
+          <label>密碼<input id="login-password" type="password" autocomplete="current-password" minlength="8" required /></label>
+          <p class="form-status" id="login-status" aria-live="polite"></p>
+          <button class="primary-button" type="submit">登入後台</button>
+        </form>
+        <a class="back-link" href="/">返回學習頁面</a>
+      </section>
+    </main>
+
+    <div class="admin-app" id="admin-app" hidden>
+      <aside class="admin-sidebar">
+        <a href="/" class="admin-brand"><span lang="th">คำ</span><div><strong>泰簡單</strong><small>管理後台</small></div></a>
+        <nav aria-label="後台導覽">
+          <button class="nav-button is-active" data-view="overview"><i data-lucide="layout-dashboard"></i><span>總覽</span></button>
+          <button class="nav-button" data-view="accounts"><i data-lucide="users"></i><span>帳號管理</span></button>
+          <button class="nav-button" data-view="groups"><i data-lucide="school"></i><span>學習群組</span></button>
+          <button class="nav-button" data-view="audit"><i data-lucide="scroll-text"></i><span>審計紀錄</span></button>
+        </nav>
+        <div class="sidebar-user">
+          <span class="avatar" id="actor-avatar">管</span>
+          <div><strong id="actor-name">管理員</strong><small id="actor-role"></small></div>
+          <button id="sign-out" title="登出" aria-label="登出"><i data-lucide="log-out"></i></button>
+        </div>
+      </aside>
+
+      <section class="admin-main">
+        <header class="admin-header">
+          <div><p class="eyebrow" id="view-eyebrow">Workspace</p><h1 id="view-title">營運總覽</h1></div>
+          <div class="header-actions">
+            <span class="system-state"><span></span>安全連線</span>
+            <button class="icon-action" id="refresh-button" title="重新整理" aria-label="重新整理"><i data-lucide="refresh-cw"></i></button>
+          </div>
+        </header>
+
+        <div class="notice" id="notice" hidden aria-live="polite"></div>
+
+        <section class="admin-view is-active" data-panel="overview">
+          <div class="metric-grid">
+            <article><span>會員總數</span><strong id="metric-users">0</strong><small>所有已建立帳號</small></article>
+            <article><span>有效帳號</span><strong id="metric-active">0</strong><small>目前可登入使用</small></article>
+            <article><span>老師</span><strong id="metric-teachers">0</strong><small>可管理學習群組</small></article>
+            <article><span>學習群組</span><strong id="metric-groups">0</strong><small>未封存群組</small></article>
+          </div>
+          <div class="overview-columns">
+            <section class="work-section">
+              <div class="section-title"><div><p class="eyebrow">Accounts</p><h2>需要留意</h2></div></div>
+              <div class="attention-list" id="attention-list"></div>
+            </section>
+            <section class="work-section">
+              <div class="section-title"><div><p class="eyebrow">Roles</p><h2>角色分布</h2></div></div>
+              <div class="role-breakdown" id="role-breakdown"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="admin-view" data-panel="accounts">
+          <div class="section-toolbar">
+            <label class="search-field"><i data-lucide="search"></i><input id="account-search" type="search" placeholder="搜尋電郵或名稱" /></label>
+            <select id="role-filter" aria-label="按角色篩選"><option value="">全部角色</option></select>
+            <select id="status-filter" aria-label="按狀態篩選"><option value="">全部狀態</option><option value="active">有效</option><option value="suspended">已停用</option></select>
+            <button class="primary-button" id="invite-user"><i data-lucide="user-plus"></i>建立帳號</button>
+          </div>
+          <div class="table-shell">
+            <table>
+              <thead><tr><th>會員</th><th>角色</th><th>狀態</th><th>最後登入</th><th>建立日期</th><th><span class="sr-only">操作</span></th></tr></thead>
+              <tbody id="accounts-body"></tbody>
+            </table>
+          </div>
+          <p class="table-empty" id="accounts-empty" hidden>沒有符合條件的帳號。</p>
+        </section>
+
+        <section class="admin-view" data-panel="groups">
+          <div class="section-toolbar">
+            <div class="toolbar-copy"><strong>群組與成員</strong><span>一位老師可管理多個學習群組</span></div>
+            <button class="primary-button" id="create-group"><i data-lucide="plus"></i>建立群組</button>
+          </div>
+          <div class="groups-layout">
+            <div class="group-list" id="group-list"></div>
+            <section class="group-detail" id="group-detail"><div class="empty-selection"><i data-lucide="panel-right"></i><p>選擇群組查看成員</p></div></section>
+          </div>
+        </section>
+
+        <section class="admin-view" data-panel="audit">
+          <div class="section-toolbar"><div class="toolbar-copy"><strong>管理審計</strong><span>保留帳號及群組敏感操作</span></div></div>
+          <div class="table-shell">
+            <table>
+              <thead><tr><th>時間</th><th>操作</th><th>執行者</th><th>對象</th><th>原因</th></tr></thead>
+              <tbody id="audit-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <dialog id="user-dialog">
+      <form id="user-form" method="dialog">
+        <header><div><p class="eyebrow" id="user-dialog-eyebrow">Account</p><h2 id="user-dialog-title">建立帳號</h2></div><button class="dialog-close" type="button" data-close-dialog="user-dialog" aria-label="關閉"><i data-lucide="x"></i></button></header>
+        <input id="editing-user-id" type="hidden" />
+        <label id="user-email-field">電郵地址<input id="user-email" type="email" autocomplete="off" /></label>
+        <label>顯示名稱<input id="user-display-name" maxlength="80" /></label>
+        <label>角色<select id="user-role"></select></label>
+        <label id="user-status-field">帳號狀態<select id="user-status"><option value="active">有效</option><option value="suspended">停用</option></select></label>
+        <label>操作原因<textarea id="user-reason" maxlength="500" rows="3" required placeholder="供審計紀錄使用"></textarea></label>
+        <p class="form-status" id="user-form-status" aria-live="polite"></p>
+        <footer>
+          <div class="danger-actions" id="danger-actions"><button type="button" id="reset-password">寄出密碼設定</button><button type="button" id="delete-user">永久刪除</button></div>
+          <button class="secondary-button" type="button" data-close-dialog="user-dialog">取消</button><button class="primary-button" id="save-user" type="submit">建立並寄出邀請</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="group-dialog">
+      <form id="group-form" method="dialog">
+        <header><div><p class="eyebrow">Learning group</p><h2>建立學習群組</h2></div><button class="dialog-close" type="button" data-close-dialog="group-dialog" aria-label="關閉"><i data-lucide="x"></i></button></header>
+        <label>群組名稱<input id="group-name" maxlength="80" required /></label>
+        <label>負責老師<select id="group-owner" required></select></label>
+        <label>建立原因<textarea id="group-reason" maxlength="500" rows="3" required></textarea></label>
+        <p class="form-status" id="group-form-status" aria-live="polite"></p>
+        <footer><button class="secondary-button" type="button" data-close-dialog="group-dialog">取消</button><button class="primary-button" type="submit">建立群組</button></footer>
+      </form>
+    </dialog>
+
+    <dialog id="member-dialog">
+      <form id="member-form" method="dialog">
+        <header><div><p class="eyebrow">Membership</p><h2>加入群組成員</h2></div><button class="dialog-close" type="button" data-close-dialog="member-dialog" aria-label="關閉"><i data-lucide="x"></i></button></header>
+        <input id="member-group-id" type="hidden" />
+        <label>會員帳號<select id="member-user" required></select></label>
+        <label>群組身份<select id="member-role"><option value="student">學生</option><option value="assistant">助教</option></select></label>
+        <label>加入原因<textarea id="member-reason" maxlength="500" rows="3" required></textarea></label>
+        <p class="form-status" id="member-form-status" aria-live="polite"></p>
+        <footer><button class="secondary-button" type="button" data-close-dialog="member-dialog">取消</button><button class="primary-button" type="submit">加入群組</button></footer>
+      </form>
+    </dialog>
+
+    <script src="../vendor/supabase.min.js?v=13"></script>
+    <script src="../supabase-config.js?v=13"></script>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script src="admin.js?v=1"></script>
+  </body>
+</html>

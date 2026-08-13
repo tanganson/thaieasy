@@ -1,4 +1,4 @@
-const CACHE_NAME = "thai-review-shell-v26";
+const CACHE_NAME = "thai-review-shell-v27";
 const APP_SHELL = [
   "./",
   "./index.html",
