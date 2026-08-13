@@ -109,7 +109,31 @@ const supabaseClient =
     ? window.supabase.createClient(supabaseSettings?.url, supabaseSettings?.publishableKey)
     : null;
 
+const HIDDEN_CATEGORIES = new Set(["2026 年 4–7 月課堂筆記", "即時翻譯收藏"]);
+
+function inferEntryCategory(meaning, thai = "") {
+  const value = `${meaning} ${thai}`;
+  const rules = [
+    ["日期", /今天|明天|昨天|今年|明年|去年|星期|生日|這個月|上個月|下個月/],
+    ["飲食與點餐", /吃|飯|早餐|午餐|晚餐|夜宵|茶|奶|餐廳|點菜|盤子|雞|豬肉|牛肉|魚丸|粿條|麵/],
+    ["時間與頻率", /分鐘|秒|多久|平時|假期|休息日|等一下|時間/],
+    ["自我介紹與人物", /人|家人|家庭|女生|男生|老公|朋友|老師|愛情|我是|你是|他是/],
+    ["地點與旅遊", /哪裡|這裡|附近|山|停車|外面|回家|到家|城市|國家|旅遊/],
+    ["拍照、影片與教學", /拍照|照片|影片|教|學|功課|畢業|下課/],
+    ["感受與狀態", /開心|傷心|累|忙|有空|沒空|簡單|困難|喜歡|愛|飽|快|慢/],
+    ["疑問詞與常用句型", /甚麼|什麼|怎麼|可以|還有|這個|為甚麼|嗎|誰/],
+  ];
+  return rules.find(([, pattern]) => pattern.test(value))?.[0] || "日常動作與工作";
+}
+
+function migrateEntryCategories(entries) {
+  return entries.map((entry) => HIDDEN_CATEGORIES.has(entry.category)
+    ? { ...entry, category: inferEntryCategory(entry.meaning, entry.thai) }
+    : entry);
+}
+
 const persisted = loadState();
+persisted.customEntries = migrateEntryCategories(persisted.customEntries);
 const state = {
   entries: [...window.THAI_REVIEW_DATA.entries, ...persisted.customEntries],
   categories: [...window.THAI_REVIEW_DATA.categories],
@@ -135,10 +159,14 @@ const state = {
 function loadState() {
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    const customEntries = migrateEntryCategories(stored.customEntries || []);
+    if (customEntries.some((entry, index) => entry.category !== stored.customEntries?.[index]?.category)) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...stored, customEntries }));
+    }
     return {
       favorites: stored.favorites || [],
       reviews: stored.reviews || {},
-      customEntries: stored.customEntries || [],
+      customEntries,
       practiceRecords: stored.practiceRecords || [],
     };
   } catch {
@@ -163,7 +191,7 @@ function serializedState() {
 function applyPersistedState(nextState) {
   state.favorites = new Set(nextState.favorites || []);
   state.reviews = nextState.reviews || {};
-  state.customEntries = nextState.customEntries || [];
+  state.customEntries = migrateEntryCategories(nextState.customEntries || []);
   state.practiceRecords = nextState.practiceRecords || [];
   state.entries = [...window.THAI_REVIEW_DATA.entries, ...state.customEntries];
   localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedState()));
@@ -859,7 +887,7 @@ function saveTranslationEntry() {
     renderResults();
     return;
   }
-  const entry = { id: `translated-${Date.now()}`, meaning, thai, pronunciation: elements.translationPronunciation.value.trim(), category: "即時翻譯收藏", source: "即時翻譯", originalText: elements.translationInput.value.trim(), translationDirection: detectTranslationDirection(elements.translationInput.value.trim()), createdAt: new Date().toISOString() };
+  const entry = { id: `translated-${Date.now()}`, meaning, thai, pronunciation: elements.translationPronunciation.value.trim(), category: inferEntryCategory(meaning, thai), source: "即時翻譯", originalText: elements.translationInput.value.trim(), translationDirection: detectTranslationDirection(elements.translationInput.value.trim()), createdAt: new Date().toISOString() };
   state.customEntries.push(entry);
   state.entries.push(entry);
   state.favorites.add(entry.id);

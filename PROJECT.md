@@ -341,6 +341,9 @@ node --check web/sw.js
 
 ### 2026-08-13
 
+- 移除「2026 年 4–7 月課堂筆記」及「即時翻譯收藏」作為主題分類，但完整保留詞條及原始 `source`；112 筆課堂內容按日期、飲食、人物、時間、地點等既有主題重新分類。
+- 既有即時翻譯收藏在本機或雲端狀態載入時自動遷移並持久保存，新收藏依中文及泰文內容歸入現有主題。核心資源提升至 `v=18`，Service Worker 快取提升至 `thai-review-shell-v18`。驗證：405 筆總數及 112 筆課堂內容完整保留，兩個舊分類均為 0；課堂內容分布於 9 個既有主題，必填欄位、ID、Python／JavaScript 語法及 Git diff 檢查通過。
+
 - 即時翻譯改為兩階段回應：`/api/translate` 只等待 Azure 並立即顯示泰中翻譯，`/api/translate/enrich` 再於背景取得 Claude 讀音、詞性、語氣及提示；Claude 延遲或失敗不再阻塞翻譯結果。
 - 前端在 Azure 完成後立即解鎖翻譯結果並顯示學習資料載入狀態，補充完成後更新欄位及 provider 標籤。核心資源提升至 `v=17`，Service Worker 快取提升至 `thai-review-shell-v17`。
 

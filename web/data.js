@@ -2349,7 +2349,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "明天",
       "thai": "พรุ่งนี้",
       "pronunciation": "phrûng-níi",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2357,7 +2357,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "這個",
       "thai": "อันนี้",
       "pronunciation": "an-níi",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "疑問詞與常用句型",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2365,7 +2365,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "這個人",
       "thai": "คนนี้",
       "pronunciation": "khon-níi",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "自我介紹與人物",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2373,7 +2373,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "這個月",
       "thai": "เดือนนี้",
       "pronunciation": "dʉan-níi",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2381,7 +2381,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "今年",
       "thai": "ปีนี้",
       "pronunciation": "bpii-níi",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2389,7 +2389,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "聽",
       "thai": "ฟัง",
       "pronunciation": "fang",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "拍照、影片與教學",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2397,7 +2397,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "歌",
       "thai": "เพลง",
       "pronunciation": "phleeng",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "拍照、影片與教學",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2405,7 +2405,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "山",
       "thai": "ภูเขา",
       "pronunciation": "phuu-khǎo",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "地點與旅遊",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2413,7 +2413,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "他",
       "thai": "เขา",
       "pronunciation": "khǎo",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "自我介紹與人物",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2421,7 +2421,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "自己人",
       "thai": "คนกันเอง",
       "pronunciation": "khon-gan-eeng",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "自我介紹與人物",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2429,7 +2429,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "先工作哦",
       "thai": "ทำงานก่อนนะ",
       "pronunciation": "tham-ngaan gàawn ná",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "時間與頻率",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2437,7 +2437,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "停車",
       "thai": "จอดรถ",
       "pronunciation": "jàawt rót",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "地點與旅遊",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2445,7 +2445,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "停車場",
       "thai": "ลานจอดรถ",
       "pronunciation": "laan jàawt rót",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "地點與旅遊",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2453,7 +2453,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "昨天",
       "thai": "เมื่อวาน",
       "pronunciation": "mʉ̂a-waan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2461,7 +2461,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "假期／休息日",
       "thai": "วันหยุด",
       "pronunciation": "wan-yùt",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "時間與頻率",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2469,7 +2469,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "午睡",
       "thai": "นอนกลางวัน",
       "pronunciation": "naawn-glaang-wan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2477,7 +2477,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "分鐘",
       "thai": "นาที",
       "pronunciation": "naa-thii",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "時間與頻率",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2485,7 +2485,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "八卦／背後說人壞話",
       "thai": "นินทา",
       "pronunciation": "nin-thaa",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2493,7 +2493,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "關門",
       "thai": "ปิดประตู",
       "pronunciation": "bpìt bprà-dtuu",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "地點與旅遊",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2501,7 +2501,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "關電視",
       "thai": "ปิดทีวี",
       "pronunciation": "bpìt thii-wii",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2509,7 +2509,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "關電腦",
       "thai": "ปิดคอม",
       "pronunciation": "bpìt khaawm",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2517,7 +2517,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "門",
       "thai": "ประตู",
       "pronunciation": "bprà-dtuu",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "地點與旅遊",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2525,7 +2525,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "還／歸還",
       "thai": "คืน",
       "pronunciation": "khʉʉn",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2533,7 +2533,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "忘記",
       "thai": "ลืม",
       "pronunciation": "lʉʉm",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2541,7 +2541,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "奶",
       "thai": "นม",
       "pronunciation": "nom",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2549,7 +2549,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "奶茶",
       "thai": "ชานม",
       "pronunciation": "chaa-nom",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2557,7 +2557,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "泰式奶茶",
       "thai": "ชาไทย",
       "pronunciation": "chaa-Thai",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2565,7 +2565,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "秒",
       "thai": "วินาที",
       "pronunciation": "wí-naa-thii",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "時間與頻率",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2573,7 +2573,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "生日",
       "thai": "วันเกิด",
       "pronunciation": "wan-gə̀ət",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2581,7 +2581,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "星期一",
       "thai": "วันจันทร์",
       "pronunciation": "wan-jan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2589,7 +2589,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "星期二",
       "thai": "วันอังคาร",
       "pronunciation": "wan-ang-khaan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2597,7 +2597,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "星期三",
       "thai": "วันพุธ",
       "pronunciation": "wan-phút",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2605,7 +2605,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "星期四",
       "thai": "วันพฤหัสบดี",
       "pronunciation": "wan-pha-rʉ́-hàt-sà-baaw-dii",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2613,7 +2613,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "星期五",
       "thai": "วันศุกร์",
       "pronunciation": "wan-sùk",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2621,7 +2621,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "星期六",
       "thai": "วันเสาร์",
       "pronunciation": "wan-sǎo",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2629,7 +2629,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "星期日",
       "thai": "วันอาทิตย์",
       "pronunciation": "wan-aa-thít",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2637,7 +2637,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "簡單",
       "thai": "ง่าย",
       "pronunciation": "ngâai",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "感受與狀態",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2645,7 +2645,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "盤子",
       "thai": "จาน",
       "pronunciation": "jaan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2653,7 +2653,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "點菜",
       "thai": "สั่งอาหาร",
       "pronunciation": "sàng aa-hǎan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2661,7 +2661,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "雞油飯",
       "thai": "ข้าวมันไก่",
       "pronunciation": "khâao-man-gài",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2669,7 +2669,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "炒飯",
       "thai": "ข้าวผัด",
       "pronunciation": "khâao-phàt",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2677,7 +2677,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "有空桌嗎？",
       "thai": "มีโต๊ะว่างไหมครับ",
       "pronunciation": "mii dtó wâang mái khráp",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "感受與狀態",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2685,7 +2685,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "請走這邊",
       "thai": "เชิญทางนี้ค่ะ",
       "pronunciation": "chəən thaang-níi khâ",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2693,7 +2693,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "起床",
       "thai": "ตื่น",
       "pronunciation": "dtʉ̀ʉn",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2701,7 +2701,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "早餐",
       "thai": "ข้าวเช้า",
       "pronunciation": "khâao-cháao",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2709,7 +2709,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "午餐",
       "thai": "ข้าวเที่ยง",
       "pronunciation": "khâao-thîang",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2717,7 +2717,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "晚餐",
       "thai": "ข้าวเย็น",
       "pronunciation": "khâao-yen",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2725,7 +2725,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "夜宵",
       "thai": "มื้อดึก",
       "pronunciation": "mʉ́ʉ-dʉ̀k",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2733,7 +2733,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "一起吃飯",
       "thai": "กินข้าวด้วยกัน",
       "pronunciation": "gin khâao dûai-gan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2741,7 +2741,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "明天一起吃早餐嗎？",
       "thai": "พรุ่งนี้กินข้าวเช้าด้วยกันไหม",
       "pronunciation": "phrûng-níi gin khâao-cháao dûai-gan mái",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2749,7 +2749,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "回家",
       "thai": "กลับบ้าน",
       "pronunciation": "glàp-bâan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "地點與旅遊",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2757,7 +2757,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "到家",
       "thai": "ถึงบ้าน",
       "pronunciation": "thʉ̌ng-bâan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "地點與旅遊",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2765,7 +2765,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "平時／正常",
       "thai": "ปกติ",
       "pronunciation": "bpòk-gà-dtì",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "時間與頻率",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2773,7 +2773,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "魚丸",
       "thai": "ลูกชิ้นปลา",
       "pronunciation": "lûuk-chín-bplaa",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2781,7 +2781,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "吃飽",
       "thai": "กินอิ่ม",
       "pronunciation": "gin-ìm",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2789,7 +2789,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "一半",
       "thai": "ครึ่ง",
       "pronunciation": "khrʉ̂ng",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2797,7 +2797,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "下個月",
       "thai": "เดือนหน้า",
       "pronunciation": "dʉan-nâa",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2805,7 +2805,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "甚麼時候",
       "thai": "เมื่อไร",
       "pronunciation": "mʉ̂a-rai",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "疑問詞與常用句型",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2813,7 +2813,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "家人／家庭",
       "thai": "ครอบครัว",
       "pronunciation": "khrâawp-khrua",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "自我介紹與人物",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2821,7 +2821,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "開車",
       "thai": "ขับรถ",
       "pronunciation": "khàp-rót",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2829,7 +2829,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "大概三十分鐘",
       "thai": "ประมาณสามสิบนาที",
       "pronunciation": "bprà-maan sǎam-sìp naa-thii",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "時間與頻率",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2837,7 +2837,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "多久",
       "thai": "นานแค่ไหน",
       "pronunciation": "naan khâae-nǎi",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "時間與頻率",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2845,7 +2845,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "太多了",
       "thai": "เยอะเกินไป",
       "pronunciation": "yóe gəən-bpai",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "感受與狀態",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2853,7 +2853,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "功課",
       "thai": "การบ้าน",
       "pronunciation": "gaan-bâan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "拍照、影片與教學",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2861,7 +2861,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "畢業",
       "thai": "เรียนจบ",
       "pronunciation": "riian-jòp",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "拍照、影片與教學",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2869,7 +2869,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "如果畢業了，要做甚麼？",
       "thai": "ถ้าเรียนจบ จะทำอะไร",
       "pronunciation": "thâa riian-jòp jà tham à-rai",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "拍照、影片與教學",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2877,7 +2877,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "到家後",
       "thai": "หลังถึงบ้าน",
       "pronunciation": "lǎng thʉ̌ng-bâan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "地點與旅遊",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2885,7 +2885,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "到家前",
       "thai": "ก่อนถึงบ้าน",
       "pronunciation": "gàawn thʉ̌ng-bâan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "地點與旅遊",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2893,7 +2893,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "怎麼辦？",
       "thai": "ทำยังไง",
       "pronunciation": "tham-yang-ngai",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "疑問詞與常用句型",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2901,7 +2901,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "做心理準備／調整心態",
       "thai": "ทำใจ",
       "pronunciation": "tham-jai",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "感受與狀態",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2909,7 +2909,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "餐廳",
       "thai": "ร้านอาหาร",
       "pronunciation": "ráan aa-hǎan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2917,7 +2917,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "辣但好吃",
       "thai": "เผ็ดแต่อร่อย",
       "pronunciation": "phèt dtàae à-ràauy",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2925,7 +2925,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "全名",
       "thai": "ชื่อเต็ม",
       "pronunciation": "chʉ̂ʉ-dtem",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2933,7 +2933,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "真名",
       "thai": "ชื่อจริง",
       "pronunciation": "chʉ̂ʉ-jing",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2941,7 +2941,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "還有甚麼？",
       "thai": "มีอะไรอีก",
       "pronunciation": "mii à-rai ìik",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "疑問詞與常用句型",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2949,7 +2949,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "我們",
       "thai": "พวกเรา",
       "pronunciation": "phûak-rao",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2957,7 +2957,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "有空",
       "thai": "ว่าง",
       "pronunciation": "wâang",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "感受與狀態",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2965,7 +2965,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "沒空",
       "thai": "ไม่ว่าง",
       "pronunciation": "mâi-wâang",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "感受與狀態",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2973,7 +2973,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "下班",
       "thai": "เลิกงาน",
       "pronunciation": "lə̂ək-ngaan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2981,7 +2981,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "下課",
       "thai": "เลิกเรียน",
       "pronunciation": "lə̂ək-riian",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "拍照、影片與教學",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2989,7 +2989,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "跟誰？",
       "thai": "กับใคร",
       "pronunciation": "gàp-khrai",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "自我介紹與人物",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -2997,7 +2997,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "那個人是誰？",
       "thai": "คนนั้นเป็นใคร",
       "pronunciation": "khon-nán bpen khrai",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "自我介紹與人物",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3005,7 +3005,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "這個人是誰？",
       "thai": "คนนี้เป็นใคร",
       "pronunciation": "khon-níi bpen khrai",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "自我介紹與人物",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3013,7 +3013,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "女生",
       "thai": "ผู้หญิง",
       "pronunciation": "phûu-yǐng",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "自我介紹與人物",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3021,7 +3021,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "男生",
       "thai": "ผู้ชาย",
       "pronunciation": "phûu-chaai",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "自我介紹與人物",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3029,7 +3029,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "這個星期",
       "thai": "อาทิตย์นี้",
       "pronunciation": "aa-thít-níi",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3037,7 +3037,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "下個星期",
       "thai": "อาทิตย์หน้า",
       "pronunciation": "aa-thít-nâa",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3045,7 +3045,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "上個星期",
       "thai": "อาทิตย์ที่แล้ว",
       "pronunciation": "aa-thít thîi-láaeo",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3053,7 +3053,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "上個月",
       "thai": "เดือนที่แล้ว",
       "pronunciation": "dʉan thîi-láaeo",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3061,7 +3061,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "明年",
       "thai": "ปีหน้า",
       "pronunciation": "bpii-nâa",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3069,7 +3069,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "去年",
       "thai": "ปีที่แล้ว",
       "pronunciation": "bpii thîi-láaeo",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日期",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3077,7 +3077,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "通過／合格",
       "thai": "ผ่าน",
       "pronunciation": "phàan",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "感受與狀態",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3085,7 +3085,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "等一下",
       "thai": "แป๊บหนึ่ง",
       "pronunciation": "bpáep-nʉ̀ng",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "時間與頻率",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3093,7 +3093,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "錢（口語）",
       "thai": "ตังค์",
       "pronunciation": "dtang",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3101,7 +3101,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "洗澡",
       "thai": "อาบน้ำ",
       "pronunciation": "àap-náam",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3109,7 +3109,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "雨",
       "thai": "ฝน",
       "pronunciation": "fǒn",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3117,7 +3117,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "下雨",
       "thai": "ฝนตก",
       "pronunciation": "fǒn-dtòk",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3125,7 +3125,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "外面",
       "thai": "ข้างนอก",
       "pronunciation": "khâang-nâawk",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "地點與旅遊",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3133,7 +3133,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "剛剛做",
       "thai": "เพิ่งทำ",
       "pronunciation": "phə̂ng-tham",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3141,7 +3141,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "你剛剛去哪裡？",
       "thai": "คุณเพิ่งไปที่ไหน",
       "pronunciation": "khun phə̂ng bpai thîi-nǎi",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3149,7 +3149,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "回來",
       "thai": "กลับมา",
       "pronunciation": "glàp-maa",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "地點與旅遊",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3157,7 +3157,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "快",
       "thai": "เร็ว",
       "pronunciation": "reo",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "感受與狀態",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3165,7 +3165,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "慢",
       "thai": "ช้า",
       "pronunciation": "cháa",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "感受與狀態",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3173,7 +3173,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "說得慢還是快？",
       "thai": "พูดช้าหรือว่าเร็ว",
       "pronunciation": "phûut cháa rʉ̌ʉ-wâa reo",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "感受與狀態",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3181,7 +3181,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "粿條／麵",
       "thai": "ก๋วยเตี๋ยว",
       "pronunciation": "gǔai-dtǐao",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3189,7 +3189,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "豬肉",
       "thai": "หมู",
       "pronunciation": "mǔu",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3197,7 +3197,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "牛肉",
       "thai": "เนื้อ",
       "pronunciation": "nʉ́a",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "飲食與點餐",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3205,7 +3205,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "都可以",
       "thai": "ได้หมด",
       "pronunciation": "dâai-mòt",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "疑問詞與常用句型",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3213,7 +3213,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "愛",
       "thai": "รัก",
       "pronunciation": "rák",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "日常動作與工作",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3221,7 +3221,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "愛情",
       "thai": "ความรัก",
       "pronunciation": "khwaam-rák",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "自我介紹與人物",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3229,7 +3229,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "你的愛情",
       "thai": "ความรักของเธอ",
       "pronunciation": "khwaam-rák khǎawng thoe",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "自我介紹與人物",
       "source": "2026 年 4–7 月課堂筆記"
     },
     {
@@ -3237,7 +3237,7 @@ window.THAI_REVIEW_DATA = {
       "meaning": "老公",
       "thai": "สามี",
       "pronunciation": "sǎa-mii",
-      "category": "2026 年 4–7 月課堂筆記",
+      "category": "自我介紹與人物",
       "source": "2026 年 4–7 月課堂筆記"
     }
   ],
@@ -3256,7 +3256,6 @@ window.THAI_REVIEW_DATA = {
     "核心口說練習",
     "泰語母音與閱讀練習",
     "母音與低子音閱讀練習",
-    "泰文 24 小時說法",
-    "2026 年 4–7 月課堂筆記"
+    "泰文 24 小時說法"
   ]
 };
