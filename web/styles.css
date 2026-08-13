@@ -1411,10 +1411,10 @@ kbd {
     transition: transform 220ms ease, visibility 220ms;
   }
 
-  body.filters-open, body.menu-open { overflow: hidden; }
+  body.filters-open { overflow: hidden; }
   body.filters-open .filters { transform: translateY(0); visibility: visible; }
   .filter-backdrop { position: fixed; z-index: 52; inset: 0 0 calc(68px + env(safe-area-inset-bottom)); border: 0; background: rgba(14, 25, 22, 0.48); }
-  body.filters-open .filter-backdrop, body.menu-open .filter-backdrop { display: block; }
+  body.filters-open .filter-backdrop { display: block; }
   .mobile-filter-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 25px; padding-bottom: 18px; border-bottom: 3px solid var(--ink); }
   .mobile-filter-header h2 { margin: 0; font-size: 21px; }
 

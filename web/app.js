@@ -442,7 +442,6 @@ function setMobileFilters(open) {
 
 function setMobileMenu(open) {
   elements.topActions.classList.toggle("is-open", open);
-  document.body.classList.toggle("menu-open", open);
   elements.mobileMenuButton.setAttribute("aria-expanded", String(open));
 }
 
@@ -999,6 +998,11 @@ elements.mobileMenuButton.addEventListener("click", () => {
 });
 elements.topActions.addEventListener("click", (event) => {
   if (event.target.closest("button")) setMobileMenu(false);
+});
+document.addEventListener("click", (event) => {
+  if (!elements.topActions.classList.contains("is-open")) return;
+  if (elements.topActions.contains(event.target) || elements.mobileMenuButton.contains(event.target)) return;
+  setMobileMenu(false);
 });
 elements.categoryFilter.addEventListener("click", () => {
   if (window.matchMedia("(max-width: 760px)").matches) setMobileFilters(false);
