@@ -1,4 +1,4 @@
-const CACHE_NAME = "thai-review-shell-v32";
+const CACHE_NAME = "thai-review-shell-v33";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -9,6 +9,10 @@ const APP_SHELL = [
   "./vendor/supabase.min.js",
   "./manifest.webmanifest",
   "./assets/thai-time-reference.png",
+  "./dashboard/",
+  "./dashboard/index.html",
+  "./dashboard/dashboard.css",
+  "./dashboard/dashboard.js",
 ];
 
 self.addEventListener("install", (event) => {

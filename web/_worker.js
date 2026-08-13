@@ -68,6 +68,304 @@ async function requireAdmin(request, env, minimumRole = "support_admin") {
   return { user, profile };
 }
 
+async function requireMember(request, env, allowedRoles = null) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return { error: json({ error: "會員服務尚未完成設定" }, 503) };
+  const authorization = request.headers.get("authorization") || "";
+  if (!authorization.startsWith("Bearer ")) return { error: json({ error: "請先登入會員帳戶" }, 401) };
+  const userResponse = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
+    headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, authorization },
+  });
+  if (!userResponse.ok) return { error: json({ error: "登入狀態已失效，請重新登入" }, 401) };
+  const user = await userResponse.json();
+  const profileResult = await supabaseRequest(env, `/rest/v1/profiles?user_id=eq.${encodeURIComponent(user.id)}&select=user_id,display_name,role,status,timezone&limit=1`);
+  const profile = profileResult.payload?.[0];
+  if (!profile || profile.status !== "active") return { error: json({ error: "帳號已停用或未建立會員資料" }, 403) };
+  if (allowedRoles && !allowedRoles.has(profile.role)) return { error: json({ error: "此儀表板不適用於目前帳號角色" }, 403) };
+  return { user, profile };
+}
+
+async function readRows(env, path, errorMessage) {
+  const result = await supabaseRequest(env, path);
+  if (!result.response.ok) throw new Error(errorMessage);
+  return Array.isArray(result.payload) ? result.payload : [];
+}
+
+function isPositiveResult(result) {
+  return result === "good" || result === "correct";
+}
+
+function isScoredResult(result) {
+  return isPositiveResult(result) || result === "again" || result === "incorrect";
+}
+
+function utcDay(value) {
+  return new Date(value).toISOString().slice(0, 10);
+}
+
+function restInFilter(values) {
+  return `(${values.map((value) => `"${String(value).replace(/["\\]/g, "")}"`).join(",")})`;
+}
+
+function recentDaySeries(events, days = 7) {
+  const counts = new Map();
+  for (const event of events) counts.set(utcDay(event.answered_at), (counts.get(utcDay(event.answered_at)) || 0) + 1);
+  return Array.from({ length: days }, (_, index) => {
+    const date = new Date();
+    date.setUTCDate(date.getUTCDate() - (days - index - 1));
+    const key = date.toISOString().slice(0, 10);
+    return { date: key, count: counts.get(key) || 0 };
+  });
+}
+
+function currentStreak(events) {
+  const activeDays = new Set(events.map((event) => utcDay(event.answered_at)));
+  let cursor = new Date();
+  if (!activeDays.has(cursor.toISOString().slice(0, 10))) cursor.setUTCDate(cursor.getUTCDate() - 1);
+  let streak = 0;
+  while (activeDays.has(cursor.toISOString().slice(0, 10))) {
+    streak += 1;
+    cursor.setUTCDate(cursor.getUTCDate() - 1);
+  }
+  return streak;
+}
+
+async function loadEntryLookup(env, progressRows, customRows = []) {
+  const lookup = new Map(customRows.map((entry) => [entry.id, { ...entry, kind: "custom" }]));
+  const ids = [...new Set(progressRows.map((row) => row.public_entry_id).filter(Boolean))];
+  for (let offset = 0; offset < ids.length; offset += 80) {
+    const chunk = encodeURIComponent(restInFilter(ids.slice(offset, offset + 80)));
+    const rows = await readRows(env, `/rest/v1/public_entries?id=in.${chunk}&select=id,thai,meaning,pronunciation,category`, "public_entries_failed");
+    rows.forEach((entry) => lookup.set(entry.id, { ...entry, kind: "public" }));
+  }
+  return lookup;
+}
+
+function summarizeProgress(progressRows, events, entryLookup, now = new Date()) {
+  const scoredEvents = events.filter((event) => isScoredResult(event.result));
+  const positiveEvents = scoredEvents.filter((event) => isPositiveResult(event.result));
+  const weak = progressRows
+    .filter((row) => Number(row.weakness_score) > 0 || row.rating === "again" || row.rating === "hard")
+    .map((row) => {
+      const id = row.public_entry_id || row.custom_entry_id;
+      return { ...row, entry: entryLookup.get(id) || { id, thai: "", meaning: "未命名詞句", pronunciation: "", category: "未分類" } };
+    })
+    .sort((a, b) => Number(b.weakness_score) - Number(a.weakness_score) || new Date(b.reviewed_at || 0) - new Date(a.reviewed_at || 0));
+  const categoryMap = new Map();
+  for (const item of weak) {
+    const category = item.entry.category || "未分類";
+    const current = categoryMap.get(category) || { category, weakness: 0, count: 0 };
+    current.weakness += Number(item.weakness_score) || (item.rating === "again" ? 3 : 1);
+    current.count += 1;
+    categoryMap.set(category, current);
+  }
+  const weakTopics = [...categoryMap.values()]
+    .map((item) => ({ ...item, weakness: Math.round(item.weakness * 10) / 10 }))
+    .sort((a, b) => b.weakness - a.weakness)
+    .slice(0, 5);
+  return {
+    dueCount: progressRows.filter((row) => new Date(row.due_at) <= now).length,
+    reviewedWords: progressRows.filter((row) => Number(row.review_count) > 0).length,
+    totalReviews: events.length,
+    accuracy: scoredEvents.length ? Math.round((positiveEvents.length / scoredEvents.length) * 100) : null,
+    weakCount: weak.length,
+    weakWords: weak.slice(0, 12),
+    weakTopics,
+    lastActivityAt: events[0]?.answered_at || null,
+  };
+}
+
+async function studentDashboard(env, auth) {
+  const userId = encodeURIComponent(auth.user.id);
+  const [learningEntries, progress, events, customEntries, memberships] = await Promise.all([
+    readRows(env, `/rest/v1/student_learning_entries?user_id=eq.${userId}&select=id,public_entry_id,custom_entry_id,added_via,created_at&order=created_at.desc&limit=5000`, "student_learning_entries_failed"),
+    readRows(env, `/rest/v1/user_entry_progress?user_id=eq.${userId}&select=id,public_entry_id,custom_entry_id,rating,due_at,reviewed_at,review_count,correct_streak,weakness_score&order=weakness_score.desc&limit=5000`, "user_entry_progress_failed"),
+    readRows(env, `/rest/v1/review_events?user_id=eq.${userId}&select=public_entry_id,custom_entry_id,exercise_type,target_skill,result,answered_at&order=answered_at.desc&limit=1000`, "review_events_failed"),
+    readRows(env, `/rest/v1/student_custom_entries?user_id=eq.${userId}&select=id,thai,meaning,pronunciation,category,source,created_at,updated_at&order=updated_at.desc&limit=200`, "student_custom_entries_failed"),
+    readRows(env, `/rest/v1/group_memberships?user_id=eq.${userId}&status=eq.active&select=group_id,member_role,joined_at,learning_groups(id,name,owner_teacher_id,status)`, "group_memberships_failed"),
+  ]);
+  const lookup = await loadEntryLookup(env, progress, customEntries);
+  const summary = summarizeProgress(progress, events, lookup);
+  const recommendations = [];
+  if (summary.dueCount) recommendations.push({ type: "review", title: `完成 ${summary.dueCount} 個到期詞句`, href: "/?review=due" });
+  if (summary.weakCount) recommendations.push({ type: "weak", title: `集中重溫 ${Math.min(summary.weakCount, 10)} 個薄弱詞句`, href: "/dashboard/#weak" });
+  if (!summary.totalReviews) recommendations.push({ type: "start", title: "開始第一次快速複習", href: "/?review=start" });
+  if (customEntries.length < 3) recommendations.push({ type: "note", title: "記下一個今天學到的詞句", href: "/dashboard/#notes" });
+  return json({
+    role: "student",
+    profile: auth.profile,
+    summary: { ...summary, librarySize: learningEntries.length, streakDays: currentStreak(events) },
+    activity: recentDaySeries(events),
+    recentEvents: events.slice(0, 8).map((event) => ({ ...event, entry: lookup.get(event.public_entry_id || event.custom_entry_id) || null })),
+    notes: customEntries,
+    groups: memberships.map((membership) => membership.learning_groups).filter(Boolean),
+    recommendations: recommendations.slice(0, 3),
+  });
+}
+
+async function createStudentNote(request, env, auth) {
+  const body = await parseJsonBody(request);
+  const thai = typeof body.thai === "string" ? body.thai.trim().slice(0, 500) : "";
+  const meaning = typeof body.meaning === "string" ? body.meaning.trim().slice(0, 1000) : "";
+  const pronunciation = typeof body.pronunciation === "string" ? body.pronunciation.trim().slice(0, 500) : "";
+  const category = typeof body.category === "string" ? body.category.trim().slice(0, 80) : "日常用語";
+  if (!thai || !meaning || !category) return json({ error: "請填寫泰文、中文意思及分類" }, 400);
+  const id = `custom-dashboard-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
+  const noteResult = await supabaseRequest(env, "/rest/v1/student_custom_entries", {
+    method: "POST",
+    headers: { prefer: "return=representation" },
+    body: JSON.stringify({ id, user_id: auth.user.id, thai, meaning, pronunciation, category, source: "個人儀表板" }),
+  });
+  if (!noteResult.response.ok) return json({ error: "無法儲存個人筆記" }, 502);
+  const learningResult = await supabaseRequest(env, "/rest/v1/student_learning_entries", {
+    method: "POST",
+    headers: { prefer: "return=representation" },
+    body: JSON.stringify({ user_id: auth.user.id, custom_entry_id: id, added_via: "dashboard_note" }),
+  });
+  if (!learningResult.response.ok) {
+    await supabaseRequest(env, `/rest/v1/student_custom_entries?id=eq.${encodeURIComponent(id)}&user_id=eq.${encodeURIComponent(auth.user.id)}`, { method: "DELETE" });
+    return json({ error: "筆記未能加入學習庫" }, 502);
+  }
+  return json({ note: noteResult.payload?.[0] }, 201);
+}
+
+async function teacherDashboard(env, auth) {
+  const teacherId = encodeURIComponent(auth.user.id);
+  const groups = await readRows(env, `/rest/v1/learning_groups?owner_teacher_id=eq.${teacherId}&select=id,name,invite_code,status,created_at&order=created_at.desc`, "teacher_groups_failed");
+  const groupIds = groups.map((group) => group.id);
+  if (!groupIds.length) return json({ role: "teacher", profile: auth.profile, groups: [], students: [], summary: { groupCount: 0, studentCount: 0, dueCount: 0, attentionCount: 0 } });
+  const groupFilter = encodeURIComponent(restInFilter(groupIds));
+  const memberships = await readRows(env, `/rest/v1/group_memberships?group_id=in.${groupFilter}&status=eq.active&member_role=eq.student&select=group_id,user_id,joined_at`, "teacher_memberships_failed");
+  const studentIds = [...new Set(memberships.map((item) => item.user_id))];
+  if (!studentIds.length) return json({ role: "teacher", profile: auth.profile, groups: groups.map((group) => ({ ...group, studentCount: 0 })), students: [], summary: { groupCount: groups.length, studentCount: 0, dueCount: 0, attentionCount: 0 } });
+  const studentFilter = encodeURIComponent(restInFilter(studentIds));
+  const [profiles, learningEntries, progress, events, customEntries] = await Promise.all([
+    readRows(env, `/rest/v1/profiles?user_id=in.${studentFilter}&select=user_id,display_name,status`, "teacher_profiles_failed"),
+    readRows(env, `/rest/v1/student_learning_entries?user_id=in.${studentFilter}&select=user_id,public_entry_id,custom_entry_id,created_at&limit=10000`, "teacher_learning_failed"),
+    readRows(env, `/rest/v1/user_entry_progress?user_id=in.${studentFilter}&select=user_id,public_entry_id,custom_entry_id,rating,due_at,reviewed_at,review_count,correct_streak,weakness_score&limit=10000`, "teacher_progress_failed"),
+    readRows(env, `/rest/v1/review_events?user_id=in.${studentFilter}&select=user_id,public_entry_id,custom_entry_id,exercise_type,target_skill,result,answered_at&order=answered_at.desc&limit=10000`, "teacher_events_failed"),
+    readRows(env, `/rest/v1/student_custom_entries?user_id=in.${studentFilter}&select=id,user_id,thai,meaning,pronunciation,category&limit=5000`, "teacher_custom_entries_failed"),
+  ]);
+  const lookup = await loadEntryLookup(env, progress, customEntries);
+  const profileLookup = new Map(profiles.map((profile) => [profile.user_id, profile]));
+  const now = new Date();
+  const students = studentIds.map((id) => {
+    const studentProgress = progress.filter((row) => row.user_id === id);
+    const studentEvents = events.filter((row) => row.user_id === id);
+    const studentSummary = summarizeProgress(studentProgress, studentEvents, lookup, now);
+    const groupMemberships = memberships.filter((membership) => membership.user_id === id);
+    const inactiveDays = studentSummary.lastActivityAt ? Math.floor((now - new Date(studentSummary.lastActivityAt)) / 86400000) : null;
+    const attentionScore = studentSummary.dueCount * 2 + studentSummary.weakCount * 3 + (inactiveDays === null ? 12 : Math.min(inactiveDays, 14));
+    return {
+      id,
+      displayName: profileLookup.get(id)?.display_name || "未命名學生",
+      status: profileLookup.get(id)?.status || "active",
+      groupIds: groupMemberships.map((membership) => membership.group_id),
+      joinedAt: groupMemberships.map((membership) => membership.joined_at).sort()[0] || null,
+      librarySize: learningEntries.filter((row) => row.user_id === id).length,
+      streakDays: currentStreak(studentEvents),
+      inactiveDays,
+      attentionScore,
+      ...studentSummary,
+    };
+  }).sort((a, b) => b.attentionScore - a.attentionScore);
+  const attentionCount = students.filter((student) => student.dueCount > 0 || student.weakCount > 0 || student.inactiveDays === null || student.inactiveDays >= 7).length;
+  return json({
+    role: "teacher",
+    profile: auth.profile,
+    groups: groups.map((group) => ({ ...group, studentCount: memberships.filter((membership) => membership.group_id === group.id).length })),
+    students,
+    summary: {
+      groupCount: groups.filter((group) => group.status === "active").length,
+      studentCount: students.length,
+      dueCount: students.reduce((sum, student) => sum + student.dueCount, 0),
+      attentionCount,
+    },
+  });
+}
+
+async function requireOwnedGroup(env, auth, groupId) {
+  const rows = await readRows(env, `/rest/v1/learning_groups?id=eq.${encodeURIComponent(groupId)}&owner_teacher_id=eq.${encodeURIComponent(auth.user.id)}&select=id,name,status&limit=1`, "teacher_group_check_failed");
+  return rows[0] || null;
+}
+
+async function findAuthUserByEmail(env, email) {
+  for (let page = 1; page <= 10; page += 1) {
+    const result = await supabaseRequest(env, `/auth/v1/admin/users?page=${page}&per_page=100`);
+    if (!result.response.ok) throw new Error("auth_users_failed");
+    const users = result.payload?.users || [];
+    const match = users.find((user) => (user.email || "").toLocaleLowerCase() === email);
+    if (match || users.length < 100) return match || null;
+  }
+  return null;
+}
+
+async function addTeacherStudent(request, env, auth, groupId) {
+  const group = await requireOwnedGroup(env, auth, groupId);
+  if (!group || group.status !== "active") return json({ error: "找不到可管理的學習群組" }, 404);
+  const body = await parseJsonBody(request);
+  const email = typeof body.email === "string" ? body.email.trim().toLocaleLowerCase() : "";
+  const reason = cleanReason(body.reason);
+  if (!/^\S+@\S+\.\S+$/.test(email) || reason.length < 3) return json({ error: "請輸入學生電郵及至少 3 個字元的原因" }, 400);
+  const user = await findAuthUserByEmail(env, email);
+  if (!user) return json({ error: "找不到已註冊的學生帳號" }, 404);
+  const profiles = await readRows(env, `/rest/v1/profiles?user_id=eq.${encodeURIComponent(user.id)}&select=user_id,display_name,role,status&limit=1`, "student_profile_failed");
+  const profile = profiles[0];
+  if (!profile || profile.role !== "student" || profile.status !== "active") return json({ error: "此帳號不是有效學生帳號" }, 400);
+  const result = await supabaseRequest(env, "/rest/v1/group_memberships?on_conflict=group_id,user_id", {
+    method: "POST",
+    headers: { prefer: "resolution=merge-duplicates,return=representation" },
+    body: JSON.stringify({ group_id: groupId, user_id: user.id, member_role: "student", status: "active" }),
+  });
+  if (!result.response.ok) return json({ error: "無法加入學生" }, 502);
+  await audit(env, auth.user.id, "teacher.group.member_add", reason, { target_user_id: user.id, after_state: result.payload?.[0], metadata: { group_id: groupId } });
+  return json({ student: { id: user.id, displayName: profile.display_name } }, 201);
+}
+
+async function removeTeacherStudent(request, env, auth, groupId, studentId) {
+  const group = await requireOwnedGroup(env, auth, groupId);
+  if (!group) return json({ error: "找不到可管理的學習群組" }, 404);
+  const body = await parseJsonBody(request);
+  const reason = cleanReason(body.reason);
+  if (reason.length < 3) return json({ error: "請填寫至少 3 個字元的移除原因" }, 400);
+  const result = await supabaseRequest(env, `/rest/v1/group_memberships?group_id=eq.${encodeURIComponent(groupId)}&user_id=eq.${encodeURIComponent(studentId)}&member_role=eq.student&status=eq.active`, {
+    method: "PATCH",
+    headers: { prefer: "return=representation" },
+    body: JSON.stringify({ status: "removed" }),
+  });
+  if (!result.response.ok || !result.payload?.length) return json({ error: "找不到這位群組學生" }, 404);
+  await audit(env, auth.user.id, "teacher.group.member_remove", reason, { target_user_id: studentId, after_state: result.payload[0], metadata: { group_id: groupId } });
+  return json({ message: "學生已從群組移除" });
+}
+
+async function dashboardApi(request, env, pathname) {
+  const auth = await requireMember(request, env);
+  if (auth.error) return auth.error;
+  if (pathname === "/api/dashboard/me" && request.method === "GET") return json({ user: { id: auth.user.id, email: auth.user.email }, profile: auth.profile });
+  if (pathname === "/api/dashboard/student" && request.method === "GET") {
+    if (auth.profile.role !== "student") return json({ error: "只限學生帳號" }, 403);
+    return studentDashboard(env, auth);
+  }
+  if (pathname === "/api/dashboard/student/notes" && request.method === "POST") {
+    if (auth.profile.role !== "student") return json({ error: "只限學生帳號" }, 403);
+    return createStudentNote(request, env, auth);
+  }
+  if (pathname === "/api/dashboard/teacher" && request.method === "GET") {
+    if (auth.profile.role !== "teacher") return json({ error: "只限老師帳號" }, 403);
+    return teacherDashboard(env, auth);
+  }
+  const addMatch = pathname.match(/^\/api\/dashboard\/teacher\/groups\/([0-9a-f-]+)\/students$/i);
+  if (addMatch && request.method === "POST") {
+    if (auth.profile.role !== "teacher") return json({ error: "只限老師帳號" }, 403);
+    return addTeacherStudent(request, env, auth, addMatch[1]);
+  }
+  const removeMatch = pathname.match(/^\/api\/dashboard\/teacher\/groups\/([0-9a-f-]+)\/students\/([0-9a-f-]+)$/i);
+  if (removeMatch && request.method === "DELETE") {
+    if (auth.profile.role !== "teacher") return json({ error: "只限老師帳號" }, 403);
+    return removeTeacherStudent(request, env, auth, removeMatch[1], removeMatch[2]);
+  }
+  return json({ error: "找不到儀表板 API" }, 404);
+}
+
 function cleanReason(value) {
   return typeof value === "string" ? value.trim().slice(0, 500) : "";
 }
@@ -467,6 +765,14 @@ export default {
     const url = new URL(request.url);
     const productionRedirect = redirectPreviewToProduction(url);
     if (productionRedirect) return productionRedirect;
+    if (url.pathname.startsWith("/api/dashboard/")) {
+      try { return await dashboardApi(request, env, url.pathname); }
+      catch (error) {
+        if (error instanceof Response) return error;
+        console.error(JSON.stringify({ event: "dashboard_api_error", path: url.pathname, message: error instanceof Error ? error.message : "unknown" }));
+        return json({ error: "儀表板暫時無法載入資料" }, 500);
+      }
+    }
     if (url.pathname.startsWith("/api/admin/")) {
       try { return await adminApi(request, env, url.pathname); }
       catch (error) {

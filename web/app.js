@@ -73,6 +73,7 @@ const elements = {
   practiceNext: document.querySelector("#practice-next"),
   accountButton: document.querySelector("#account-button"),
   accountLabel: document.querySelector("#account-label"),
+  dashboardLink: document.querySelector("#dashboard-link"),
   adminLink: document.querySelector("#admin-link"),
   addEntryButton: document.querySelector("#add-entry-button"),
   authDialog: document.querySelector("#auth-dialog"),
@@ -284,6 +285,7 @@ function renderAccountState() {
     currentProfileUserId = null;
     elements.addEntryButton.hidden = true;
     if (!signedIn) {
+      elements.dashboardLink.hidden = true;
       elements.adminLink.hidden = true;
       if (elements.entryDialog.open) closeEntryDialog();
     }
@@ -299,6 +301,7 @@ function renderAccountState() {
 }
 
 async function renderAdminAccess() {
+  elements.dashboardLink.hidden = true;
   elements.adminLink.hidden = true;
   elements.addEntryButton.hidden = true;
   currentProfileRole = null;
@@ -309,6 +312,7 @@ async function renderAdminAccess() {
   if (currentUser?.id !== userId) return;
   currentProfileRole = data?.status === "active" ? data.role : null;
   currentProfileUserId = data?.status === "active" ? userId : null;
+  elements.dashboardLink.hidden = !data || data.status !== "active";
   elements.adminLink.hidden = !data || data.status !== "active" || !["support_admin", "admin", "super_admin"].includes(data.role);
   elements.addEntryButton.hidden = !["admin", "super_admin"].includes(currentProfileRole);
   window.lucide?.createIcons();

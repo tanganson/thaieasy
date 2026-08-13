@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f7f5" />
+    <title>泰簡單｜個人儀表板</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="dashboard.css?v=1" />
+  </head>
+  <body>
+    <main class="auth-screen" id="auth-screen">
+      <section class="auth-panel">
+        <a class="brand" href="/"><span lang="th">คำ</span><strong>泰簡單</strong></a>
+        <p class="eyebrow">Learning dashboard</p>
+        <h1>個人儀表板</h1>
+        <p id="auth-copy">登入後會按你的會員角色顯示學習或教學資料。</p>
+        <form id="login-form">
+          <label>電郵地址<input id="login-email" type="email" autocomplete="email" required /></label>
+          <label>密碼<input id="login-password" type="password" autocomplete="current-password" minlength="8" required /></label>
+          <p class="form-status" id="login-status" aria-live="polite"></p>
+          <button class="primary-button" type="submit">登入儀表板</button>
+        </form>
+        <a class="text-link" href="/">返回學習頁面</a>
+      </section>
+    </main>
+
+    <div class="dashboard-app" id="dashboard-app" hidden>
+      <aside class="sidebar">
+        <a class="sidebar-brand" href="/"><span lang="th">คำ</span><div><strong>泰簡單</strong><small id="sidebar-role">個人儀表板</small></div></a>
+        <nav id="dashboard-nav" aria-label="儀表板導覽"></nav>
+        <div class="sidebar-user">
+          <span class="avatar" id="user-avatar">學</span>
+          <div><strong id="user-name">會員</strong><small id="user-role"></small></div>
+          <button id="sign-out" title="登出" aria-label="登出"><i data-lucide="log-out"></i></button>
+        </div>
+      </aside>
+
+      <main class="dashboard-main">
+        <header class="dashboard-header">
+          <div><p class="eyebrow" id="header-eyebrow">Dashboard</p><h1 id="header-title">學習總覽</h1><p id="header-copy"></p></div>
+          <div class="header-actions">
+            <a class="secondary-button" href="/"><i data-lucide="book-open"></i><span>返回學習</span></a>
+            <button class="icon-button" id="refresh-button" title="重新整理" aria-label="重新整理"><i data-lucide="refresh-cw"></i></button>
+            <button class="icon-button mobile-sign-out" id="header-sign-out" title="登出" aria-label="登出"><i data-lucide="log-out"></i></button>
+          </div>
+        </header>
+        <p class="notice" id="notice" hidden aria-live="polite"></p>
+        <div class="loading-state" id="loading-state"><span></span><p>正在整理學習資料...</p></div>
+
+        <div id="student-dashboard" hidden>
+          <section class="dashboard-view is-active" data-panel="overview">
+            <div class="metric-grid student-metrics">
+              <article><span>學習詞句</span><strong id="student-library">0</strong><small>個人學習庫</small></article>
+              <article><span>今日待複習</span><strong id="student-due">0</strong><small>按記憶排程</small></article>
+              <article><span>整體答對率</span><strong id="student-accuracy">—</strong><small>已評分練習</small></article>
+              <article><span>連續學習</span><strong id="student-streak">0</strong><small>天</small></article>
+            </div>
+            <div class="overview-layout">
+              <section class="work-section next-section">
+                <div class="section-title"><div><p class="eyebrow">Next steps</p><h2>現在最值得做</h2></div></div>
+                <div class="recommendation-list" id="recommendation-list"></div>
+              </section>
+              <section class="work-section">
+                <div class="section-title"><div><p class="eyebrow">Last 7 days</p><h2>最近學習量</h2></div><strong class="section-stat" id="week-total">0 次</strong></div>
+                <div class="activity-chart" id="activity-chart" aria-label="最近七天學習量"></div>
+              </section>
+            </div>
+            <section class="work-section recent-section">
+              <div class="section-title"><div><p class="eyebrow">Activity</p><h2>最近學習紀錄</h2></div></div>
+              <div class="activity-list" id="recent-activity"></div>
+            </section>
+          </section>
+
+          <section class="dashboard-view" data-panel="weak" id="weak">
+            <div class="section-heading"><div><p class="eyebrow">Focus</p><h2>薄弱詞句</h2><p>依忘記、困難與薄弱分數排序，先處理最需要重溫的內容。</p></div><a class="primary-button" href="/?review=due"><i data-lucide="play"></i>開始快速複習</a></div>
+            <div class="focus-layout">
+              <section class="work-section"><div class="section-title"><h3>需要優先處理</h3><span id="weak-count">0 個</span></div><div class="weak-list" id="weak-list"></div></section>
+              <section class="work-section"><div class="section-title"><h3>薄弱主題</h3></div><div class="topic-list" id="topic-list"></div></section>
+            </div>
+          </section>
+
+          <section class="dashboard-view" data-panel="notes" id="notes">
+            <div class="section-heading"><div><p class="eyebrow">My vocabulary</p><h2>個人筆記</h2><p>記下課堂或生活中遇到的詞句，只會加入你的私人學習庫。</p></div><button class="primary-button" id="open-note-dialog"><i data-lucide="plus"></i>新增筆記</button></div>
+            <div class="note-list" id="note-list"></div>
+          </section>
+        </div>
+
+        <div id="teacher-dashboard" hidden>
+          <section class="dashboard-view is-active" data-panel="overview">
+            <div class="metric-grid teacher-metrics">
+              <article><span>所屬群組</span><strong id="teacher-groups">0</strong><small>由你負責</small></article>
+              <article><span>學生人數</span><strong id="teacher-students">0</strong><small>不重複計算</small></article>
+              <article><span>學生待複習</span><strong id="teacher-due">0</strong><small>所有到期詞句</small></article>
+              <article><span>需要關注</span><strong id="teacher-attention">0</strong><small>弱項或久未學習</small></article>
+            </div>
+            <div class="overview-layout teacher-overview">
+              <section class="work-section"><div class="section-title"><div><p class="eyebrow">Attention</p><h2>優先跟進學生</h2></div></div><div class="attention-list" id="attention-list"></div></section>
+              <section class="work-section"><div class="section-title"><div><p class="eyebrow">Groups</p><h2>班級概況</h2></div></div><div class="group-summary-list" id="group-summary-list"></div></section>
+            </div>
+          </section>
+
+          <section class="dashboard-view" data-panel="students">
+            <div class="section-heading"><div><p class="eyebrow">Students</p><h2>學生表現</h2><p>查看學習量、到期詞句、答對率與主要弱項。</p></div><label class="search-field"><i data-lucide="search"></i><input id="student-search" type="search" placeholder="搜尋學生" /></label></div>
+            <div class="table-shell"><table><thead><tr><th>學生</th><th>學習庫</th><th>答對率</th><th>待複習</th><th>薄弱詞句</th><th>最近活動</th><th></th></tr></thead><tbody id="student-table-body"></tbody></table></div>
+            <p class="empty-state" id="student-table-empty" hidden>沒有符合條件的學生。</p>
+          </section>
+
+          <section class="dashboard-view" data-panel="groups">
+            <div class="section-heading"><div><p class="eyebrow">Groups</p><h2>群組與學生</h2><p>管理你負責的學習群組成員。</p></div><button class="primary-button" id="open-add-student"><i data-lucide="user-plus"></i>加入學生</button></div>
+            <div class="groups-layout"><div class="group-list" id="teacher-group-list"></div><section class="group-detail" id="teacher-group-detail"></section></div>
+          </section>
+        </div>
+
+        <section class="role-message" id="role-message" hidden>
+          <i data-lucide="shield-alert"></i><h2>這個角色沒有個人儀表板</h2><p>管理角色可使用營運後台；學習頁面仍可正常使用。</p><div><a class="secondary-button" href="/">返回學習頁面</a><a class="primary-button" href="/admin/">前往管理後台</a></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="note-dialog"><form id="note-form" method="dialog"><header><div><p class="eyebrow">Private note</p><h2>新增個人筆記</h2></div><button class="dialog-close" type="button" data-close-dialog="note-dialog" aria-label="關閉"><i data-lucide="x"></i></button></header><label>泰文<input id="note-thai" lang="th" maxlength="500" required /></label><label>中文意思<input id="note-meaning" maxlength="1000" required /></label><label>羅馬拼音<input id="note-pronunciation" maxlength="500" /></label><label>分類<input id="note-category" maxlength="80" value="日常用語" required /></label><p class="form-status" id="note-status" aria-live="polite"></p><footer><button class="secondary-button" type="button" data-close-dialog="note-dialog">取消</button><button class="primary-button" type="submit">加入學習庫</button></footer></form></dialog>
+
+    <dialog id="student-dialog"><div class="detail-panel"><header><div><p class="eyebrow">Student detail</p><h2 id="detail-student-name">學生詳情</h2></div><button class="dialog-close" type="button" data-close-dialog="student-dialog" aria-label="關閉"><i data-lucide="x"></i></button></header><div class="detail-metrics" id="detail-metrics"></div><section><h3>主要薄弱詞句</h3><div class="weak-list" id="detail-weak-list"></div></section><section><h3>薄弱主題</h3><div class="topic-list" id="detail-topic-list"></div></section></div></dialog>
+
+    <dialog id="add-student-dialog"><form id="add-student-form" method="dialog"><header><div><p class="eyebrow">Group member</p><h2>加入已註冊學生</h2></div><button class="dialog-close" type="button" data-close-dialog="add-student-dialog" aria-label="關閉"><i data-lucide="x"></i></button></header><label>學習群組<select id="add-student-group" required></select></label><label>學生電郵<input id="add-student-email" type="email" autocomplete="off" required /></label><label>加入原因<textarea id="add-student-reason" minlength="3" maxlength="500" rows="3" required placeholder="供操作紀錄使用"></textarea></label><p class="form-status" id="add-student-status" aria-live="polite"></p><footer><button class="secondary-button" type="button" data-close-dialog="add-student-dialog">取消</button><button class="primary-button" type="submit">加入學生</button></footer></form></dialog>
+
+    <script src="../vendor/supabase.min.js?v=13"></script>
+    <script src="../supabase-config.js?v=13"></script>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script src="dashboard.js?v=1"></script>
+  </body>
+</html>
