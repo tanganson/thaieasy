@@ -2343,6 +2343,902 @@ window.THAI_REVIEW_DATA = {
       "pronunciation": "dtawn-níi bàai sǎam moong khráp/kha",
       "category": "泰文 24 小時說法",
       "source": "泰文 24 小時說法筆記"
+    },
+    {
+      "id": "note-294-พรุ่งนี้",
+      "meaning": "明天",
+      "thai": "พรุ่งนี้",
+      "pronunciation": "phrûng-níi",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-295-อันนี้",
+      "meaning": "這個",
+      "thai": "อันนี้",
+      "pronunciation": "an-níi",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-296-คนนี้",
+      "meaning": "這個人",
+      "thai": "คนนี้",
+      "pronunciation": "khon-níi",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-297-เดือนนี้",
+      "meaning": "這個月",
+      "thai": "เดือนนี้",
+      "pronunciation": "dʉan-níi",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-298-ปีนี้",
+      "meaning": "今年",
+      "thai": "ปีนี้",
+      "pronunciation": "bpii-níi",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-299-ฟัง",
+      "meaning": "聽",
+      "thai": "ฟัง",
+      "pronunciation": "fang",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-300-เพลง",
+      "meaning": "歌",
+      "thai": "เพลง",
+      "pronunciation": "phleeng",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-301-ภูเขา",
+      "meaning": "山",
+      "thai": "ภูเขา",
+      "pronunciation": "phuu-khǎo",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-302-เขา",
+      "meaning": "他",
+      "thai": "เขา",
+      "pronunciation": "khǎo",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-303-คนกันเอง",
+      "meaning": "自己人",
+      "thai": "คนกันเอง",
+      "pronunciation": "khon-gan-eeng",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-304-ทำงานก่อนนะ",
+      "meaning": "先工作哦",
+      "thai": "ทำงานก่อนนะ",
+      "pronunciation": "tham-ngaan gàawn ná",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-305-จอดรถ",
+      "meaning": "停車",
+      "thai": "จอดรถ",
+      "pronunciation": "jàawt rót",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-306-ลานจอดรถ",
+      "meaning": "停車場",
+      "thai": "ลานจอดรถ",
+      "pronunciation": "laan jàawt rót",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-307-เมื่อวาน",
+      "meaning": "昨天",
+      "thai": "เมื่อวาน",
+      "pronunciation": "mʉ̂a-waan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-308-วันหยุด",
+      "meaning": "假期／休息日",
+      "thai": "วันหยุด",
+      "pronunciation": "wan-yùt",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-309-นอนกลางวัน",
+      "meaning": "午睡",
+      "thai": "นอนกลางวัน",
+      "pronunciation": "naawn-glaang-wan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-310-นาที",
+      "meaning": "分鐘",
+      "thai": "นาที",
+      "pronunciation": "naa-thii",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-311-นินทา",
+      "meaning": "八卦／背後說人壞話",
+      "thai": "นินทา",
+      "pronunciation": "nin-thaa",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-312-ปิดประตู",
+      "meaning": "關門",
+      "thai": "ปิดประตู",
+      "pronunciation": "bpìt bprà-dtuu",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-313-ปิดทีวี",
+      "meaning": "關電視",
+      "thai": "ปิดทีวี",
+      "pronunciation": "bpìt thii-wii",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-314-ปิดคอม",
+      "meaning": "關電腦",
+      "thai": "ปิดคอม",
+      "pronunciation": "bpìt khaawm",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-315-ประตู",
+      "meaning": "門",
+      "thai": "ประตู",
+      "pronunciation": "bprà-dtuu",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-316-คืน",
+      "meaning": "還／歸還",
+      "thai": "คืน",
+      "pronunciation": "khʉʉn",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-317-ลืม",
+      "meaning": "忘記",
+      "thai": "ลืม",
+      "pronunciation": "lʉʉm",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-318-นม",
+      "meaning": "奶",
+      "thai": "นม",
+      "pronunciation": "nom",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-319-ชานม",
+      "meaning": "奶茶",
+      "thai": "ชานม",
+      "pronunciation": "chaa-nom",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-320-ชาไทย",
+      "meaning": "泰式奶茶",
+      "thai": "ชาไทย",
+      "pronunciation": "chaa-Thai",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-321-วินาที",
+      "meaning": "秒",
+      "thai": "วินาที",
+      "pronunciation": "wí-naa-thii",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-322-วันเกิด",
+      "meaning": "生日",
+      "thai": "วันเกิด",
+      "pronunciation": "wan-gə̀ət",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-323-วันจันทร์",
+      "meaning": "星期一",
+      "thai": "วันจันทร์",
+      "pronunciation": "wan-jan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-324-วันอังคาร",
+      "meaning": "星期二",
+      "thai": "วันอังคาร",
+      "pronunciation": "wan-ang-khaan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-325-วันพุธ",
+      "meaning": "星期三",
+      "thai": "วันพุธ",
+      "pronunciation": "wan-phút",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-326-วันพฤหัสบดี",
+      "meaning": "星期四",
+      "thai": "วันพฤหัสบดี",
+      "pronunciation": "wan-pha-rʉ́-hàt-sà-baaw-dii",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-327-วันศุกร์",
+      "meaning": "星期五",
+      "thai": "วันศุกร์",
+      "pronunciation": "wan-sùk",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-328-วันเสาร์",
+      "meaning": "星期六",
+      "thai": "วันเสาร์",
+      "pronunciation": "wan-sǎo",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-329-วันอาทิตย์",
+      "meaning": "星期日",
+      "thai": "วันอาทิตย์",
+      "pronunciation": "wan-aa-thít",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-330-ง่าย",
+      "meaning": "簡單",
+      "thai": "ง่าย",
+      "pronunciation": "ngâai",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-331-จาน",
+      "meaning": "盤子",
+      "thai": "จาน",
+      "pronunciation": "jaan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-332-สั่งอาหาร",
+      "meaning": "點菜",
+      "thai": "สั่งอาหาร",
+      "pronunciation": "sàng aa-hǎan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-333-ข้าวมันไก่",
+      "meaning": "雞油飯",
+      "thai": "ข้าวมันไก่",
+      "pronunciation": "khâao-man-gài",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-334-ข้าวผัด",
+      "meaning": "炒飯",
+      "thai": "ข้าวผัด",
+      "pronunciation": "khâao-phàt",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-335-มีโต๊ะว่างไหมครับ",
+      "meaning": "有空桌嗎？",
+      "thai": "มีโต๊ะว่างไหมครับ",
+      "pronunciation": "mii dtó wâang mái khráp",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-336-เชิญทางนี้ค่ะ",
+      "meaning": "請走這邊",
+      "thai": "เชิญทางนี้ค่ะ",
+      "pronunciation": "chəən thaang-níi khâ",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-337-ตื่น",
+      "meaning": "起床",
+      "thai": "ตื่น",
+      "pronunciation": "dtʉ̀ʉn",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-338-ข้าวเช้า",
+      "meaning": "早餐",
+      "thai": "ข้าวเช้า",
+      "pronunciation": "khâao-cháao",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-339-ข้าวเที่ยง",
+      "meaning": "午餐",
+      "thai": "ข้าวเที่ยง",
+      "pronunciation": "khâao-thîang",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-340-ข้าวเย็น",
+      "meaning": "晚餐",
+      "thai": "ข้าวเย็น",
+      "pronunciation": "khâao-yen",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-341-มื้อดึก",
+      "meaning": "夜宵",
+      "thai": "มื้อดึก",
+      "pronunciation": "mʉ́ʉ-dʉ̀k",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-342-กินข้าวด้วยกัน",
+      "meaning": "一起吃飯",
+      "thai": "กินข้าวด้วยกัน",
+      "pronunciation": "gin khâao dûai-gan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-343-พรุ่งนี้กินข้าวเช้าด้วยก",
+      "meaning": "明天一起吃早餐嗎？",
+      "thai": "พรุ่งนี้กินข้าวเช้าด้วยกันไหม",
+      "pronunciation": "phrûng-níi gin khâao-cháao dûai-gan mái",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-344-กลับบ้าน",
+      "meaning": "回家",
+      "thai": "กลับบ้าน",
+      "pronunciation": "glàp-bâan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-345-ถึงบ้าน",
+      "meaning": "到家",
+      "thai": "ถึงบ้าน",
+      "pronunciation": "thʉ̌ng-bâan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-346-ปกติ",
+      "meaning": "平時／正常",
+      "thai": "ปกติ",
+      "pronunciation": "bpòk-gà-dtì",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-347-ลูกชิ้นปลา",
+      "meaning": "魚丸",
+      "thai": "ลูกชิ้นปลา",
+      "pronunciation": "lûuk-chín-bplaa",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-348-กินอิ่ม",
+      "meaning": "吃飽",
+      "thai": "กินอิ่ม",
+      "pronunciation": "gin-ìm",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-349-ครึ่ง",
+      "meaning": "一半",
+      "thai": "ครึ่ง",
+      "pronunciation": "khrʉ̂ng",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-350-เดือนหน้า",
+      "meaning": "下個月",
+      "thai": "เดือนหน้า",
+      "pronunciation": "dʉan-nâa",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-351-เมื่อไร",
+      "meaning": "甚麼時候",
+      "thai": "เมื่อไร",
+      "pronunciation": "mʉ̂a-rai",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-352-ครอบครัว",
+      "meaning": "家人／家庭",
+      "thai": "ครอบครัว",
+      "pronunciation": "khrâawp-khrua",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-353-ขับรถ",
+      "meaning": "開車",
+      "thai": "ขับรถ",
+      "pronunciation": "khàp-rót",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-354-ประมาณสามสิบนาที",
+      "meaning": "大概三十分鐘",
+      "thai": "ประมาณสามสิบนาที",
+      "pronunciation": "bprà-maan sǎam-sìp naa-thii",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-355-นานแค่ไหน",
+      "meaning": "多久",
+      "thai": "นานแค่ไหน",
+      "pronunciation": "naan khâae-nǎi",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-356-เยอะเกินไป",
+      "meaning": "太多了",
+      "thai": "เยอะเกินไป",
+      "pronunciation": "yóe gəən-bpai",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-357-การบ้าน",
+      "meaning": "功課",
+      "thai": "การบ้าน",
+      "pronunciation": "gaan-bâan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-358-เรียนจบ",
+      "meaning": "畢業",
+      "thai": "เรียนจบ",
+      "pronunciation": "riian-jòp",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-359-ถ้าเรียนจบ-จะทำอะไร",
+      "meaning": "如果畢業了，要做甚麼？",
+      "thai": "ถ้าเรียนจบ จะทำอะไร",
+      "pronunciation": "thâa riian-jòp jà tham à-rai",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-360-หลังถึงบ้าน",
+      "meaning": "到家後",
+      "thai": "หลังถึงบ้าน",
+      "pronunciation": "lǎng thʉ̌ng-bâan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-361-ก่อนถึงบ้าน",
+      "meaning": "到家前",
+      "thai": "ก่อนถึงบ้าน",
+      "pronunciation": "gàawn thʉ̌ng-bâan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-362-ทำยังไง",
+      "meaning": "怎麼辦？",
+      "thai": "ทำยังไง",
+      "pronunciation": "tham-yang-ngai",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-363-ทำใจ",
+      "meaning": "做心理準備／調整心態",
+      "thai": "ทำใจ",
+      "pronunciation": "tham-jai",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-364-ร้านอาหาร",
+      "meaning": "餐廳",
+      "thai": "ร้านอาหาร",
+      "pronunciation": "ráan aa-hǎan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-365-เผ็ดแต่อร่อย",
+      "meaning": "辣但好吃",
+      "thai": "เผ็ดแต่อร่อย",
+      "pronunciation": "phèt dtàae à-ràauy",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-366-ชื่อเต็ม",
+      "meaning": "全名",
+      "thai": "ชื่อเต็ม",
+      "pronunciation": "chʉ̂ʉ-dtem",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-367-ชื่อจริง",
+      "meaning": "真名",
+      "thai": "ชื่อจริง",
+      "pronunciation": "chʉ̂ʉ-jing",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-368-มีอะไรอีก",
+      "meaning": "還有甚麼？",
+      "thai": "มีอะไรอีก",
+      "pronunciation": "mii à-rai ìik",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-369-พวกเรา",
+      "meaning": "我們",
+      "thai": "พวกเรา",
+      "pronunciation": "phûak-rao",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-370-ว่าง",
+      "meaning": "有空",
+      "thai": "ว่าง",
+      "pronunciation": "wâang",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-371-ไม่ว่าง",
+      "meaning": "沒空",
+      "thai": "ไม่ว่าง",
+      "pronunciation": "mâi-wâang",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-372-เลิกงาน",
+      "meaning": "下班",
+      "thai": "เลิกงาน",
+      "pronunciation": "lə̂ək-ngaan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-373-เลิกเรียน",
+      "meaning": "下課",
+      "thai": "เลิกเรียน",
+      "pronunciation": "lə̂ək-riian",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-374-กับใคร",
+      "meaning": "跟誰？",
+      "thai": "กับใคร",
+      "pronunciation": "gàp-khrai",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-375-คนนั้นเป็นใคร",
+      "meaning": "那個人是誰？",
+      "thai": "คนนั้นเป็นใคร",
+      "pronunciation": "khon-nán bpen khrai",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-376-คนนี้เป็นใคร",
+      "meaning": "這個人是誰？",
+      "thai": "คนนี้เป็นใคร",
+      "pronunciation": "khon-níi bpen khrai",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-377-ผู้หญิง",
+      "meaning": "女生",
+      "thai": "ผู้หญิง",
+      "pronunciation": "phûu-yǐng",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-378-ผู้ชาย",
+      "meaning": "男生",
+      "thai": "ผู้ชาย",
+      "pronunciation": "phûu-chaai",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-379-อาทิตย์นี้",
+      "meaning": "這個星期",
+      "thai": "อาทิตย์นี้",
+      "pronunciation": "aa-thít-níi",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-380-อาทิตย์หน้า",
+      "meaning": "下個星期",
+      "thai": "อาทิตย์หน้า",
+      "pronunciation": "aa-thít-nâa",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-381-อาทิตย์ที่แล้ว",
+      "meaning": "上個星期",
+      "thai": "อาทิตย์ที่แล้ว",
+      "pronunciation": "aa-thít thîi-láaeo",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-382-เดือนที่แล้ว",
+      "meaning": "上個月",
+      "thai": "เดือนที่แล้ว",
+      "pronunciation": "dʉan thîi-láaeo",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-383-ปีหน้า",
+      "meaning": "明年",
+      "thai": "ปีหน้า",
+      "pronunciation": "bpii-nâa",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-384-ปีที่แล้ว",
+      "meaning": "去年",
+      "thai": "ปีที่แล้ว",
+      "pronunciation": "bpii thîi-láaeo",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-385-ผ่าน",
+      "meaning": "通過／合格",
+      "thai": "ผ่าน",
+      "pronunciation": "phàan",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-386-แป๊บหนึ่ง",
+      "meaning": "等一下",
+      "thai": "แป๊บหนึ่ง",
+      "pronunciation": "bpáep-nʉ̀ng",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-387-ตังค์",
+      "meaning": "錢（口語）",
+      "thai": "ตังค์",
+      "pronunciation": "dtang",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-388-อาบน้ำ",
+      "meaning": "洗澡",
+      "thai": "อาบน้ำ",
+      "pronunciation": "àap-náam",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-389-ฝน",
+      "meaning": "雨",
+      "thai": "ฝน",
+      "pronunciation": "fǒn",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-390-ฝนตก",
+      "meaning": "下雨",
+      "thai": "ฝนตก",
+      "pronunciation": "fǒn-dtòk",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-391-ข้างนอก",
+      "meaning": "外面",
+      "thai": "ข้างนอก",
+      "pronunciation": "khâang-nâawk",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-392-เพิ่งทำ",
+      "meaning": "剛剛做",
+      "thai": "เพิ่งทำ",
+      "pronunciation": "phə̂ng-tham",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-393-คุณเพิ่งไปที่ไหน",
+      "meaning": "你剛剛去哪裡？",
+      "thai": "คุณเพิ่งไปที่ไหน",
+      "pronunciation": "khun phə̂ng bpai thîi-nǎi",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-394-กลับมา",
+      "meaning": "回來",
+      "thai": "กลับมา",
+      "pronunciation": "glàp-maa",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-395-เร็ว",
+      "meaning": "快",
+      "thai": "เร็ว",
+      "pronunciation": "reo",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-396-ช้า",
+      "meaning": "慢",
+      "thai": "ช้า",
+      "pronunciation": "cháa",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-397-พูดช้าหรือว่าเร็ว",
+      "meaning": "說得慢還是快？",
+      "thai": "พูดช้าหรือว่าเร็ว",
+      "pronunciation": "phûut cháa rʉ̌ʉ-wâa reo",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-398-ก๋วยเตี๋ยว",
+      "meaning": "粿條／麵",
+      "thai": "ก๋วยเตี๋ยว",
+      "pronunciation": "gǔai-dtǐao",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-399-หมู",
+      "meaning": "豬肉",
+      "thai": "หมู",
+      "pronunciation": "mǔu",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-400-เนื้อ",
+      "meaning": "牛肉",
+      "thai": "เนื้อ",
+      "pronunciation": "nʉ́a",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-401-ได้หมด",
+      "meaning": "都可以",
+      "thai": "ได้หมด",
+      "pronunciation": "dâai-mòt",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-402-รัก",
+      "meaning": "愛",
+      "thai": "รัก",
+      "pronunciation": "rák",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-403-ความรัก",
+      "meaning": "愛情",
+      "thai": "ความรัก",
+      "pronunciation": "khwaam-rák",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-404-ความรักของเธอ",
+      "meaning": "你的愛情",
+      "thai": "ความรักของเธอ",
+      "pronunciation": "khwaam-rák khǎawng thoe",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
+    },
+    {
+      "id": "note-405-สามี",
+      "meaning": "老公",
+      "thai": "สามี",
+      "pronunciation": "sǎa-mii",
+      "category": "2026 年 4–7 月課堂筆記",
+      "source": "2026 年 4–7 月課堂筆記"
     }
   ],
   "categories": [
@@ -2360,6 +3256,7 @@ window.THAI_REVIEW_DATA = {
     "核心口說練習",
     "泰語母音與閱讀練習",
     "母音與低子音閱讀練習",
-    "泰文 24 小時說法"
+    "泰文 24 小時說法",
+    "2026 年 4–7 月課堂筆記"
   ]
 };

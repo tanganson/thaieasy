@@ -388,6 +388,123 @@ jàak gâao moong cháao thʉ̌ng hòk moong yen
 - 現在幾點？｜ตอนนี้กี่โมงครับ/คะ｜dtawn-níi gìi moong khráp/kha
 - 現在是下午 3 點。｜ตอนนี้บ่ายสามโมงครับ/ค่ะ｜dtawn-níi bàai sǎam moong khráp/kha
 
+<!-- source: 2026 年 4–7 月課堂筆記 -->
+
+## 16. 2026 年 4–7 月課堂筆記
+
+- 明天｜พรุ่งนี้｜phrûng-níi
+- 這個｜อันนี้｜an-níi
+- 這個人｜คนนี้｜khon-níi
+- 這個月｜เดือนนี้｜dʉan-níi
+- 今年｜ปีนี้｜bpii-níi
+- 聽｜ฟัง｜fang
+- 歌｜เพลง｜phleeng
+- 山｜ภูเขา｜phuu-khǎo
+- 他｜เขา｜khǎo
+- 自己人｜คนกันเอง｜khon-gan-eeng
+- 先工作哦｜ทำงานก่อนนะ｜tham-ngaan gàawn ná
+- 停車｜จอดรถ｜jàawt rót
+- 停車場｜ลานจอดรถ｜laan jàawt rót
+- 昨天｜เมื่อวาน｜mʉ̂a-waan
+- 假期／休息日｜วันหยุด｜wan-yùt
+- 午睡｜นอนกลางวัน｜naawn-glaang-wan
+- 分鐘｜นาที｜naa-thii
+- 八卦／背後說人壞話｜นินทา｜nin-thaa
+- 關門｜ปิดประตู｜bpìt bprà-dtuu
+- 關電視｜ปิดทีวี｜bpìt thii-wii
+- 關電腦｜ปิดคอม｜bpìt khaawm
+- 門｜ประตู｜bprà-dtuu
+- 還／歸還｜คืน｜khʉʉn
+- 忘記｜ลืม｜lʉʉm
+- 奶｜นม｜nom
+- 奶茶｜ชานม｜chaa-nom
+- 泰式奶茶｜ชาไทย｜chaa-Thai
+- 秒｜วินาที｜wí-naa-thii
+- 生日｜วันเกิด｜wan-gə̀ət
+- 星期一｜วันจันทร์｜wan-jan
+- 星期二｜วันอังคาร｜wan-ang-khaan
+- 星期三｜วันพุธ｜wan-phút
+- 星期四｜วันพฤหัสบดี｜wan-pha-rʉ́-hàt-sà-baaw-dii
+- 星期五｜วันศุกร์｜wan-sùk
+- 星期六｜วันเสาร์｜wan-sǎo
+- 星期日｜วันอาทิตย์｜wan-aa-thít
+- 簡單｜ง่าย｜ngâai
+- 盤子｜จาน｜jaan
+- 點菜｜สั่งอาหาร｜sàng aa-hǎan
+- 雞油飯｜ข้าวมันไก่｜khâao-man-gài
+- 炒飯｜ข้าวผัด｜khâao-phàt
+- 有空桌嗎？｜มีโต๊ะว่างไหมครับ｜mii dtó wâang mái khráp
+- 請走這邊｜เชิญทางนี้ค่ะ｜chəən thaang-níi khâ
+- 起床｜ตื่น｜dtʉ̀ʉn
+- 早餐｜ข้าวเช้า｜khâao-cháao
+- 午餐｜ข้าวเที่ยง｜khâao-thîang
+- 晚餐｜ข้าวเย็น｜khâao-yen
+- 夜宵｜มื้อดึก｜mʉ́ʉ-dʉ̀k
+- 一起吃飯｜กินข้าวด้วยกัน｜gin khâao dûai-gan
+- 明天一起吃早餐嗎？｜พรุ่งนี้กินข้าวเช้าด้วยกันไหม｜phrûng-níi gin khâao-cháao dûai-gan mái
+- 回家｜กลับบ้าน｜glàp-bâan
+- 到家｜ถึงบ้าน｜thʉ̌ng-bâan
+- 平時／正常｜ปกติ｜bpòk-gà-dtì
+- 魚丸｜ลูกชิ้นปลา｜lûuk-chín-bplaa
+- 吃飽｜กินอิ่ม｜gin-ìm
+- 一半｜ครึ่ง｜khrʉ̂ng
+- 下個月｜เดือนหน้า｜dʉan-nâa
+- 甚麼時候｜เมื่อไร｜mʉ̂a-rai
+- 家人／家庭｜ครอบครัว｜khrâawp-khrua
+- 開車｜ขับรถ｜khàp-rót
+- 大概三十分鐘｜ประมาณสามสิบนาที｜bprà-maan sǎam-sìp naa-thii
+- 多久｜นานแค่ไหน｜naan khâae-nǎi
+- 太多了｜เยอะเกินไป｜yóe gəən-bpai
+- 功課｜การบ้าน｜gaan-bâan
+- 畢業｜เรียนจบ｜riian-jòp
+- 如果畢業了，要做甚麼？｜ถ้าเรียนจบ จะทำอะไร｜thâa riian-jòp jà tham à-rai
+- 到家後｜หลังถึงบ้าน｜lǎng thʉ̌ng-bâan
+- 到家前｜ก่อนถึงบ้าน｜gàawn thʉ̌ng-bâan
+- 怎麼辦？｜ทำยังไง｜tham-yang-ngai
+- 做心理準備／調整心態｜ทำใจ｜tham-jai
+- 餐廳｜ร้านอาหาร｜ráan aa-hǎan
+- 辣但好吃｜เผ็ดแต่อร่อย｜phèt dtàae à-ràauy
+- 全名｜ชื่อเต็ม｜chʉ̂ʉ-dtem
+- 真名｜ชื่อจริง｜chʉ̂ʉ-jing
+- 還有甚麼？｜มีอะไรอีก｜mii à-rai ìik
+- 我們｜พวกเรา｜phûak-rao
+- 有空｜ว่าง｜wâang
+- 沒空｜ไม่ว่าง｜mâi-wâang
+- 下班｜เลิกงาน｜lə̂ək-ngaan
+- 下課｜เลิกเรียน｜lə̂ək-riian
+- 跟誰？｜กับใคร｜gàp-khrai
+- 那個人是誰？｜คนนั้นเป็นใคร｜khon-nán bpen khrai
+- 這個人是誰？｜คนนี้เป็นใคร｜khon-níi bpen khrai
+- 女生｜ผู้หญิง｜phûu-yǐng
+- 男生｜ผู้ชาย｜phûu-chaai
+- 這個星期｜อาทิตย์นี้｜aa-thít-níi
+- 下個星期｜อาทิตย์หน้า｜aa-thít-nâa
+- 上個星期｜อาทิตย์ที่แล้ว｜aa-thít thîi-láaeo
+- 上個月｜เดือนที่แล้ว｜dʉan thîi-láaeo
+- 明年｜ปีหน้า｜bpii-nâa
+- 去年｜ปีที่แล้ว｜bpii thîi-láaeo
+- 通過／合格｜ผ่าน｜phàan
+- 等一下｜แป๊บหนึ่ง｜bpáep-nʉ̀ng
+- 錢（口語）｜ตังค์｜dtang
+- 洗澡｜อาบน้ำ｜àap-náam
+- 雨｜ฝน｜fǒn
+- 下雨｜ฝนตก｜fǒn-dtòk
+- 外面｜ข้างนอก｜khâang-nâawk
+- 剛剛做｜เพิ่งทำ｜phə̂ng-tham
+- 你剛剛去哪裡？｜คุณเพิ่งไปที่ไหน｜khun phə̂ng bpai thîi-nǎi
+- 回來｜กลับมา｜glàp-maa
+- 快｜เร็ว｜reo
+- 慢｜ช้า｜cháa
+- 說得慢還是快？｜พูดช้าหรือว่าเร็ว｜phûut cháa rʉ̌ʉ-wâa reo
+- 粿條／麵｜ก๋วยเตี๋ยว｜gǔai-dtǐao
+- 豬肉｜หมู｜mǔu
+- 牛肉｜เนื้อ｜nʉ́a
+- 都可以｜ได้หมด｜dâai-mòt
+- 愛｜รัก｜rák
+- 愛情｜ความรัก｜khwaam-rák
+- 你的愛情｜ความรักของเธอ｜khwaam-rák khǎawng thoe
+- 老公｜สามี｜sǎa-mii
+
 ## 學習方法
 
 1. 先看中文情境，再讀泰文。
