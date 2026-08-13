@@ -41,7 +41,7 @@
 | 薄弱字追蹤 | 規劃中 | 尚未實作薄弱分數、篩選及集中複習 |
 | 資料匯出／匯入 | 規劃中 | 尚未提供 JSON 備份及還原介面 |
 | 學習進度頁面 | 規劃中 | 等累積足夠複習資料後加入 |
-| 正式資料庫 | 接入中 | Supabase Free project `thaieasy` 位於新加坡 `ap-southeast-1`；已加入使用者學習狀態 schema、RLS、Email Magic Link 登入及 localStorage 離線優先同步 |
+| 正式資料庫 | 接入中 | Supabase Free project `thaieasy` 位於新加坡 `ap-southeast-1`；已加入使用者學習狀態 schema、RLS、電郵密碼會員登入及 localStorage 離線優先同步 |
 | 會員角色系統 | 已完成（第一版） | 訪客可完整使用公共內容；會員角色包含學生、老師、內容編輯、支援管理員、管理員及最高管理員，帳號可停用或恢復 |
 | 管理後台 | 已完成（第一版） | `/admin/` 提供會員搜尋、角色與狀態管理、邀請／密碼設定、學習群組、成員管理及不可變審計紀錄 |
 | Cloudflare Pages 部署 | 已完成 | Production URL：`https://thaieasy.pages.dev`；專案 `thaieasy`，production branch `main` |
@@ -367,7 +367,9 @@ node --check web/sw.js
 - 建立會員與管理後台第一版：新增六級角色、帳號有效／停用狀態、自動 profile、老師群組、群組成員及管理審計 schema，並以 RLS 阻止已停用帳號繼續同步學習資料。
 - 新增 `/admin/` 響應式後台，提供會員搜尋與篩選、邀請帳號、角色／狀態管理、密碼設定郵件、學習群組、成員管理及審計紀錄；主站只向有效管理角色顯示後台入口。
 - 新增同源 `/api/admin/*` 管理 API；每次請求驗證 Supabase JWT 及資料庫角色，Supabase `service_role` 只保存於 Cloudflare encrypted secret。管理操作要求原因，最高管理員不能停用或刪除自己。
-- 既有 `tomasdanson@gmail.com` 設為首位 `super_admin`；另建立學生、老師、內容編輯、支援管理員及管理員獨立角色帳號，使用同一 Gmail 收件箱的 `+role` 別名，沒有共享或寫入 Git 的預設密碼。核心資源提升至 `v=27`，Service Worker 快取提升至 `thai-review-shell-v27`。
+- 既有 `tomasdanson@gmail.com` 設為首位 `super_admin`；另建立學生、老師、內容編輯、支援管理員及管理員獨立角色帳號，使用同一 Gmail 收件箱的 `+role` 別名。六個帳號使用不同高強度密碼並只保存於本機 macOS Keychain，沒有共享或寫入 Git 的預設密碼。
+- 正式驗證：未登入管理 API 回傳 401、學生回傳 403、最高管理員回傳 200 並讀取六個正式角色帳號；群組建立、學生加入、審計寫入及測試資料清理成功。`/admin/` 在 1440×900 顯示總覽、帳號、群組與審計四頁，390×844 固定底部導覽且水平溢出為 0，console 無錯誤。三個會員 migration 已全部套用，Cloudflare 的 `SUPABASE_URL` 及 `SUPABASE_SERVICE_ROLE_KEY` 均確認為 encrypted secret。
+- 會員視窗新增「設定新密碼」：已登入會員可使用目前 session 直接更新密碼，不必等待重設郵件。核心資源提升至 `v=28`，Service Worker 快取提升至 `thai-review-shell-v28`。
 
 - 簡化手機版詞條卡：在 760px 以下隱藏「打招呼與基本禮貌」等分類標籤，分類資料及桌面顯示保持不變；同步收緊卡片上下留白，增加每屏可見詞條數。核心資源提升至 `v=26`，Service Worker 快取提升至 `thai-review-shell-v26`。驗證：390×844 下 25 張卡的分類標籤均不顯示，上下留白為 14px、水平溢出為 0 且 console 無錯誤；1440×900 下分類標籤仍正常顯示。
 

@@ -89,6 +89,7 @@ const elements = {
   switchAuthMode: document.querySelector("#switch-auth-mode"),
   forgotPasswordButton: document.querySelector("#forgot-password-button"),
   signOutButton: document.querySelector("#sign-out-button"),
+  changePasswordButton: document.querySelector("#change-password-button"),
   translateButton: document.querySelector("#translate-button"),
   translationDialog: document.querySelector("#translation-dialog"),
   translationForm: document.querySelector("#translation-form"),
@@ -234,6 +235,7 @@ function renderAccountState() {
   elements.authLinks.hidden = signedIn || authMode === "recovery";
   elements.authSubmitButton.hidden = signedIn;
   elements.signOutButton.hidden = !signedIn;
+  elements.changePasswordButton.hidden = !signedIn;
   if (!signedIn) elements.adminLink.hidden = true;
   if (signedIn) setSyncStatus(`已登入 ${currentUser.email}`);
 }
@@ -269,6 +271,7 @@ function setAuthMode(mode) {
   elements.authTitle.textContent = profile.title;
   elements.authCopy.textContent = profile.copy;
   elements.authSubmitButton.textContent = profile.submit;
+  elements.changePasswordButton.hidden = true;
   elements.passwordField.hidden = false;
   elements.authSubmitButton.hidden = false;
   elements.confirmPasswordField.hidden = mode === "login";
@@ -1207,6 +1210,11 @@ elements.forgotPasswordButton.addEventListener("click", async () => {
   );
   elements.forgotPasswordButton.disabled = false;
   setSyncStatus(error ? authErrorMessage(error) : "密碼設定郵件已寄出，請查看電郵");
+});
+
+elements.changePasswordButton.addEventListener("click", () => {
+  setAuthMode("recovery");
+  setSyncStatus("輸入新密碼後會立即更新目前帳號");
 });
 
 elements.signOutButton.addEventListener("click", async () => {
