@@ -1577,7 +1577,7 @@ kbd {
     min-height: 0;
     grid-template-columns: 1fr auto;
     gap: 14px;
-    padding: 18px 4px;
+    padding: 14px 4px;
   }
 
   .entry-main {
@@ -1587,6 +1587,10 @@ kbd {
   .entry-meaning {
     grid-column: 1;
     grid-row: 2;
+  }
+
+  .category-tag {
+    display: none;
   }
 
   .entry-meta {
