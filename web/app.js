@@ -102,6 +102,7 @@ let currentUser = null;
 let syncTimer = null;
 let authMode = "login";
 let translationDirection = "auto";
+let translationRequestId = 0;
 const supabaseSettings = window.THAI_EASY_SUPABASE;
 const supabaseClient =
   typeof window.supabase?.createClient === "function"
@@ -798,6 +799,7 @@ function openTranslation() {
 async function translateText() {
   const text = elements.translationInput.value.trim();
   if (!text) return setTranslationStatus("請先輸入泰文或中文", true);
+  const requestId = ++translationRequestId;
   elements.translationSubmit.disabled = true;
   setTranslationStatus("正在翻譯...");
   try {
@@ -806,18 +808,42 @@ async function translateText() {
     if (!response.ok) throw new Error(payload.error || "翻譯失敗");
     const result = payload.result || {};
     const providerLabel = payload.provider === "azure-translator" ? "Azure 翻譯" : "翻譯服務";
-    elements.translationProvider.textContent = payload.enrichmentModel ? `${providerLabel} · Claude 學習補充` : providerLabel;
+    elements.translationProvider.textContent = providerLabel;
     elements.translationThai.value = result.thai || "";
     elements.translationChinese.value = result.traditionalChinese || "";
-    elements.translationPronunciation.value = result.pronunciation || "";
-    elements.translationNotes.value = [result.partOfSpeech, result.tone, result.notes].filter(Boolean).join(" · ");
+    elements.translationPronunciation.value = "";
+    elements.translationNotes.value = "正在補充讀音與學習提示...";
     elements.translationResult.hidden = false;
     elements.translationSpeak.dataset.thai = result.thai || "";
-    setTranslationStatus("翻譯完成，請先確認內容");
+    setTranslationStatus("Azure 翻譯完成，正在補充學習資料...");
+    enrichTranslation(result, requestId).catch(() => {});
   } catch (error) {
     setTranslationStatus(error.message || "翻譯失敗，請稍後再試", true);
   } finally {
     elements.translationSubmit.disabled = false;
+  }
+}
+
+async function enrichTranslation(result, requestId) {
+  try {
+    const response = await fetch("/api/translate/enrich", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ thai: result.thai, traditionalChinese: result.traditionalChinese }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || "學習補充載入失敗");
+    if (requestId !== translationRequestId) return;
+    const details = payload.details || {};
+    elements.translationPronunciation.value = details.pronunciation || "";
+    elements.translationNotes.value = [details.partOfSpeech, details.tone, details.notes].filter(Boolean).join(" · ");
+    elements.translationProvider.textContent = payload.enrichmentModel ? "Azure 翻譯 · Claude 學習補充" : "Azure 翻譯";
+    setTranslationStatus(payload.enrichmentModel ? "翻譯及學習資料已完成" : "翻譯完成；暫時未能取得學習補充");
+  } catch {
+    if (requestId !== translationRequestId) return;
+    elements.translationNotes.value = "";
+    elements.translationProvider.textContent = "Azure 翻譯";
+    setTranslationStatus("Azure 翻譯完成；暫時未能取得學習補充");
   }
 }
 

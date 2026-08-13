@@ -103,21 +103,30 @@ async function translate(request, env) {
 
   const thai = direction === "zh-th" ? azure.translatedText : text;
   const traditionalChinese = direction === "zh-th" ? text : azure.translatedText;
-  const details = await enrichLearningDetails(env, thai, traditionalChinese);
   return json({
     provider: "azure-translator",
-    enrichmentModel: Object.keys(details).length ? MODEL : null,
     input: text,
     direction,
     result: {
       thai,
       traditionalChinese,
-      pronunciation: typeof details.pronunciation === "string" ? details.pronunciation : "",
-      partOfSpeech: typeof details.partOfSpeech === "string" ? details.partOfSpeech : "",
-      tone: typeof details.tone === "string" ? details.tone : "",
-      notes: typeof details.notes === "string" ? details.notes : "",
+      pronunciation: "",
+      partOfSpeech: "",
+      tone: "",
+      notes: "",
     },
   });
+}
+
+async function enrich(request, env) {
+  let body;
+  try { body = await request.json(); } catch { return json({ error: "請提供有效的 JSON 請求" }, 400); }
+  const thai = typeof body.thai === "string" ? body.thai.trim() : "";
+  const traditionalChinese = typeof body.traditionalChinese === "string" ? body.traditionalChinese.trim() : "";
+  if (!thai || !traditionalChinese) return json({ error: "缺少泰文或中文翻譯內容" }, 400);
+  if (thai.length > MAX_INPUT_LENGTH || traditionalChinese.length > MAX_INPUT_LENGTH) return json({ error: "學習補充內容過長" }, 413);
+  const details = await enrichLearningDetails(env, thai, traditionalChinese);
+  return json({ enrichmentModel: Object.keys(details).length ? MODEL : null, details });
 }
 
 export default {
@@ -126,6 +135,10 @@ export default {
     if (url.pathname === "/api/translate") {
       if (request.method !== "POST") return json({ error: "只接受 POST 請求" }, 405);
       return translate(request, env);
+    }
+    if (url.pathname === "/api/translate/enrich") {
+      if (request.method !== "POST") return json({ error: "只接受 POST 請求" }, 405);
+      return enrich(request, env);
     }
     return env.ASSETS.fetch(request);
   },

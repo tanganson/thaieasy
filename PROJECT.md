@@ -341,6 +341,9 @@ node --check web/sw.js
 
 ### 2026-08-13
 
+- 即時翻譯改為兩階段回應：`/api/translate` 只等待 Azure 並立即顯示泰中翻譯，`/api/translate/enrich` 再於背景取得 Claude 讀音、詞性、語氣及提示；Claude 延遲或失敗不再阻塞翻譯結果。
+- 前端在 Azure 完成後立即解鎖翻譯結果並顯示學習資料載入狀態，補充完成後更新欄位及 provider 標籤。核心資源提升至 `v=17`，Service Worker 快取提升至 `thai-review-shell-v17`。
+
 - 修正即時翻譯介面仍顯示舊「Claude Haiku」標籤的誤導：標題改為 Azure Translator，結果標籤依 API 的 `provider` 與 `enrichmentModel` 動態顯示「Azure 翻譯」或「Azure 翻譯 · Claude 學習補充」。正式 API 已確認主翻譯 provider 為 `azure-translator`。
 - 核心資源提升至 `v=16`，Service Worker 快取提升至 `thai-review-shell-v16`；影響檔案：`web/index.html`、`web/app.js`、`web/sw.js`、`PROJECT.md`。驗證：正式端點「您好」回傳 Azure provider 及泰文 `สวัสดีครับ`，JavaScript 語法及 Git diff 格式通過。
 
