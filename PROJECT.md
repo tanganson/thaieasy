@@ -341,6 +341,9 @@ node --check web/sw.js
 
 ### 2026-08-13
 
+- 修正即時翻譯介面仍顯示舊「Claude Haiku」標籤的誤導：標題改為 Azure Translator，結果標籤依 API 的 `provider` 與 `enrichmentModel` 動態顯示「Azure 翻譯」或「Azure 翻譯 · Claude 學習補充」。正式 API 已確認主翻譯 provider 為 `azure-translator`。
+- 核心資源提升至 `v=16`，Service Worker 快取提升至 `thai-review-shell-v16`；影響檔案：`web/index.html`、`web/app.js`、`web/sw.js`、`PROJECT.md`。驗證：正式端點「您好」回傳 Azure provider 及泰文 `สวัสดีครับ`，JavaScript 語法及 Git diff 格式通過。
+
 - 美化 Top Bar：桌面版把次要工具整理成一致工具列並突出快速複習；手機版改為品牌、分類及功能兩個清晰入口，完整操作收納在兩欄功能選單，避免按鈕擠壓或消失。
 - 手機版新增左側滑出分類面板，包含全部／待複習／收藏及完整主題列表，支援遮罩、關閉按鈕、選取主題後自動收起及背景捲動鎖定。
 - 核心資源提升至 `v=15`，Service Worker 快取提升至 `thai-review-shell-v15`；影響檔案：`web/index.html`、`web/styles.css`、`web/app.js`、`web/sw.js`、`PROJECT.md`。驗證：390px 手機版分類面板、主題選取自動關閉、功能選單、背景捲動鎖定及水平溢出通過；1440px 桌面 Top Bar 無重疊，瀏覽器無 console error。

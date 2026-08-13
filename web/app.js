@@ -89,6 +89,7 @@ const elements = {
   translationNotes: document.querySelector("#translation-notes"),
   translationSpeak: document.querySelector("#translation-speak"),
   translationSave: document.querySelector("#translation-save"),
+  translationProvider: document.querySelector("#translation-provider"),
   mobileFilterButton: document.querySelector("#mobile-filter-button"),
   closeMobileFilters: document.querySelector("#close-mobile-filters"),
   filterBackdrop: document.querySelector("#filter-backdrop"),
@@ -804,6 +805,8 @@ async function translateText() {
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(payload.error || "翻譯失敗");
     const result = payload.result || {};
+    const providerLabel = payload.provider === "azure-translator" ? "Azure 翻譯" : "翻譯服務";
+    elements.translationProvider.textContent = payload.enrichmentModel ? `${providerLabel} · Claude 學習補充` : providerLabel;
     elements.translationThai.value = result.thai || "";
     elements.translationChinese.value = result.traditionalChinese || "";
     elements.translationPronunciation.value = result.pronunciation || "";

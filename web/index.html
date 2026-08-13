@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=15" />
+    <link rel="stylesheet" href="styles.css?v=16" />
   </head>
   <body>
     <div class="app-shell">
@@ -278,7 +278,7 @@
       <form id="translation-form">
         <div class="modal-header">
           <div>
-            <p class="eyebrow">Claude Haiku</p>
+            <p class="eyebrow">Azure Translator</p>
             <h2>即時翻譯</h2>
           </div>
           <button class="icon-button" id="close-translation-dialog" type="button" title="關閉" aria-label="關閉即時翻譯">
@@ -302,7 +302,7 @@
         <section class="translation-result" id="translation-result" hidden aria-labelledby="translation-result-heading">
           <div class="translation-result-heading">
             <div><p class="eyebrow">結果</p><h3 id="translation-result-heading">翻譯內容</h3></div>
-            <span class="translation-model">Claude Haiku</span>
+            <span class="translation-model" id="translation-provider">Azure 翻譯</span>
           </div>
           <div class="translation-fields">
             <label><span>泰文</span><textarea id="translation-thai" lang="th" rows="2"></textarea></label>
@@ -434,7 +434,7 @@
     <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
     <script src="vendor/supabase.min.js?v=13"></script>
     <script src="supabase-config.js?v=13"></script>
-    <script src="data.js?v=15"></script>
-    <script src="app.js?v=15"></script>
+    <script src="data.js?v=16"></script>
+    <script src="app.js?v=16"></script>
   </body>
 </html>
