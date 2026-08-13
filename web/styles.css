@@ -1306,6 +1306,130 @@ kbd {
 }
 
 @media (max-width: 760px) {
+  .modal,
+  .review-modal {
+    max-width: calc(100vw - 24px);
+    max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    margin: auto;
+    overflow: hidden;
+  }
+
+  .modal form {
+    max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    padding: 18px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .modal input,
+  .modal textarea,
+  .modal select,
+  .practice-input-form input {
+    font-size: 16px;
+  }
+
+  .translation-modal form {
+    display: block;
+  }
+
+  .translation-copy {
+    margin-bottom: 12px;
+  }
+
+  .translation-direction {
+    margin-bottom: 12px;
+  }
+
+  .translation-input-label textarea {
+    min-height: 112px;
+  }
+
+  .translation-fields {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .translation-result {
+    margin-top: 16px;
+    padding-top: 14px;
+  }
+
+  .translation-result-actions {
+    position: sticky;
+    bottom: -18px;
+    margin: 14px -18px -18px;
+    padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+  }
+
+  .review-shell,
+  .practice-shell {
+    width: 100%;
+    height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    min-height: 0;
+    max-height: inherit;
+  }
+
+  .review-header {
+    padding: 13px 16px;
+  }
+
+  .review-card,
+  .practice-card {
+    min-height: 0;
+    padding: 18px 16px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .review-card > h2 {
+    font-size: clamp(30px, 9vw, 42px);
+    line-height: 1.25;
+  }
+
+  .review-answer {
+    margin-top: 22px;
+    padding-top: 20px;
+  }
+
+  .review-thai {
+    font-size: clamp(38px, 13vw, 58px);
+  }
+
+  .review-footer {
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .review-ratings {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .review-ratings button {
+    min-width: 0;
+    min-height: 54px;
+    padding: 6px 3px;
+  }
+
+  .practice-prompt-wrap {
+    min-height: 68px;
+  }
+
+  .practice-options {
+    gap: 7px;
+    margin-top: 16px;
+  }
+
+  .practice-options button {
+    min-height: 58px;
+    padding: 9px;
+  }
+
+  .practice-footer {
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  }
+
   .topbar {
     position: relative;
     min-height: 58px;
@@ -1343,10 +1467,6 @@ kbd {
   .top-actions.is-open { transform: translateY(0); visibility: visible; }
   .top-actions .button { min-width: 0; min-height: 56px; justify-content: flex-start; padding: 10px 12px; border: 1px solid var(--line); background: var(--surface); font-size: 13px; }
   .top-actions #start-review-button { grid-column: 1 / -1; justify-content: center; border-color: var(--teal); background: var(--teal); }
-
-  .practice-card {
-    padding: 26px 16px;
-  }
 
   .practice-options {
     grid-template-columns: 1fr;
@@ -1479,13 +1599,6 @@ kbd {
     grid-template-columns: 1fr;
   }
 
-  .review-ratings {
-    grid-template-columns: 1fr;
-  }
-
-  .review-ratings button {
-    min-height: 50px;
-  }
 }
 
 @media (max-width: 430px) {
