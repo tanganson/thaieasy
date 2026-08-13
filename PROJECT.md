@@ -35,7 +35,7 @@
 | 多元練習紀錄 | 已完成（第一版） | 保存詞條、題型、目標能力、正誤及作答時間，最多保留最近 5,000 筆 |
 | 泰文發音 | 已完成 | 使用瀏覽器 Speech Synthesis，優先選擇 `th-TH` 語音 |
 | 發音速度 | 已完成 | 0.7x、0.85x、1.0x |
-| 個人新增詞句 | 已完成 | 保存在瀏覽器本地儲存 |
+| 個人新增詞句 | 已完成（管理員限定） | 只有有效的管理員／最高管理員帳號顯示及可使用；新增內容保存在該帳號的個人學習資料 |
 | PWA／加入主畫面 | 已完成（基礎版） | 已有 manifest 及 Service Worker |
 | macOS 快速啟動 | 已完成 | `泰語複習.app` 會自動啟動本機伺服器，並以時間戳網址載入最新資料 |
 | 薄弱字追蹤 | 規劃中 | 尚未實作薄弱分數、篩選及集中複習 |
@@ -362,6 +362,7 @@ node --check web/sw.js
 
 ### 2026-08-14 公共詞庫與學生學習庫第一版
 - 修正手機仍停留在舊 Cloudflare 部署快照：後續所有 `*.thaieasy.pages.dev` 預覽網址會以 HTTP 308 導向固定正式域名 `thaieasy.pages.dev`，並固定 PWA 的 `id`、`start_url` 與 `scope` 為網站根目錄；加入 canonical URL，Service Worker 快取提升至 `thai-review-shell-v31`。舊的不可變部署快照仍須改開一次正式網址。驗證：Worker／JavaScript／manifest 語法及 `git diff --check` 通過；新預覽網址回傳 308 至正式域名；production 在 390×844 顯示「會員登入」、無水平溢出及 console 錯誤，並載入 `v31` manifest 與 Service Worker。
+- 將主站「新增詞句」限制為有效的 `admin`／`super_admin` 帳號：按鈕預設隱藏，Supabase profile 角色查核通過後才顯示；訪客、學生、老師、內容編輯及支援管理員均不顯示，提交函式亦有第二層角色檢查，登出或切換帳號會立即收回權限。核心 JavaScript 提升至 `v32`，Service Worker 快取提升至 `thai-review-shell-v32`。驗證：JavaScript 語法及 `git diff --check` 通過；以正式 Supabase 學生及管理員帳號實測，訪客／學生不顯示入口、管理員顯示入口，390×844 無水平溢出且 console 無錯誤；Cloudflare production 已載入 `v32`，訪客入口隱藏、管理員入口可見。
 
 - 將前台「登入同步」重整為正式會員註冊／登入流程：頂部入口改為「會員登入／會員中心」，登入視窗加入登入／註冊分頁、註冊顯示名稱及登入後會員資料卡；保留既有 Supabase 帳戶、電郵驗證、密碼重設、登入 session、RLS 與學習資料，日常雲端保存改為背景執行，只在失敗時提示。核心資源提升至 `v=30`，Service Worker 快取提升至 `thai-review-shell-v30`。驗證：`node --check`、`git diff --check`、桌面及 390×844 手機會員視窗通過；註冊欄位與必填狀態正確、無水平溢出及 console 錯誤；Cloudflare production 已載入 `v30` 資源並顯示新版會員流程。
 - 新增 `public_entries`／`public_entry_versions` 公共詞庫，並以 902 migration 將現有管理表 `entries` 自動鏡像；遠端查證兩者均為 405 筆。

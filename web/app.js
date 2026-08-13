@@ -74,6 +74,7 @@ const elements = {
   accountButton: document.querySelector("#account-button"),
   accountLabel: document.querySelector("#account-label"),
   adminLink: document.querySelector("#admin-link"),
+  addEntryButton: document.querySelector("#add-entry-button"),
   authDialog: document.querySelector("#auth-dialog"),
   authForm: document.querySelector("#auth-form"),
   authTabs: document.querySelector("#auth-tabs"),
@@ -122,6 +123,8 @@ let installPrompt = null;
 let currentUser = null;
 let syncTimer = null;
 let authMode = "login";
+let currentProfileRole = null;
+let currentProfileUserId = null;
 let translationDirection = "auto";
 let translationRequestId = 0;
 const supabaseSettings = window.THAI_EASY_SUPABASE;
@@ -255,6 +258,10 @@ function setSyncStatus(message) {
   elements.authStatus.textContent = message;
 }
 
+function canAddEntries() {
+  return currentProfileUserId === currentUser?.id && ["admin", "super_admin"].includes(currentProfileRole);
+}
+
 function renderAccountState() {
   const signedIn = Boolean(currentUser);
   const changingPassword = authMode === "recovery";
@@ -272,7 +279,15 @@ function renderAccountState() {
   elements.authSubmitButton.hidden = signedIn && !changingPassword;
   elements.signOutButton.hidden = !signedIn || changingPassword;
   elements.changePasswordButton.hidden = !signedIn || changingPassword;
-  if (!signedIn) elements.adminLink.hidden = true;
+  if (!signedIn || currentProfileUserId !== currentUser.id) {
+    currentProfileRole = null;
+    currentProfileUserId = null;
+    elements.addEntryButton.hidden = true;
+    if (!signedIn) {
+      elements.adminLink.hidden = true;
+      if (elements.entryDialog.open) closeEntryDialog();
+    }
+  }
   if (signedIn) {
     elements.authTitle.textContent = changingPassword ? "設定新密碼" : "會員中心";
     elements.authCopy.textContent = changingPassword
@@ -285,9 +300,17 @@ function renderAccountState() {
 
 async function renderAdminAccess() {
   elements.adminLink.hidden = true;
+  elements.addEntryButton.hidden = true;
+  currentProfileRole = null;
+  currentProfileUserId = null;
   if (!supabaseClient || !currentUser) return;
-  const { data } = await supabaseClient.from("profiles").select("role,status").eq("user_id", currentUser.id).maybeSingle();
+  const userId = currentUser.id;
+  const { data } = await supabaseClient.from("profiles").select("role,status").eq("user_id", userId).maybeSingle();
+  if (currentUser?.id !== userId) return;
+  currentProfileRole = data?.status === "active" ? data.role : null;
+  currentProfileUserId = data?.status === "active" ? userId : null;
   elements.adminLink.hidden = !data || data.status !== "active" || !["support_admin", "admin", "super_admin"].includes(data.role);
+  elements.addEntryButton.hidden = !["admin", "super_admin"].includes(currentProfileRole);
   window.lucide?.createIcons();
 }
 
@@ -982,6 +1005,10 @@ function nextPracticeQuestion() {
 }
 
 function addEntry(formData) {
+  if (!canAddEntries()) {
+    closeEntryDialog();
+    return;
+  }
   const requestedCategory = formData.get("category").trim();
   const categoryInput = elements.entryForm.elements.category;
   if (!isValidCategory(requestedCategory)) {
@@ -1234,8 +1261,8 @@ document.querySelector(".brand").addEventListener("click", (event) => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-document.querySelector("#add-entry-button").addEventListener("click", () => {
-  elements.entryDialog.showModal();
+elements.addEntryButton.addEventListener("click", () => {
+  if (canAddEntries()) elements.entryDialog.showModal();
 });
 
 elements.entryForm.addEventListener("submit", (event) => {
