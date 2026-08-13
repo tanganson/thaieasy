@@ -61,7 +61,7 @@ function setupShell(profile) {
   $("#user-name").textContent = profile.display_name || "泰簡單會員";
   $("#user-role").textContent = roleLabels[profile.role] || profile.role;
   $("#user-avatar").textContent = (profile.display_name || roleLabels[profile.role] || "學").slice(0, 1);
-  $("#sidebar-role").textContent = profile.role === "teacher" ? "老師儀表板" : profile.role === "student" ? "學生儀表板" : "個人儀表板";
+  $("#sidebar-role").textContent = profile.role === "teacher" ? "老師中心" : profile.role === "student" ? "學生中心" : "個人中心";
   $("#dashboard-nav").innerHTML = navItems(profile.role).map(([view, icon, label], index) => `<button class="nav-button${index === 0 ? " is-active" : ""}" data-view="${view}"><i data-lucide="${icon}"></i><span>${label}</span></button>`).join("");
   icons();
 }

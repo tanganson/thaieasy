@@ -80,7 +80,7 @@ async function requireMember(request, env, allowedRoles = null) {
   const profileResult = await supabaseRequest(env, `/rest/v1/profiles?user_id=eq.${encodeURIComponent(user.id)}&select=user_id,display_name,role,status,timezone&limit=1`);
   const profile = profileResult.payload?.[0];
   if (!profile || profile.status !== "active") return { error: json({ error: "帳號已停用或未建立會員資料" }, 403) };
-  if (allowedRoles && !allowedRoles.has(profile.role)) return { error: json({ error: "此儀表板不適用於目前帳號角色" }, 403) };
+  if (allowedRoles && !allowedRoles.has(profile.role)) return { error: json({ error: "此個人中心不適用於目前帳號角色" }, 403) };
   return { user, profile };
 }
 
@@ -213,7 +213,7 @@ async function createStudentNote(request, env, auth) {
   const noteResult = await supabaseRequest(env, "/rest/v1/student_custom_entries", {
     method: "POST",
     headers: { prefer: "return=representation" },
-    body: JSON.stringify({ id, user_id: auth.user.id, thai, meaning, pronunciation, category, source: "個人儀表板" }),
+    body: JSON.stringify({ id, user_id: auth.user.id, thai, meaning, pronunciation, category, source: "個人中心" }),
   });
   if (!noteResult.response.ok) return json({ error: "無法儲存個人筆記" }, 502);
   const learningResult = await supabaseRequest(env, "/rest/v1/student_learning_entries", {
@@ -363,7 +363,7 @@ async function dashboardApi(request, env, pathname) {
     if (auth.profile.role !== "teacher") return json({ error: "只限老師帳號" }, 403);
     return removeTeacherStudent(request, env, auth, removeMatch[1], removeMatch[2]);
   }
-  return json({ error: "找不到儀表板 API" }, 404);
+  return json({ error: "找不到個人中心 API" }, 404);
 }
 
 function cleanReason(value) {
@@ -770,7 +770,7 @@ export default {
       catch (error) {
         if (error instanceof Response) return error;
         console.error(JSON.stringify({ event: "dashboard_api_error", path: url.pathname, message: error instanceof Error ? error.message : "unknown" }));
-        return json({ error: "儀表板暫時無法載入資料" }, 500);
+        return json({ error: "個人中心暫時無法載入資料" }, 500);
       }
     }
     if (url.pathname.startsWith("/api/admin/")) {

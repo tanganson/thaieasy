@@ -45,7 +45,7 @@
 | 會員角色系統 | 已完成（第一版） | 訪客可完整使用公共內容；會員角色包含學生、老師、內容編輯、支援管理員、管理員及最高管理員，帳號可停用或恢復 |
 | 會員註冊／登入 | 已完成 | 前台提供登入／註冊分頁及會員中心；支援顯示名稱、一次電郵驗證、密碼登入、密碼重設及背景保存學習資料 |
 | 管理後台 | 已完成（第一版） | `/admin/` 提供會員搜尋、角色與狀態管理、邀請／密碼設定、學習群組、成員管理、公共教材版本編輯及不可變審計紀錄 |
-| 學生／老師個人儀表板 | 已完成（第一版） | `/dashboard/` 按角色顯示：學生可查看學習量、答對率、到期及薄弱詞句、近期活動與私人筆記；老師可查看自己群組、學生彙總表現、需關注學生並管理所屬群組學生 |
+| 學生／老師個人中心 | 已完成（第一版） | `/dashboard/` 按角色顯示：學生可查看學習量、答對率、到期及薄弱詞句、近期活動與私人筆記；老師可查看自己群組、學生彙總表現、需關注學生並管理所屬群組學生 |
 | Cloudflare Pages 部署 | 已完成 | Production URL：`https://thaieasy.pages.dev`；專案 `thaieasy`，production branch `main` |
 | 即時翻譯頁面 | 已完成（第二版） | 使用 Azure Translator 提供穩定的泰中翻譯，Claude Haiku 4.5 僅非阻塞補充讀音與學習提示；泰中雙向、自動判斷、可編輯結果、泰文播放及收藏詞條；API keys 使用 Cloudflare Secrets |
 | 網上生詞自動補充 | 已完成（候選入庫第一版） | Codex 每日搜尋可信網上來源，驗證泰文、繁中意思、讀音、分類、HTTPS 來源及重複項後，以 `draft` 寫入 Supabase；不會未經內容審核直接公開 |
@@ -75,7 +75,7 @@ Thai/
 │   ├── manifest.webmanifest          # PWA 設定
 │   ├── sw.js                         # 離線快取
 │   ├── admin/                        # 會員、角色與學習群組管理後台
-│   ├── dashboard/                    # 學生／老師角色化個人儀表板
+│   ├── dashboard/                    # 學生／老師角色化個人中心
 │   └── assets/                       # 網站圖片資源
 ├── supabase/migrations/              # 學習狀態、會員角色、群組及 RLS
 └── 泰語複習.app/                     # macOS 快速啟動器
@@ -374,7 +374,9 @@ node --check web/sw.js
 
 ### 2026-08-14 公共詞庫與學生學習庫第一版
 
-- 建立 `/dashboard/` 角色化個人儀表板：學生版顯示學習庫、到期數、答對率、連續學習、七天活動、薄弱詞句／主題、下一步建議及私人筆記；新增筆記會同時加入 `student_custom_entries` 與該學生的學習庫。老師版只彙總自己擁有群組的學生，提供需關注排序、學生詳情、群組概況，並可按已註冊電郵加入或移除自己群組的學生；所有 API 從 JWT 取得身份，不接受前端指定任意使用者，群組操作另核對老師擁有權並寫入審計紀錄。主頁登入後顯示個人儀表板入口，核心資源與 Service Worker 提升至 `v33`。驗證：四個 JavaScript 檔案語法及 `git diff --check` 通過；訪客／錯誤角色分別回 401／403，老師管理非本人群組回 404；學生私人筆記建立及清理、老師所屬群組彙總與測試資料清理均通過；1440×900 桌面及 390×844 手機沒有水平溢出或 console 錯誤，手機提供固定底部三項導覽及頁首登出。
+- 將所有使用者可見的「個人儀表板」統一改名為「個人中心」，包含主頁入口、頁面標題、登入按鈕、學生／老師中心名稱、角色提示及私人詞句來源標記；保留既有 `/dashboard/` URL 與 API 路徑，避免舊連結失效。個人中心 JavaScript 提升至 `v2`，Service Worker 快取提升至 `thai-review-shell-v34`。驗證：四個 JavaScript 檔案語法及 `git diff --check` 通過；Cloudflare production 首頁、個人中心標題、登入按鈕與導覽已顯示新名稱，正式 HTML 無舊稱，Service Worker 已載入 v34。
+
+- 建立 `/dashboard/` 角色化個人中心：學生版顯示學習庫、到期數、答對率、連續學習、七天活動、薄弱詞句／主題、下一步建議及私人筆記；新增筆記會同時加入 `student_custom_entries` 與該學生的學習庫。老師版只彙總自己擁有群組的學生，提供需關注排序、學生詳情、群組概況，並可按已註冊電郵加入或移除自己群組的學生；所有 API 從 JWT 取得身份，不接受前端指定任意使用者，群組操作另核對老師擁有權並寫入審計紀錄。主頁登入後顯示個人中心入口，核心資源與 Service Worker 提升至 `v33`。驗證：四個 JavaScript 檔案語法及 `git diff --check` 通過；訪客／錯誤角色分別回 401／403，老師管理非本人群組回 404；學生私人筆記建立及清理、老師所屬群組彙總與測試資料清理均通過；1440×900 桌面及 390×844 手機沒有水平溢出或 console 錯誤，手機提供固定底部三項導覽及頁首登出。
 
 - 將主站「新增詞句」限制為有效的 `admin`／`super_admin` 帳號：按鈕預設隱藏，Supabase profile 角色查核通過後才顯示；訪客、學生、老師、內容編輯及支援管理員均不顯示，提交函式亦有第二層角色檢查，登出或切換帳號會立即收回權限。核心 JavaScript 提升至 `v32`，Service Worker 快取提升至 `thai-review-shell-v32`。驗證：JavaScript 語法及 `git diff --check` 通過；以正式 Supabase 學生及管理員帳號實測，訪客／學生不顯示入口、管理員顯示入口，390×844 無水平溢出且 console 無錯誤；Cloudflare production 已載入 `v32`，訪客入口隱藏、管理員入口可見。
 - 修正手機仍停留在舊 Cloudflare 部署快照：後續所有 `*.thaieasy.pages.dev` 預覽網址會以 HTTP 308 導向固定正式域名 `thaieasy.pages.dev`，並固定 PWA 的 `id`、`start_url` 與 `scope` 為網站根目錄；加入 canonical URL，Service Worker 快取提升至 `thai-review-shell-v31`。舊的不可變部署快照仍須改開一次正式網址。驗證：Worker／JavaScript／manifest 語法及 `git diff --check` 通過；新預覽網址回傳 308 至正式域名；production 在 390×844 顯示「會員登入」、無水平溢出及 console 錯誤，並載入 `v31` manifest 與 Service Worker。
