@@ -18,7 +18,7 @@
         <h1 id="login-title">管理後台</h1>
         <p>只限獲授權的支援及管理帳號。</p>
         <form id="login-form">
-          <label>電郵地址<input id="login-email" type="email" autocomplete="email" required /></label>
+          <label>帳號 ID<input id="login-account-id" type="text" autocomplete="username" minlength="3" maxlength="24" pattern="[a-z][a-z0-9_]{2,23}" required autocapitalize="none" spellcheck="false" /></label>
           <label>密碼<input id="login-password" type="password" autocomplete="current-password" minlength="8" required /></label>
           <p class="form-status" id="login-status" aria-live="polite"></p>
           <button class="primary-button" type="submit">登入後台</button>
@@ -76,7 +76,7 @@
 
         <section class="admin-view" data-panel="accounts">
           <div class="section-toolbar">
-            <label class="search-field"><i data-lucide="search"></i><input id="account-search" type="search" placeholder="搜尋電郵或名稱" /></label>
+            <label class="search-field"><i data-lucide="search"></i><input id="account-search" type="search" placeholder="搜尋 ID、電郵或名稱" /></label>
             <select id="role-filter" aria-label="按角色篩選"><option value="">全部角色</option></select>
             <select id="status-filter" aria-label="按狀態篩選"><option value="">全部狀態</option><option value="active">有效</option><option value="suspended">已停用</option></select>
             <button class="primary-button" id="invite-user"><i data-lucide="user-plus"></i>建立帳號</button>
@@ -123,6 +123,7 @@
       <form id="user-form" method="dialog">
         <header><div><p class="eyebrow" id="user-dialog-eyebrow">Account</p><h2 id="user-dialog-title">建立帳號</h2></div><button class="dialog-close" type="button" data-close-dialog="user-dialog" aria-label="關閉"><i data-lucide="x"></i></button></header>
         <input id="editing-user-id" type="hidden" />
+        <label>帳號 ID<input id="user-account-id" minlength="3" maxlength="24" pattern="[a-z][a-z0-9_]{2,23}" autocomplete="off" required autocapitalize="none" spellcheck="false" /></label>
         <label id="user-email-field">電郵地址<input id="user-email" type="email" autocomplete="off" /></label>
         <label>顯示名稱<input id="user-display-name" maxlength="80" /></label>
         <label>角色<select id="user-role"></select></label>
@@ -164,6 +165,6 @@
     <script src="../vendor/supabase.min.js?v=13"></script>
     <script src="../supabase-config.js?v=13"></script>
     <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-    <script src="admin.js?v=1"></script>
+    <script src="admin.js?v=2"></script>
   </body>
 </html>

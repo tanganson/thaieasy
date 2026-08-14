@@ -43,7 +43,7 @@
 | 學習進度頁面 | 規劃中 | 等累積足夠複習資料後加入 |
 | 正式資料庫 | 已接入（公共詞庫／學生學習庫第一版） | Supabase Free project `thaieasy` 位於新加坡 `ap-southeast-1`；`entries` 與 `public_entries` 已有 405 筆公共教材，學生學習範圍、進度、複習事件及筆記匯入候選表已建立 RLS；現有 JSON 狀態保留作為兼容同步 |
 | 會員角色系統 | 已完成（第一版） | 訪客可完整使用公共內容；會員角色包含學生、老師、內容編輯、支援管理員、管理員及最高管理員，帳號可停用或恢復 |
-| 會員註冊／登入 | 已完成 | 前台提供登入／註冊分頁及會員中心；支援顯示名稱、一次電郵驗證、密碼登入、密碼重設及背景保存學習資料 |
+| 會員註冊／登入 | 已完成 | 註冊時建立唯一帳號 ID；日常以帳號 ID＋密碼登入，電郵只用於註冊驗證及找回密碼；支援背景保存學習資料 |
 | 管理後台 | 已完成（第一版） | `/admin/` 提供會員搜尋、角色與狀態管理、邀請／密碼設定、學習群組、成員管理、公共教材版本編輯及不可變審計紀錄 |
 | 學生／老師個人中心 | 已完成（第一版） | `/dashboard/` 按角色顯示：學生可查看學習量、答對率、到期及薄弱詞句、近期活動與私人筆記；老師可查看自己群組、學生彙總表現、需關注學生並管理所屬群組學生 |
 | Cloudflare Pages 部署 | 已完成 | Production URL：`https://thaieasy.pages.dev`；專案 `thaieasy`，production branch `main` |
@@ -230,7 +230,7 @@ Supabase Auth 的 `auth.uid()` 是身份唯一來源，前端傳入的 `user_id`
 
 | 表 | 用途 |
 | --- | --- |
-| `profiles` | 顯示名稱、母語、時區及建立時間 |
+| `profiles` | 唯一 `account_id`、顯示名稱、角色、狀態、時區及建立時間 |
 | `user_learning_settings` | 每日分鐘數、每日新詞上限、目標技能、羅馬拼音顯示、通知及自訂範圍 |
 | `study_plans` / `study_plan_items` | 學生選定的課程、主題或自訂詞庫快照 |
 | `review_events` | 不可變作答紀錄，可離線同步 |
@@ -254,7 +254,9 @@ Supabase Auth 的 `auth.uid()` 是身份唯一來源，前端傳入的 `user_id`
 
 ### 已落地的會員與管理後台第一版
 
-`profiles` 以 Supabase `auth.users` 為身份來源，新註冊帳號由 trigger 自動建立學生 profile。角色固定為 `student`、`teacher`、`content_editor`、`support_admin`、`admin` 及 `super_admin`；帳號狀態為 `active` 或 `suspended`。停用帳號時，Cloudflare Worker 會同步更新 profile 狀態及 Supabase Auth ban，既有學習狀態 RLS 亦要求帳號有效。
+`profiles` 以 Supabase `auth.users` 為身份來源，新註冊帳號由 trigger 自動建立學生 profile。每個 profile 必須有唯一 `account_id`，格式為 3–24 位小寫英文字母、數字或底線，並以英文字母開頭；電郵保留作一次驗證、通知和找回密碼，不再作日常登入識別。角色固定為 `student`、`teacher`、`content_editor`、`support_admin`、`admin` 及 `super_admin`；帳號狀態為 `active` 或 `suspended`。停用帳號時，Cloudflare Worker 會同步更新 profile 狀態及 Supabase Auth ban，既有學習狀態 RLS 亦要求帳號有效。
+
+正式角色測試帳號的帳號 ID 為：最高管理員 `admin`、學生 `student`、老師 `teacher`、內容編輯 `editor`、支援管理員 `support`、管理員 `admin2`。密碼各自保存在本機 macOS Keychain，不寫入專案或 Git。
 
 管理操作只能經 `/api/admin/*` 進入。Worker 先驗證 Supabase access token，再讀取有效角色；`SUPABASE_SERVICE_ROLE_KEY` 只保存在 Cloudflare Pages encrypted secret，不存在前端或 Git。支援管理員可處理一般帳號狀態及密碼設定，管理員可建立帳號、變更非管理角色和管理群組，只有最高管理員可授予管理角色或永久刪除帳號。
 
@@ -307,7 +309,14 @@ node --check web/sw.js
 
 涉及介面修改時，還要檢查桌面及手機版面、搜尋、篩選、對話框、發音、複習流程及水平溢出。涉及 PWA 檔案時，應同步更新 Service Worker 的快取版本。
 
-最近一次已知驗證（2026-08-13）：
+最近一次已知驗證（2026-08-14）：
+
+- Supabase 已加入唯一且必填的 `profiles.account_id`，六個既有角色帳號已改為指定 ID；六組 ID／既有密碼均可登入並取得正確角色。
+- 主站、個人中心及管理後台已改用帳號 ID 登入；註冊要求帳號 ID、顯示名稱、電郵及密碼，找回密碼仍只要求註冊電郵。
+- 同源登入 API 不向瀏覽器暴露帳號對應電郵，無效 ID、錯誤密碼及停用帳號使用相同錯誤訊息；管理後台可搜尋及管理帳號 ID。
+- 正式 Cloudflare Pages 已載入 `app.js?v=35` 及 `thai-review-shell-v35`；production 六個帳號 ID 登入全部成功，錯誤帳號回 401，手機版無水平溢出及 console error。
+
+前次已知驗證（2026-08-13）：
 
 - 從 2026 年 4–7 月課堂附件整理新增詞語及例句，排除現有重複項、純文法註記及無法可靠確認泰文拼寫的內容。
 - 新資料統一標記來源為「2026 年 4–7 月課堂筆記」，分類為「2026 年 4–7 月課堂筆記」。
@@ -397,6 +406,12 @@ node --check web/sw.js
 5. 未完成的功能必須標示為「規劃中」或「未開始」。
 
 ## 13. 更新紀錄
+
+### 2026-08-14
+
+- 將會員身份改為帳號 ID 模式：新增 `profiles.account_id` 唯一／格式約束及新會員 trigger，主站、個人中心和管理後台統一以帳號 ID＋密碼登入；註冊加入唯一 ID，電郵只保留作驗證與找回密碼。
+- 六個正式角色帳號依序設為 `admin`、`student`、`teacher`、`editor`、`support`、`admin2`；管理後台加入 ID 顯示、搜尋、建立及修改，重複或格式錯誤會被 API 與資料庫拒絕。登入 API 只回傳 session，不回傳內部對應電郵。
+- 兼容舊版瀏覽器自動填寫：新 ID 欄會清除舊電郵登入值，避免部署更新後誤把電郵當成帳號 ID。驗證包括 migration 遠端套用、六個角色在本機及 production 實際登入、錯誤登入統一 401、後台錯誤格式 400／重複 ID 409、JavaScript 語法、Git diff 格式，以及正式手機版無水平溢出或 console error；Cloudflare production 已載入 `v35`。
 
 ### 2026-08-13
 

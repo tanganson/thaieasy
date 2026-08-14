@@ -35,6 +35,18 @@ async function api(path, options = {}) {
   return payload;
 }
 
+async function signInWithAccountId(accountId, password) {
+  const response = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "content-type":"application/json" },
+    body: JSON.stringify({ accountId:accountId.trim().toLocaleLowerCase(), password }),
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.error || "帳號 ID 或密碼不正確");
+  const { error } = await client.auth.setSession(payload.session);
+  if (error) throw error;
+}
+
 function setView(view) {
   const profiles = { overview:["Workspace","營運總覽"], accounts:["Membership","帳號管理"], groups:["Learning groups","學習群組"], content:["Content library","教材管理"], audit:["Governance","審計紀錄"] };
   $$(".nav-button").forEach((button) => button.classList.toggle("is-active", button.dataset.view === view));
@@ -62,13 +74,13 @@ function filteredUsers() {
   const query = $("#account-search").value.trim().toLocaleLowerCase();
   const role = $("#role-filter").value;
   const status = $("#status-filter").value;
-  return state.users.filter((user) => (!query || `${user.email} ${user.display_name}`.toLocaleLowerCase().includes(query)) && (!role || user.role === role) && (!status || user.status === status));
+  return state.users.filter((user) => (!query || `${user.account_id} ${user.email} ${user.display_name}`.toLocaleLowerCase().includes(query)) && (!role || user.role === role) && (!status || user.status === status));
 }
 
 function renderAccounts() {
   const users = filteredUsers();
   $("#accounts-empty").hidden = users.length > 0;
-  $("#accounts-body").innerHTML = users.map((user) => `<tr><td><span class="member-cell"><strong>${escapeHtml(user.display_name || "未設定名稱")}</strong><small>${escapeHtml(user.email)}</small></span></td><td><span class="role-pill">${roleLabels[user.role] || user.role}</span></td><td><span class="status-pill ${user.status}">${user.status === "active" ? "有效" : "已停用"}</span></td><td>${formatDate(user.lastSignInAt)}</td><td>${formatDate(user.createdAt)}</td><td><button class="row-action" data-edit-user="${user.id}" title="管理帳號" aria-label="管理 ${escapeHtml(user.email)}"><i data-lucide="more-horizontal"></i></button></td></tr>`).join("");
+  $("#accounts-body").innerHTML = users.map((user) => `<tr><td><span class="member-cell"><strong>${escapeHtml(user.display_name || "未設定名稱")}</strong><small>@${escapeHtml(user.account_id)} · ${escapeHtml(user.email)}</small></span></td><td><span class="role-pill">${roleLabels[user.role] || user.role}</span></td><td><span class="status-pill ${user.status}">${user.status === "active" ? "有效" : "已停用"}</span></td><td>${formatDate(user.lastSignInAt)}</td><td>${formatDate(user.createdAt)}</td><td><button class="row-action" data-edit-user="${user.id}" title="管理帳號" aria-label="管理 ${escapeHtml(user.account_id || user.email)}"><i data-lucide="more-horizontal"></i></button></td></tr>`).join("");
   icons();
 }
 
@@ -161,6 +173,7 @@ function openUserDialog(user = null) {
   $("#user-status-field").hidden = !user;
   $("#danger-actions").hidden = !user;
   $("#user-email").value = user?.email || "";
+  $("#user-account-id").value = user?.account_id || "";
   $("#user-display-name").value = user?.display_name || "";
   $("#user-role").value = user?.role || "student";
   $("#user-status").value = user?.status || "active";
@@ -174,7 +187,7 @@ function openUserDialog(user = null) {
 async function saveUser(event) {
   event.preventDefault();
   const id = $("#editing-user-id").value;
-  const body = { displayName:$("#user-display-name").value, role:$("#user-role").value, reason:$("#user-reason").value };
+  const body = { accountId:$("#user-account-id").value, displayName:$("#user-display-name").value, role:$("#user-role").value, reason:$("#user-reason").value };
   if (id) body.status = $("#user-status").value; else body.email = $("#user-email").value;
   try {
     $("#save-user").disabled = true;
@@ -239,7 +252,9 @@ async function removeMember(groupId, userId) {
 
 $("#role-filter").innerHTML = roleOptions(true);
 $("#user-role").innerHTML = roleOptions();
-$("#login-form").addEventListener("submit", async (event) => { event.preventDefault(); $("#login-status").textContent="正在登入..."; const {error}=await client.auth.signInWithPassword({email:$("#login-email").value.trim(),password:$("#login-password").value}); if(error){$("#login-status").textContent="電郵、密碼或帳號權限不正確";return;} await enterAdmin(); });
+$("#login-account-id").addEventListener("input", (event) => { event.target.value = event.target.value.toLocaleLowerCase(); });
+$("#user-account-id").addEventListener("input", (event) => { event.target.value = event.target.value.toLocaleLowerCase(); });
+$("#login-form").addEventListener("submit", async (event) => { event.preventDefault(); $("#login-status").textContent="正在登入..."; try { await signInWithAccountId($("#login-account-id").value,$("#login-password").value); await enterAdmin(); } catch(error) { $("#login-status").textContent=error.message || "帳號 ID、密碼或帳號權限不正確"; } });
 $("#sign-out").addEventListener("click", async () => { await client.auth.signOut(); location.reload(); });
 $("#refresh-button").addEventListener("click", async () => { try { await loadData(); notify("資料已更新"); } catch(error){notify(error.message,true);} });
 $("#content-status-filter")?.addEventListener("change", () => loadData());

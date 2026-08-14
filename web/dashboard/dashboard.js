@@ -37,6 +37,18 @@ async function api(path, options = {}) {
   return payload;
 }
 
+async function signInWithAccountId(accountId, password) {
+  const response = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "content-type":"application/json" },
+    body: JSON.stringify({ accountId:accountId.trim().toLocaleLowerCase(), password }),
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.error || "帳號 ID 或密碼不正確");
+  const { error } = await client.auth.setSession(payload.session);
+  if (error) throw error;
+}
+
 function showLogin(message = "") {
   $("#dashboard-app").hidden = true;
   $("#auth-screen").hidden = false;
@@ -213,11 +225,14 @@ $("#login-form").addEventListener("submit", async (event) => {
   const button = event.submitter;
   button.disabled = true;
   $("#login-status").textContent = "正在登入...";
-  const { error } = await client.auth.signInWithPassword({ email:$("#login-email").value.trim(), password:$("#login-password").value });
+  let error = null;
+  try { await signInWithAccountId($("#login-account-id").value, $("#login-password").value); }
+  catch (loginError) { error = loginError; }
   button.disabled = false;
-  if (error) { $("#login-status").textContent = "電郵或密碼不正確"; return; }
+  if (error) { $("#login-status").textContent = error.message || "帳號 ID 或密碼不正確"; return; }
   await loadDashboard();
 });
+$("#login-account-id").addEventListener("input", (event) => { event.target.value = event.target.value.toLocaleLowerCase(); });
 
 async function signOut() { await client.auth.signOut(); showLogin("已登出會員帳戶"); }
 $("#sign-out").addEventListener("click", signOut);

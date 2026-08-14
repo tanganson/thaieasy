@@ -271,6 +271,7 @@
           <div class="member-avatar"><i data-lucide="user-round" aria-hidden="true"></i></div>
           <div>
             <strong id="member-name">會員</strong>
+            <span id="member-account-id"></span>
             <span id="member-email"></span>
           </div>
           <span class="member-badge">會員</span>
@@ -279,7 +280,11 @@
           <span>顯示名稱</span>
           <input id="auth-display-name" type="text" autocomplete="name" maxlength="80" placeholder="例如：Anson" />
         </label>
-        <label class="auth-email" id="auth-email-field">
+        <label class="auth-email" id="account-id-field">
+          <span>帳號 ID</span>
+          <input id="auth-account-id" type="text" autocomplete="username" minlength="3" maxlength="24" pattern="[a-z][a-z0-9_]{2,23}" required placeholder="例如：anson123" autocapitalize="none" spellcheck="false" />
+        </label>
+        <label class="auth-email" id="auth-email-field" hidden>
           <span>電郵地址</span>
           <input id="auth-email" type="email" autocomplete="email" required placeholder="name@example.com" />
         </label>
@@ -467,6 +472,6 @@
     <script src="vendor/supabase.min.js?v=13"></script>
     <script src="supabase-config.js?v=13"></script>
     <script src="data.js?v=30"></script>
-    <script src="app.js?v=33"></script>
+    <script src="app.js?v=35"></script>
   </body>
 </html>

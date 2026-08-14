@@ -8,6 +8,7 @@ const ALL_ROLES = new Set(["student", "teacher", "content_editor", "support_admi
 const ROLE_LEVEL = { student: 0, teacher: 1, content_editor: 1, support_admin: 2, admin: 3, super_admin: 4 };
 const MAX_ADMIN_BODY = 16_384;
 const PRODUCTION_HOST = "thaieasy.pages.dev";
+const ACCOUNT_ID_PATTERN = /^[a-z][a-z0-9_]{2,23}$/;
 
 function redirectPreviewToProduction(url) {
   if (!url.hostname.endsWith(`.${PRODUCTION_HOST}`)) return null;
@@ -52,6 +53,39 @@ async function supabaseRequest(env, path, options = {}) {
   return { response, payload };
 }
 
+function cleanAccountId(value) {
+  return typeof value === "string" ? value.trim().toLocaleLowerCase() : "";
+}
+
+async function loginWithAccountId(request, env) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return json({ error: "會員服務尚未完成設定" }, 503);
+  const body = await parseJsonBody(request, 4096);
+  const accountId = cleanAccountId(body.accountId);
+  const password = typeof body.password === "string" ? body.password : "";
+  if (!ACCOUNT_ID_PATTERN.test(accountId) || password.length < 8) return json({ error: "帳號 ID 或密碼不正確" }, 401);
+  const profileResult = await supabaseRequest(env, `/rest/v1/profiles?account_id=eq.${encodeURIComponent(accountId)}&select=user_id,status&limit=1`);
+  const profile = profileResult.payload?.[0];
+  if (!profile || profile.status !== "active") return json({ error: "帳號 ID 或密碼不正確" }, 401);
+  const userResult = await supabaseRequest(env, `/auth/v1/admin/users/${encodeURIComponent(profile.user_id)}`);
+  const email = userResult.payload?.user?.email || userResult.payload?.email;
+  if (!userResult.response.ok || !email) return json({ error: "帳號 ID 或密碼不正確" }, 401);
+  const tokenResponse = await fetch(`${env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+    method: "POST",
+    headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, "content-type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  const tokenPayload = await tokenResponse.json().catch(() => ({}));
+  if (!tokenResponse.ok || !tokenPayload.access_token || !tokenPayload.refresh_token) return json({ error: "帳號 ID 或密碼不正確" }, 401);
+  return json({
+    session: {
+      access_token: tokenPayload.access_token,
+      refresh_token: tokenPayload.refresh_token,
+      expires_in: tokenPayload.expires_in,
+      token_type: tokenPayload.token_type,
+    },
+  });
+}
+
 async function requireAdmin(request, env, minimumRole = "support_admin") {
   if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return { error: json({ error: "管理服務尚未完成設定" }, 503) };
   const authorization = request.headers.get("authorization") || "";
@@ -61,7 +95,7 @@ async function requireAdmin(request, env, minimumRole = "support_admin") {
   });
   if (!userResponse.ok) return { error: json({ error: "登入狀態已失效，請重新登入" }, 401) };
   const user = await userResponse.json();
-  const profileResult = await supabaseRequest(env, `/rest/v1/profiles?user_id=eq.${encodeURIComponent(user.id)}&select=user_id,display_name,role,status&limit=1`);
+  const profileResult = await supabaseRequest(env, `/rest/v1/profiles?user_id=eq.${encodeURIComponent(user.id)}&select=user_id,account_id,display_name,role,status&limit=1`);
   const profile = profileResult.payload?.[0];
   if (!profile || profile.status !== "active") return { error: json({ error: "帳號已停用或未建立會員資料" }, 403) };
   if (!ADMIN_ROLES.has(profile.role) || ROLE_LEVEL[profile.role] < ROLE_LEVEL[minimumRole]) return { error: json({ error: "你沒有此管理權限" }, 403) };
@@ -77,7 +111,7 @@ async function requireMember(request, env, allowedRoles = null) {
   });
   if (!userResponse.ok) return { error: json({ error: "登入狀態已失效，請重新登入" }, 401) };
   const user = await userResponse.json();
-  const profileResult = await supabaseRequest(env, `/rest/v1/profiles?user_id=eq.${encodeURIComponent(user.id)}&select=user_id,display_name,role,status,timezone&limit=1`);
+  const profileResult = await supabaseRequest(env, `/rest/v1/profiles?user_id=eq.${encodeURIComponent(user.id)}&select=user_id,account_id,display_name,role,status,timezone&limit=1`);
   const profile = profileResult.payload?.[0];
   if (!profile || profile.status !== "active") return { error: json({ error: "帳號已停用或未建立會員資料" }, 403) };
   if (allowedRoles && !allowedRoles.has(profile.role)) return { error: json({ error: "此個人中心不適用於目前帳號角色" }, 403) };
@@ -392,7 +426,7 @@ async function listAdminUsers(request, env, admin) {
   const usersResult = await supabaseRequest(env, `/auth/v1/admin/users?page=${page}&per_page=${perPage}`);
   if (!usersResult.response.ok) return json({ error: "無法讀取會員帳號" }, 502);
   const users = usersResult.payload?.users || [];
-  const profilesResult = await supabaseRequest(env, "/rest/v1/profiles?select=user_id,display_name,role,status,timezone,created_at,updated_at");
+  const profilesResult = await supabaseRequest(env, "/rest/v1/profiles?select=user_id,account_id,display_name,role,status,timezone,created_at,updated_at");
   if (!profilesResult.response.ok) return json({ error: "無法讀取會員資料" }, 502);
   const profiles = new Map((profilesResult.payload || []).map((profile) => [profile.user_id, profile]));
   const search = (url.searchParams.get("search") || "").trim().toLocaleLowerCase();
@@ -403,8 +437,8 @@ async function listAdminUsers(request, env, admin) {
     lastSignInAt: user.last_sign_in_at,
     bannedUntil: user.banned_until,
     createdAt: user.created_at,
-    ...(profiles.get(user.id) || { display_name: "", role: "student", status: "active" }),
-  })).filter((user) => !search || `${user.email} ${user.display_name}`.toLocaleLowerCase().includes(search));
+    ...(profiles.get(user.id) || { account_id: "", display_name: "", role: "student", status: "active" }),
+  })).filter((user) => !search || `${user.account_id} ${user.email} ${user.display_name}`.toLocaleLowerCase().includes(search));
   return json({ actor: admin.profile, users: merged, page, total: usersResult.payload?.total || merged.length });
 }
 
@@ -412,26 +446,30 @@ async function inviteAdminUser(request, env, admin) {
   if (ROLE_LEVEL[admin.profile.role] < ROLE_LEVEL.admin) return json({ error: "只有管理員可以建立帳號" }, 403);
   const body = await parseJsonBody(request);
   const email = typeof body.email === "string" ? body.email.trim().toLocaleLowerCase() : "";
+  const accountId = cleanAccountId(body.accountId);
   const displayName = typeof body.displayName === "string" ? body.displayName.trim().slice(0, 80) : "";
   const role = ALL_ROLES.has(body.role) ? body.role : "student";
   const reason = cleanReason(body.reason);
   if (!email || !/^\S+@\S+\.\S+$/.test(email)) return json({ error: "請輸入有效電郵地址" }, 400);
+  if (!ACCOUNT_ID_PATTERN.test(accountId)) return json({ error: "帳號 ID 必須是 3–24 位小寫英文字母、數字或底線，並以英文字母開頭" }, 400);
   if (reason.length < 3) return json({ error: "請填寫建立原因" }, 400);
   if (ROLE_LEVEL[role] >= ROLE_LEVEL.admin && admin.profile.role !== "super_admin") return json({ error: "只有最高管理員可以建立管理角色" }, 403);
+  const accountIdResult = await supabaseRequest(env, `/rest/v1/profiles?account_id=eq.${encodeURIComponent(accountId)}&select=user_id&limit=1`);
+  if (accountIdResult.payload?.length) return json({ error: "此帳號 ID 已被使用" }, 409);
   const inviteResult = await supabaseRequest(env, "/auth/v1/invite", {
     method: "POST",
-    body: JSON.stringify({ email, data: { display_name: displayName }, redirect_to: `${new URL(request.url).origin}/` }),
+    body: JSON.stringify({ email, data: { display_name: displayName, account_id: accountId }, redirect_to: `${new URL(request.url).origin}/` }),
   });
   if (!inviteResult.response.ok) return json({ error: inviteResult.payload?.msg || inviteResult.payload?.message || "無法建立邀請" }, inviteResult.response.status === 422 ? 409 : 502);
   const userId = inviteResult.payload?.id;
   const profileResult = await supabaseRequest(env, `/rest/v1/profiles?user_id=eq.${encodeURIComponent(userId)}`, {
     method: "PATCH",
     headers: { prefer: "return=representation" },
-    body: JSON.stringify({ display_name: displayName, role }),
+    body: JSON.stringify({ account_id: accountId, display_name: displayName, role }),
   });
-  if (!profileResult.response.ok) return json({ error: "帳號已建立，但角色設定失敗" }, 500);
-  await audit(env, admin.user.id, "user.invite", reason, { target_user_id: userId, after_state: { email, displayName, role } });
-  return json({ user: { id: userId, email, displayName, role }, message: "邀請郵件已寄出" }, 201);
+  if (!profileResult.response.ok) return json({ error: profileResult.response.status === 409 ? "此帳號 ID 已被使用" : "帳號已建立，但角色設定失敗" }, profileResult.response.status === 409 ? 409 : 500);
+  await audit(env, admin.user.id, "user.invite", reason, { target_user_id: userId, after_state: { accountId, email, displayName, role } });
+  return json({ user: { id: userId, accountId, email, displayName, role }, message: "邀請郵件已寄出" }, 201);
 }
 
 async function updateAdminUser(request, env, admin, userId) {
@@ -443,6 +481,12 @@ async function updateAdminUser(request, env, admin, userId) {
   if (!current) return json({ error: "找不到會員資料" }, 404);
   if (userId !== admin.user.id && ROLE_LEVEL[current.role] >= ROLE_LEVEL[admin.profile.role]) return json({ error: "不能管理同級或更高權限帳號" }, 403);
   const updates = {};
+  if (body.accountId !== undefined && cleanAccountId(body.accountId) !== current.account_id) {
+    if (ROLE_LEVEL[admin.profile.role] < ROLE_LEVEL.admin) return json({ error: "只有管理員可以變更帳號 ID" }, 403);
+    const accountId = cleanAccountId(body.accountId);
+    if (!ACCOUNT_ID_PATTERN.test(accountId)) return json({ error: "帳號 ID 必須是 3–24 位小寫英文字母、數字或底線，並以英文字母開頭" }, 400);
+    updates.account_id = accountId;
+  }
   if (typeof body.displayName === "string" && body.displayName.trim().slice(0, 80) !== current.display_name) updates.display_name = body.displayName.trim().slice(0, 80);
   if (body.role !== undefined && body.role !== current.role) {
     if (!ALL_ROLES.has(body.role)) return json({ error: "角色無效" }, 400);
@@ -468,7 +512,7 @@ async function updateAdminUser(request, env, admin, userId) {
     headers: { prefer: "return=representation" },
     body: JSON.stringify(updates),
   });
-  if (!updateResult.response.ok) return json({ error: "無法更新會員資料" }, 502);
+  if (!updateResult.response.ok) return json({ error: updateResult.response.status === 409 ? "此帳號 ID 已被使用" : "無法更新會員資料" }, updateResult.response.status === 409 ? 409 : 502);
   await audit(env, admin.user.id, "user.update", reason, { target_user_id: userId, before_state: current, after_state: updateResult.payload?.[0] || updates });
   return json({ user: updateResult.payload?.[0] });
 }
@@ -765,6 +809,15 @@ export default {
     const url = new URL(request.url);
     const productionRedirect = redirectPreviewToProduction(url);
     if (productionRedirect) return productionRedirect;
+    if (url.pathname === "/api/auth/login") {
+      if (request.method !== "POST") return json({ error: "只接受 POST 請求" }, 405);
+      try { return await loginWithAccountId(request, env); }
+      catch (error) {
+        if (error instanceof Response) return error;
+        console.error(JSON.stringify({ event: "account_id_login_error", message: error instanceof Error ? error.message : "unknown" }));
+        return json({ error: "會員登入暫時無法使用" }, 500);
+      }
+    }
     if (url.pathname.startsWith("/api/dashboard/")) {
       try { return await dashboardApi(request, env, url.pathname); }
       catch (error) {

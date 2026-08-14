@@ -18,7 +18,7 @@
         <h1>個人中心</h1>
         <p id="auth-copy">登入後會按你的會員角色顯示學習或教學資料。</p>
         <form id="login-form">
-          <label>電郵地址<input id="login-email" type="email" autocomplete="email" required /></label>
+          <label>帳號 ID<input id="login-account-id" type="text" autocomplete="username" minlength="3" maxlength="24" pattern="[a-z][a-z0-9_]{2,23}" required autocapitalize="none" spellcheck="false" /></label>
           <label>密碼<input id="login-password" type="password" autocomplete="current-password" minlength="8" required /></label>
           <p class="form-status" id="login-status" aria-live="polite"></p>
           <button class="primary-button" type="submit">登入個人中心</button>
@@ -129,6 +129,6 @@
     <script src="../vendor/supabase.min.js?v=13"></script>
     <script src="../supabase-config.js?v=13"></script>
     <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-    <script src="dashboard.js?v=2"></script>
+    <script src="dashboard.js?v=3"></script>
   </body>
 </html>

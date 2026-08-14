@@ -79,6 +79,8 @@ const elements = {
   authDialog: document.querySelector("#auth-dialog"),
   authForm: document.querySelector("#auth-form"),
   authTabs: document.querySelector("#auth-tabs"),
+  accountIdField: document.querySelector("#account-id-field"),
+  authAccountId: document.querySelector("#auth-account-id"),
   displayNameField: document.querySelector("#display-name-field"),
   authDisplayName: document.querySelector("#auth-display-name"),
   authEmailField: document.querySelector("#auth-email-field"),
@@ -97,6 +99,7 @@ const elements = {
   changePasswordButton: document.querySelector("#change-password-button"),
   memberSummary: document.querySelector("#member-summary"),
   memberName: document.querySelector("#member-name"),
+  memberAccountId: document.querySelector("#member-account-id"),
   memberEmail: document.querySelector("#member-email"),
   translateButton: document.querySelector("#translate-button"),
   translationDialog: document.querySelector("#translation-dialog"),
@@ -126,6 +129,7 @@ let syncTimer = null;
 let authMode = "login";
 let currentProfileRole = null;
 let currentProfileUserId = null;
+let currentProfileAccountId = null;
 let translationDirection = "auto";
 let translationRequestId = 0;
 const supabaseSettings = window.THAI_EASY_SUPABASE;
@@ -266,23 +270,31 @@ function canAddEntries() {
 function renderAccountState() {
   const signedIn = Boolean(currentUser);
   const changingPassword = authMode === "recovery";
+  const requestingReset = authMode === "forgot";
+  const signingUp = authMode === "signup";
+  const loggingIn = authMode === "login";
   elements.accountButton.classList.toggle("is-synced", signedIn);
   elements.accountLabel.textContent = signedIn ? "會員中心" : "會員登入";
-  elements.authTabs.hidden = signedIn || changingPassword;
+  elements.authTabs.hidden = signedIn || changingPassword || requestingReset;
   elements.memberSummary.hidden = !signedIn || changingPassword;
-  elements.displayNameField.hidden = signedIn || authMode !== "signup";
-  elements.authDisplayName.required = !signedIn && authMode === "signup";
-  elements.authEmailField.hidden = signedIn || changingPassword;
-  elements.authEmail.required = !signedIn && !changingPassword;
-  elements.passwordField.hidden = signedIn && !changingPassword;
-  elements.confirmPasswordField.hidden = signedIn ? !changingPassword : authMode === "login";
-  elements.authLinks.hidden = signedIn || changingPassword || authMode === "signup";
+  elements.accountIdField.hidden = signedIn || (!loggingIn && !signingUp);
+  elements.authAccountId.required = !signedIn && (loggingIn || signingUp);
+  elements.displayNameField.hidden = signedIn || !signingUp;
+  elements.authDisplayName.required = !signedIn && signingUp;
+  elements.authEmailField.hidden = signedIn || (!signingUp && !requestingReset);
+  elements.authEmail.required = !signedIn && (signingUp || requestingReset);
+  elements.passwordField.hidden = requestingReset || (signedIn && !changingPassword);
+  elements.authPassword.required = !requestingReset && (!signedIn || changingPassword);
+  elements.confirmPasswordField.hidden = requestingReset || (signedIn ? !changingPassword : loggingIn);
+  elements.authPasswordConfirm.required = !requestingReset && (signingUp || changingPassword);
+  elements.authLinks.hidden = signedIn || !loggingIn;
   elements.authSubmitButton.hidden = signedIn && !changingPassword;
   elements.signOutButton.hidden = !signedIn || changingPassword;
   elements.changePasswordButton.hidden = !signedIn || changingPassword;
   if (!signedIn || currentProfileUserId !== currentUser.id) {
     currentProfileRole = null;
     currentProfileUserId = null;
+    currentProfileAccountId = null;
     elements.addEntryButton.hidden = true;
     if (!signedIn) {
       elements.dashboardLink.hidden = true;
@@ -296,6 +308,7 @@ function renderAccountState() {
       ? "輸入至少 8 個字元的新密碼，儲存後會繼續保持登入。"
       : "你的學習庫、收藏和複習進度會在背景自動保存。";
     elements.memberName.textContent = currentUser.user_metadata?.display_name?.trim() || "泰簡單會員";
+    elements.memberAccountId.textContent = currentProfileAccountId ? `@${currentProfileAccountId}` : "";
     elements.memberEmail.textContent = currentUser.email || "";
   }
 }
@@ -306,12 +319,15 @@ async function renderAdminAccess() {
   elements.addEntryButton.hidden = true;
   currentProfileRole = null;
   currentProfileUserId = null;
+  currentProfileAccountId = null;
   if (!supabaseClient || !currentUser) return;
   const userId = currentUser.id;
-  const { data } = await supabaseClient.from("profiles").select("role,status").eq("user_id", userId).maybeSingle();
+  const { data } = await supabaseClient.from("profiles").select("account_id,role,status").eq("user_id", userId).maybeSingle();
   if (currentUser?.id !== userId) return;
   currentProfileRole = data?.status === "active" ? data.role : null;
   currentProfileUserId = data?.status === "active" ? userId : null;
+  currentProfileAccountId = data?.status === "active" ? data.account_id : null;
+  elements.memberAccountId.textContent = currentProfileAccountId ? `@${currentProfileAccountId}` : "";
   elements.dashboardLink.hidden = !data || data.status !== "active";
   elements.adminLink.hidden = !data || data.status !== "active" || !["support_admin", "admin", "super_admin"].includes(data.role);
   elements.addEntryButton.hidden = !["admin", "super_admin"].includes(currentProfileRole);
@@ -328,8 +344,13 @@ function setAuthMode(mode) {
     },
     signup: {
       title: "建立會員帳戶",
-      copy: "免費註冊後只需驗證一次電郵，日後可直接使用密碼登入。",
+      copy: "建立唯一帳號 ID 並驗證一次電郵，日後使用 ID 和密碼登入。",
       submit: "建立帳戶",
+    },
+    forgot: {
+      title: "找回密碼",
+      copy: "輸入註冊電郵，我們會寄出密碼設定連結。",
+      submit: "寄出設定郵件",
     },
     recovery: {
       title: "設定新密碼",
@@ -356,12 +377,36 @@ function setAuthMode(mode) {
 
 function authErrorMessage(error) {
   const message = error?.message || "發生未知錯誤";
-  if (/invalid login credentials/i.test(message)) return "電郵或密碼不正確";
+  if (/invalid login credentials/i.test(message)) return "帳號 ID 或密碼不正確";
   if (/email not confirmed/i.test(message)) return "請先完成電郵驗證";
   if (/user already registered/i.test(message)) return "此電郵已註冊，請直接登入或設定密碼";
+  if (/database error saving new user/i.test(message)) return "此帳號 ID 已被使用，請選擇另一個 ID";
   if (/rate limit/i.test(message)) return "郵件發送次數已達上限，請稍後再試";
   if (/password/i.test(message) && /least/i.test(message)) return "密碼至少需要 8 個字元";
   return message;
+}
+
+function normalizedAccountId(value) {
+  return String(value || "").trim().toLocaleLowerCase();
+}
+
+function clearLegacyEmailAutofill() {
+  if (elements.authAccountId.value.includes("@")) elements.authAccountId.value = "";
+}
+
+function validAccountId(value) {
+  return /^[a-z][a-z0-9_]{2,23}$/.test(value);
+}
+
+async function signInWithAccountId(accountId, password) {
+  const response = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ accountId, password }),
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) return { error: new Error(payload.error || "帳號 ID 或密碼不正確") };
+  return supabaseClient.auth.setSession(payload.session);
 }
 
 async function syncToCloud() {
@@ -1354,6 +1399,7 @@ elements.accountButton.addEventListener("click", () => {
   renderAccountState();
   if (!supabaseClient) setSyncStatus("會員服務載入失敗，請重新整理頁面");
   elements.authDialog.showModal();
+  window.setTimeout(clearLegacyEmailAutofill, 100);
 });
 
 document.querySelector("#close-auth-dialog").addEventListener("click", () => {
@@ -1366,14 +1412,19 @@ elements.authForm.addEventListener("submit", async (event) => {
     setSyncStatus("會員服務尚未設定");
     return;
   }
+  const accountId = normalizedAccountId(elements.authAccountId.value);
   const displayName = elements.authDisplayName.value.trim();
   const password = elements.authPassword.value;
   const confirmation = elements.authPasswordConfirm.value;
-  if (password.length < 8) {
+  if (["login", "signup"].includes(authMode) && !validAccountId(accountId)) {
+    setSyncStatus("帳號 ID 必須是 3–24 位小寫英文字母、數字或底線，並以英文字母開頭");
+    return;
+  }
+  if (authMode !== "forgot" && password.length < 8) {
     setSyncStatus("密碼至少需要 8 個字元");
     return;
   }
-  if (authMode !== "login" && password !== confirmation) {
+  if (["signup", "recovery"].includes(authMode) && password !== confirmation) {
     setSyncStatus("兩次輸入的密碼不一致");
     return;
   }
@@ -1390,16 +1441,18 @@ elements.authForm.addEventListener("submit", async (event) => {
       password,
       options: {
         emailRedirectTo: `${window.location.origin}${window.location.pathname}`,
-        data: { display_name: displayName },
+        data: { account_id: accountId, display_name: displayName },
       },
     });
+  } else if (authMode === "forgot") {
+    result = await supabaseClient.auth.resetPasswordForEmail(
+      elements.authEmail.value.trim(),
+      { redirectTo: `${window.location.origin}${window.location.pathname}` }
+    );
   } else if (authMode === "recovery") {
     result = await supabaseClient.auth.updateUser({ password });
   } else {
-    result = await supabaseClient.auth.signInWithPassword({
-      email: elements.authEmail.value.trim(),
-      password,
-    });
+    result = await signInWithAccountId(accountId, password);
   }
   elements.authSubmitButton.disabled = false;
   if (result.error) {
@@ -1408,6 +1461,9 @@ elements.authForm.addEventListener("submit", async (event) => {
   }
   if (authMode === "signup" && !result.data.session) {
     setSyncStatus("驗證郵件已寄出。請完成一次電郵驗證，再回來登入會員帳戶。");
+  } else if (authMode === "forgot") {
+    setAuthMode("login");
+    setSyncStatus("密碼設定郵件已寄出，請查看電郵");
   } else if (authMode === "recovery") {
     authMode = "login";
     renderAccountState();
@@ -1422,20 +1478,12 @@ elements.authTabs.addEventListener("click", (event) => {
   if (button) setAuthMode(button.dataset.authMode);
 });
 
-elements.forgotPasswordButton.addEventListener("click", async () => {
-  if (!supabaseClient || !elements.authEmail.value.trim()) {
-    setSyncStatus("請先輸入電郵地址");
-    return;
-  }
-  elements.forgotPasswordButton.disabled = true;
-  setSyncStatus("正在寄出密碼設定郵件...");
-  const { error } = await supabaseClient.auth.resetPasswordForEmail(
-    elements.authEmail.value.trim(),
-    { redirectTo: `${window.location.origin}${window.location.pathname}` }
-  );
-  elements.forgotPasswordButton.disabled = false;
-  setSyncStatus(error ? authErrorMessage(error) : "密碼設定郵件已寄出，請查看電郵");
+elements.authAccountId.addEventListener("input", () => {
+  elements.authAccountId.value = normalizedAccountId(elements.authAccountId.value);
 });
+elements.authAccountId.addEventListener("focus", clearLegacyEmailAutofill);
+
+elements.forgotPasswordButton.addEventListener("click", () => setAuthMode("forgot"));
 
 elements.changePasswordButton.addEventListener("click", () => {
   setAuthMode("recovery");
