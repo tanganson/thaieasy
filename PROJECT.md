@@ -312,6 +312,7 @@ node --check web/sw.js
 最近一次已知驗證（2026-08-14）：
 
 - Supabase 已加入唯一且必填的 `profiles.account_id`，六個既有角色帳號已改為指定 ID；六組 ID／既有密碼均可登入並取得正確角色。
+- 六個角色測試帳號已完成憑證輪換；新憑證只保存在 macOS Keychain 及 Git 排除的私人帳號文件，沒有寫入公開程式碼或版本紀錄。
 - 主站、個人中心及管理後台已改用帳號 ID 登入；註冊要求帳號 ID、顯示名稱、電郵及密碼，找回密碼仍只要求註冊電郵。
 - 同源登入 API 不向瀏覽器暴露帳號對應電郵，無效 ID、錯誤密碼及停用帳號使用相同錯誤訊息；管理後台可搜尋及管理帳號 ID。
 - 正式 Cloudflare Pages 已載入 `app.js?v=35` 及 `thai-review-shell-v35`；production 六個帳號 ID 登入全部成功，錯誤帳號回 401，手機版無水平溢出及 console error。
@@ -411,6 +412,7 @@ node --check web/sw.js
 
 - 將會員身份改為帳號 ID 模式：新增 `profiles.account_id` 唯一／格式約束及新會員 trigger，主站、個人中心和管理後台統一以帳號 ID＋密碼登入；註冊加入唯一 ID，電郵只保留作驗證與找回密碼。
 - 六個正式角色帳號依序設為 `admin`、`student`、`teacher`、`editor`、`support`、`admin2`；管理後台加入 ID 顯示、搜尋、建立及修改，重複或格式錯誤會被 API 與資料庫拒絕。登入 API 只回傳 session，不回傳內部對應電郵。
+- 完成六個角色測試帳號的憑證輪換，同步更新 Supabase Auth、macOS Keychain 及 Git 排除的私人帳號文件；逐一以正式站登入端點驗證六個帳號均成功，新憑證沒有寫入 Git。
 - 兼容舊版瀏覽器自動填寫：新 ID 欄會清除舊電郵登入值，避免部署更新後誤把電郵當成帳號 ID。驗證包括 migration 遠端套用、六個角色在本機及 production 實際登入、錯誤登入統一 401、後台錯誤格式 400／重複 ID 409、JavaScript 語法、Git diff 格式，以及正式手機版無水平溢出或 console error；Cloudflare production 已載入 `v35`。
 
 ### 2026-08-13
